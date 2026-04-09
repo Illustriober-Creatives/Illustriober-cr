@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
 
 /* Base styles using CSS custom properties */
 :root {
@@ -20,9 +19,6 @@ body {
 * {
   transition: color 0.2s, background-color 0.2s, border-color 0.2s;
 }
-
-
-
 
 @theme inline {
   --color-background: var(--background);
