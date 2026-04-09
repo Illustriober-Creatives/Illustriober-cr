@@ -1,0 +1,116 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { Menu, X } from 'lucide-react';
+import { Button } from './Button';
+import { cn } from './lib/utils';
+
+/**
+ * Navbar component - Responsive header with navigation links and CTA
+ * Features: Mobile hamburger menu, active link highlighting, sticky positioning
+ */
+export function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Navigation links for the site
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/services', label: 'Services' },
+    { href: '/work', label: 'Work' },
+    { href: '/tech-stack', label: 'Tech Stack' },
+  ];
+
+  /**
+   * Close menu when a link is clicked.
+   * This improves UX on mobile - user doesn't have to manually close menu.
+   */
+  const handleLinkClick = () => {
+    setIsMenuOpen(false);
+  };
+
+  return (
+    <nav className="sticky top-0 z-50 bg-surface-950 border-b border-surface-800">
+      <div className="px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo / Brand */}
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">IC</span>
+            </div>
+            <span className="hidden sm:inline font-display font-bold text-lg text-foreground">
+              Illustriober
+            </span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-surface-200 hover:text-brand-500 transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Desktop CTA Button */}
+          <div className="hidden md:block">
+            <Link href="/enquiry">
+              <Button
+                variant="primary"
+                size="md"
+              >
+                Start a Project
+              </Button>
+            </Link>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 hover:bg-surface-800 rounded-lg transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 space-y-3 animate-slide-up">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={handleLinkClick}
+                className="block px-4 py-2 text-sm font-medium text-surface-200 hover:bg-surface-800 hover:text-brand-500 rounded-lg transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+            {/* Mobile CTA Button */}
+            <div className="pt-2">
+              <Link href="/enquiry" onClick={handleLinkClick} className="block">
+                <Button
+                  variant="primary"
+                  size="md"
+                  className="w-full"
+                >
+                  Start a Project
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+}

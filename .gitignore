@@ -1,0 +1,29 @@
+# Node
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+package-lock.json
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Documentation & Guides (Excluded by request)
+00_PROJECT_OVERVIEW.md
+01_TECH_STACK.md
+02_ARCHITECTURE.md
+03_DATABASE_SCHEMA.md
+04_API_SPEC.md
+05_PAGES_AND_COMPONENTS.md
+06_FEATURES.md
+07_IMPLEMENTATION_PLAN.md
+08_THIRD_PARTY_AND_ENV.md
+09_UI_DESIGN_SYSTEM.md
+AGENT_INSTRUCTIONS.md
+Inspirations/
+
+# OS
+.DS_Store
