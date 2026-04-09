@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { resolveTestimonialImage } from '@/lib/imageFallback';
 
 /**
  * TestimonialCard - Display client testimonial with photo, quote, and attribution
@@ -17,11 +18,13 @@ export function TestimonialCard({
   company,
   image,
 }: TestimonialCardProps) {
+  const safeImage = resolveTestimonialImage(image, author);
+
   return (
     <div className="p-8 rounded-xl bg-surface-800 border border-surface-700">
       {/* Quote */}
       <p className="text-lg text-foreground mb-6 leading-relaxed italic">
-        "{quote}"
+        &ldquo;{quote}&rdquo;
       </p>
 
       {/* Author Section */}
@@ -29,7 +32,7 @@ export function TestimonialCard({
         {/* Avatar */}
         <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
           <Image
-            src={image}
+            src={safeImage}
             alt={author}
             fill
             className="object-cover"

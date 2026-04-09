@@ -1,5 +1,5 @@
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
+@config "../../tailwind.config.ts";
+@import "tailwindcss";
 
 /* Base styles using CSS custom properties */
 :root {
@@ -14,10 +14,6 @@ html {
 body {
   background-color: var(--background);
   color: var(--foreground);
-}
-
-* {
-  transition: color 0.2s, background-color 0.2s, border-color 0.2s;
 }
 
 @theme inline {
@@ -37,5 +33,4 @@ body {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }

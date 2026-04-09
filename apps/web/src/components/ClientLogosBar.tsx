@@ -12,12 +12,12 @@ export function ClientLogosBar() {
 
   // Example client logos (replace with real logos)
   const logos = [
-    { id: 1, name: 'TechCorp', url: 'https://via.placeholder.com/120x40?text=TechCorp' },
-    { id: 2, name: 'StartupAI', url: 'https://via.placeholder.com/120x40?text=StartupAI' },
-    { id: 3, name: 'DataFlow', url: 'https://via.placeholder.com/120x40?text=DataFlow' },
-    { id: 4, name: 'CloudSync', url: 'https://via.placeholder.com/120x40?text=CloudSync' },
-    { id: 5, name: 'WebStudio', url: 'https://via.placeholder.com/120x40?text=WebStudio' },
-    { id: 6, name: 'DesignPro', url: 'https://via.placeholder.com/120x40?text=DesignPro' },
+    { id: 1, name: 'TechCorp', url: '/logo-techcorp.svg' },
+    { id: 2, name: 'StartupAI', url: '/logo-startupal.svg' },
+    { id: 3, name: 'DataFlow', url: '/logo-dataflow.svg' },
+    { id: 4, name: 'CloudSync', url: '/logo-cloudsync.svg' },
+    { id: 5, name: 'WebStudio', url: '/logo-webstudio.svg' },
+    { id: 6, name: 'DesignPro', url: '/logo-designpro.svg' },
   ];
 
   // Duplicate for seamless scroll

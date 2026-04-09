@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
       beforeFiles: [
         {
           source: "/api/:path*",
-          destination: "http://localhost:3001/api/:path*",
+          destination: "http://localhost:4000/api/:path*",
         },
       ],
     };
@@ -62,7 +62,7 @@ const nextConfig: NextConfig = {
 
   // Environment variables exposed to browser
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001",
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000",
   },
 };
 

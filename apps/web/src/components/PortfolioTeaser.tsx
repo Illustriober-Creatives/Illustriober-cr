@@ -12,21 +12,21 @@ import { ArrowRight } from 'lucide-react';
 const featuredProjects = [
   {
     slug: 'project-1',
-    image: 'https://via.placeholder.com/500x300?text=Project+1',
+    image: '/project-1.svg',
     title: 'TechApp Dashboard',
     client: 'TechCorp Inc',
     tags: ['React', 'Node.js', 'PostgreSQL'],
   },
   {
     slug: 'project-2',
-    image: 'https://via.placeholder.com/500x300?text=Project+2',
+    image: '/project-2.svg',
     title: 'Mobile Fitness App',
     client: 'FitLife',
     tags: ['React Native', 'Firebase', 'Expo'],
   },
   {
     slug: 'project-3',
-    image: 'https://via.placeholder.com/500x300?text=Project+3',
+    image: '/project-3.svg',
     title: 'E-Commerce Platform',
     client: 'ShopHub',
     tags: ['Next.js', 'Stripe', 'AWS'],

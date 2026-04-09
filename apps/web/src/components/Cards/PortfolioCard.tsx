@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { resolveProjectImage } from '@/lib/imageFallback';
 
 /**
  * PortfolioCard - Display a portfolio/project preview
@@ -20,13 +21,15 @@ export function PortfolioCard({
   client,
   tags,
 }: PortfolioCardProps) {
+  const safeImage = resolveProjectImage(image, slug);
+
   return (
     <Link href={`/work/${slug}`}>
       <div className="group cursor-pointer">
         {/* Image Container */}
         <div className="relative h-64 rounded-xl overflow-hidden mb-4 bg-surface-800">
           <Image
-            src={image}
+            src={safeImage}
             alt={title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"

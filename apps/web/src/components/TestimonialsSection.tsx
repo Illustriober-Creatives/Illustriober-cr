@@ -16,19 +16,19 @@ const testimonials = [
     quote: 'They delivered our MVP in 6 weeks. The quality was exceptional and the team was incredibly responsive to feedback.',
     author: 'Sarah Chen',
     company: 'TechStartup Inc',
-    image: 'https://via.placeholder.com/48?text=SC',
+    image: '/testimonial-sc.svg',
   },
   {
     quote: 'Best decision we made hiring Illustriober. They took our legacy codebase and modernized it beautifully. Highly recommend!',
     author: 'James Omondi',
     company: 'Enterprise Corp',
-    image: 'https://via.placeholder.com/48?text=JO',
+    image: '/testimonial-jo.svg',
   },
   {
     quote: 'Professional, reliable, and deeply knowledgeable. They understood our business needs and built a solution that actually works.',
     author: 'Priya Sharma',
     company: 'FinTech Solutions',
-    image: 'https://via.placeholder.com/48?text=PS',
+    image: '/testimonial-ps.svg',
   },
 ];
 
