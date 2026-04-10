@@ -1,7 +1,6 @@
 import { Container } from './Container';
 import { SectionWrapper } from './SectionWrapper';
 import { SectionHeader } from './SectionHeader';
-import { ValueCard } from './Cards/ValueCard';
 import {
   Award,
   Zap,

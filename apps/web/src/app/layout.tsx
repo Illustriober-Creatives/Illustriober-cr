@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { Bodoni_Moda, Jost } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";

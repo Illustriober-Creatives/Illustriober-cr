@@ -61,16 +61,16 @@ export default function AboutPage() {
                 solutions.
               </p>
               <p className="text-zinc-300 text-lg leading-relaxed mb-6">
-                Over the years, we've grown into a full-service creative studio,
+                Over the years, we&apos;ve grown into a full-service creative studio,
                 working with startups, scale-ups, and enterprises to design and
-                build digital products that create real impact. Today, we're proud
+                build digital products that create real impact. Today, we&apos;re proud
                 to have delivered over 500 projects while maintaining our commitment
                 to quality and innovation.
               </p>
               <p className="text-zinc-300 text-lg leading-relaxed">
                 What drives us is the opportunity to solve complex problems through
-                elegant design and robust technology. We're not just building
-                websites and apps—we're creating experiences that connect businesses
+                elegant design and robust technology. We&apos;re not just building
+                websites and apps—we&apos;re creating experiences that connect businesses
                 with their customers.
               </p>
             </div>
@@ -182,7 +182,7 @@ export default function AboutPage() {
               Ready to work together?
             </h2>
             <p className="text-zinc-300 text-lg mb-8">
-              Let's discuss your project and how we can help bring your vision to
+              Let&apos;s discuss your project and how we can help bring your vision to
               life.
             </p>
             <Button size="lg" variant="primary">

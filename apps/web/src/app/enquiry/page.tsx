@@ -8,7 +8,6 @@
 import { useState } from "react";
 import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
-import { SectionHeader } from "@/components/SectionHeader";
 import { SectionWrapper } from "@/components/SectionWrapper";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 
@@ -76,14 +75,14 @@ export default function EnquiryPage() {
         <Container className="relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <p className="inline-block mb-6 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-sm font-medium uppercase tracking-wider">
-              Let's Talk
+              Let&apos;s Talk
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-6 text-white">
               Ready to start a <span className="text-orange-500">project?</span>
             </h1>
             <p className="text-lg md:text-xl text-zinc-300 leading-relaxed">
-              Tell us about your vision and we'll help you bring it to life.
-              We're excited to learn about your project.
+              Tell us about your vision and we&apos;ll help you bring it to life.
+              We&apos;re excited to learn about your project.
             </p>
           </div>
         </Container>
@@ -228,7 +227,7 @@ export default function EnquiryPage() {
 
                 {submitted && (
                   <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400">
-                    Thank you! We'll get back to you within 24 hours.
+                    Thank you! We&apos;ll get back to you within 24 hours.
                   </div>
                 )}
               </form>
@@ -295,7 +294,7 @@ export default function EnquiryPage() {
                   <h3 className="font-bold text-white mb-3">Quick Response</h3>
                   <p className="text-zinc-400">
                     Already have a budget and timeline? Fill out our form and
-                    we'll send you a proposal within 48 hours.
+                    we&apos;ll send you a proposal within 48 hours.
                   </p>
                 </div>
               </div>

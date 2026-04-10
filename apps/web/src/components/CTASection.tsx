@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { Container } from './Container';
-import { SectionWrapper } from './SectionWrapper';
 import { Button } from './Button';
 import { ArrowRight } from 'lucide-react';
 
@@ -24,7 +23,7 @@ export function CTASection() {
             </h2>
             
             <p className="text-xl text-foreground/60 font-light max-w-xl mx-auto mb-12">
-              We're here to help you solve your product problems and improve your business revenue.
+              We&apos;re here to help you solve your product problems and improve your business revenue.
             </p>
 
             <div className="flex flex-wrap gap-6 justify-center">

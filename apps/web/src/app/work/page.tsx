@@ -5,7 +5,6 @@
 
 import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
-import { SectionHeader } from "@/components/SectionHeader";
 import { SectionWrapper } from "@/components/SectionWrapper";
 import { ArrowRight } from "lucide-react";
 
@@ -194,7 +193,7 @@ export default function WorkPage() {
               Interested in partnering with us?
             </h2>
             <p className="text-zinc-300 text-lg mb-8">
-              Let's discuss your project and create something exceptional
+              Let&apos;s discuss your project and create something exceptional
               together.
             </p>
             <Button size="lg" variant="primary">

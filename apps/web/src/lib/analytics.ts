@@ -99,7 +99,7 @@ export const analyticsEvents = {
 /**
  * Plausible custom event example
  */
-export function trackCustomEvent(eventName: string, props?: Record<string, any>) {
+export function trackCustomEvent(eventName: string, props?: Record<string, unknown>) {
   if (typeof window !== "undefined" && window.plausible) {
     window.plausible(eventName, { props });
   }
@@ -107,7 +107,7 @@ export function trackCustomEvent(eventName: string, props?: Record<string, any>)
 
 declare global {
   interface Window {
-    plausible?: (event: string, options?: any) => void;
-    gtag?: (...args: any[]) => void;
+    plausible?: (event: string, options?: unknown) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }

@@ -234,10 +234,10 @@ export default function ServicesPage() {
         <Container>
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Let's build something great
+              Let&apos;s build something great
             </h2>
             <p className="text-zinc-300 text-lg mb-8">
-              Tell us about your project and let's explore how we can help.
+              Tell us about your project and let&apos;s explore how we can help.
             </p>
             <Button size="lg" variant="primary">
               Start a Project

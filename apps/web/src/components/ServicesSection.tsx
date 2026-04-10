@@ -1,10 +1,6 @@
 'use client';
 
-import { useState } from 'react';
 import { Container } from './Container';
-import { SectionWrapper } from './SectionWrapper';
-import { SectionHeader } from './SectionHeader';
-import { ServiceCard } from './Cards/ServiceCard';
 import {
   Code2,
   Smartphone,
@@ -82,7 +78,6 @@ const services = [
 ];
 
 export function ServicesSection() {
-  const [selectedService, setSelectedService] = useState(services[0]);
 
   return (
     <section className="section-padding bg-background relative overflow-hidden">

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { Button } from './Button';
-import { cn } from '@/lib/utils';
 
 /**
  * Navbar component - Responsive header with navigation links and CTA
@@ -65,7 +64,7 @@ export function Navbar() {
                 size="sm"
                 className="rounded-xl"
               >
-                Let's Talk
+                Let&apos;s Talk
               </Button>
             </Link>
           </div>

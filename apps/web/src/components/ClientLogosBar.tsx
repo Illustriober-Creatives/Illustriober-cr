@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 /**
  * ClientLogosBar - Auto-scrolling carousel of client logos
@@ -38,9 +38,11 @@ export function ClientLogosBar() {
             key={`${logo.id}-${index}`}
             className="flex-shrink-0 inline-flex items-center justify-center px-8 sm:px-12 h-24"
           >
-            <img
+            <Image
               src={logo.url}
               alt={logo.name}
+              width={40}
+              height={40}
               className="h-10 object-contain opacity-60 hover:opacity-100 transition-opacity"
             />
           </div>
