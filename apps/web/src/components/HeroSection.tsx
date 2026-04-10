@@ -9,64 +9,76 @@ import { ArrowRight } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-black via-zinc-900 to-black py-20 lg:py-32">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-80 w-80 bg-orange-500/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-orange-600/5 rounded-full blur-3xl" />
+    <section className="relative min-h-[90vh] flex items-center pt-32 pb-20 overflow-hidden bg-background bg-mesh">
+      {/* Dynamic Background Elements */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/4 -right-1/4 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] animate-pulse" />
       </div>
 
-      {/* Content container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-3xl mx-auto text-center">
-          {/* Eyebrow text */}
-          <p className="inline-block mb-6 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-sm font-medium uppercase tracking-wider">
-            Premium Tech Studio
-          </p>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div className="flex flex-col lg:flex-row items-center gap-16">
+          <div className="flex-1 text-left">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border-glass-border mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <span className="w-2 h-2 rounded-full bg-accent animate-ping" />
+              <span className="text-xs font-medium uppercase tracking-[0.2em] text-foreground/60">
+                Premium Tech Studio
+              </span>
+            </div>
 
-          {/* Main headline */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-6 text-white">
-            Build <span className="text-orange-500">remarkable</span> digital
-            experiences
-          </h1>
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-display font-medium leading-[1.1] tracking-tight mb-8 text-white animate-in fade-in slide-in-from-bottom-6 duration-700">
+              Building <span className="text-accent italic text-glow">High-Impact</span> Digital Products
+            </h1>
 
-          {/* Description */}
-          <p className="text-lg md:text-xl text-zinc-300 mb-8 leading-relaxed max-w-2xl mx-auto">
-            We're a creative studio specializing in full-stack web development,
-            mobile apps, and design. We turn complex ideas into elegant,
-            user-focused products.
-          </p>
+            <p className="text-xl md:text-2xl text-foreground/60 font-light leading-relaxed max-w-2xl mb-12 animate-in fade-in slide-in-from-bottom-8 duration-900">
+              We turn ideas into lasting, high-quality digital products using 
+              cutting-edge engineering and <span className="text-foreground">bespoke design</span>.
+            </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-            <Button size="lg" variant="primary">
-              Start a Project
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-            <Button size="lg" variant="secondary">
-              View Our Work
-            </Button>
+            <div className="flex flex-wrap gap-6 animate-in fade-in slide-in-from-bottom-10 duration-1000">
+              <Button size="lg" variant="primary" className="rounded-2xl group px-10">
+                Start a Project
+                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+              <Button size="lg" variant="secondary" className="rounded-2xl px-10">
+                View Our Work
+              </Button>
+            </div>
+
+            {/* Proof-of-Value Stats */}
+            <div className="grid grid-cols-3 gap-8 mt-20 p-8 glass-card rounded-3xl animate-in fade-in slide-in-from-bottom-12 duration-1000">
+              <div className="text-center md:text-left">
+                <p className="text-3xl font-display font-bold text-accent mb-1">
+                  500+
+                </p>
+                <p className="text-foreground/40 text-xs uppercase tracking-widest">Projects</p>
+              </div>
+              <div className="text-center md:text-left border-x border-glass-border px-8">
+                <p className="text-3xl font-display font-bold text-accent mb-1">
+                  98%
+                </p>
+                <p className="text-foreground/40 text-xs uppercase tracking-widest">Success</p>
+              </div>
+              <div className="text-center md:text-left">
+                <p className="text-3xl font-display font-bold text-accent mb-1">
+                  $2M+
+                </p>
+                <p className="text-foreground/40 text-xs uppercase tracking-widest">Value</p>
+              </div>
+            </div>
           </div>
 
-          {/* Stats bar */}
-          <div className="grid grid-cols-3 gap-4 mt-16 pt-12 border-t border-zinc-700/50">
-            <div>
-              <p className="text-2xl md:text-3xl font-bold text-orange-500">
-                500+
-              </p>
-              <p className="text-zinc-400 text-sm mt-1">Projects Delivered</p>
-            </div>
-            <div>
-              <p className="text-2xl md:text-3xl font-bold text-orange-500">
-                98%
-              </p>
-              <p className="text-zinc-400 text-sm mt-1">Client Satisfaction</p>
-            </div>
-            <div>
-              <p className="text-2xl md:text-3xl font-bold text-orange-500">
-                $2M+
-              </p>
-              <p className="text-zinc-400 text-sm mt-1">Value Created</p>
+          <div className="flex-1 relative w-full aspect-square hidden lg:block">
+            {/* Morphing 3D-like Visual Placeholder */}
+            <div className="absolute inset-0 glass-card rounded-[4rem] rotate-6 scale-95 opacity-50 blur-sm" />
+            <div className="absolute inset-0 glass-card rounded-[4rem] -rotate-3 hover:rotate-0 transition-transform duration-700 overflow-hidden">
+               <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-blue-500/20" />
+               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                 <div className="w-64 h-64 bg-accent/40 rounded-full blur-[80px] animate-pulse" />
+                 <div className="relative text-[10rem] font-display font-bold text-white/5 drop-shadow-2xl select-none">
+                    IC
+                 </div>
+               </div>
             </div>
           </div>
         </div>

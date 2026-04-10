@@ -1,36 +1,80 @@
 @config "../../tailwind.config.ts";
 @import "tailwindcss";
 
-/* Base styles using CSS custom properties */
+/* 
+ * LIQUID GLASS DESIGN SYSTEM
+ * A premium, high-impact aesthetic for Illustriober Creatives
+ */
+
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
+  /* Core Palette */
+  --background: #080808;
+  --foreground: #F8FAFC;
+  --surface: #111111;
+  --accent: #F97316; /* Radiant Orange */
+  --accent-soft: rgba(249, 115, 22, 0.1);
+  --accent-glow: rgba(249, 115, 22, 0.4);
+  
+  /* Glass Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: blur(12px);
+  
+  /* Typography */
+  --font-display: var(--font-bodoni), serif;
+  --font-body: var(--font-jost), sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 body {
+  font-family: var(--font-body);
   background-color: var(--background);
   color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+/* Custom Utilities for Liquid Glass */
+@layer utilities {
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .glass-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--accent-soft);
+    box-shadow: 0 0 30px var(--accent-soft);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 15px var(--accent-glow);
+  }
+
+  .bg-mesh {
+    background-image: radial-gradient(at 0% 0%, hsla(20, 100%, 50%, 0.1) 0, transparent 50%),
+                      radial-gradient(at 100% 100%, hsla(200, 100%, 50%, 0.1) 0, transparent 50%);
+  }
+  
+  .section-padding {
+    @apply py-24 lg:py-32;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
+  --color-accent: var(--accent);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
 }

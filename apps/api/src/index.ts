@@ -3,7 +3,7 @@
  * Initializes Express server and database connections
  */
 
-import app from "./app.js";
+import app from "./app";
 
 const PORT = process.env.PORT || 4000;
 const NODE_ENV = process.env.NODE_ENV || "development";

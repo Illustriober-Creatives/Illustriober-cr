@@ -8,12 +8,12 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 // Middleware imports
-import { errorHandler } from "./middleware/errorHandler.js";
-import { requestLogger } from "./middleware/requestLogger.js";
+import { errorHandler } from "./middleware/errorHandler";
+import { requestLogger } from "./middleware/requestLogger";
 
 // Route imports
-import authRoutes from "./routes/auth.js";
-import enquiryRoutes from "./routes/enquiries.js";
+import authRoutes from "./routes/auth";
+import enquiryRoutes from "./routes/enquiries";
 
 // Load environment variables
 dotenv.config();

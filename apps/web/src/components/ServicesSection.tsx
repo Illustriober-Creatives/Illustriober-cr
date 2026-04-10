@@ -14,7 +14,9 @@ import {
   Users,
   CheckCircle2,
   RefreshCw,
+  ArrowRight,
 } from 'lucide-react';
+import { Button } from './Button';
 
 /**
  * ServicesSection - Interactive service showcase with tabs and detail panel
@@ -83,74 +85,56 @@ export function ServicesSection() {
   const [selectedService, setSelectedService] = useState(services[0]);
 
   return (
-    <SectionWrapper variant="default">
+    <section className="section-padding bg-background relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
+      
       <Container>
-        {/* Header */}
-        <SectionHeader
-          subtitle="What We Do"
-          title="Our Services"
-          description="Complete solutions for your digital challenges"
-          align="center"
-        />
-
-        {/* Services Grid & Detail View */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Service Grid */}
-          <div className="lg:col-span-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {services.map((service) => (
-                <button
-                  key={service.id}
-                  onClick={() => setSelectedService(service)}
-                  className={`p-4 rounded-lg border-2 transition-all text-left ${
-                    selectedService.id === service.id
-                      ? 'bg-brand-500/10 border-brand-500'
-                      : 'bg-surface-800 border-surface-700 hover:border-surface-600'
-                  }`}
-                >
-                  <div className={`mb-2 ${selectedService.id === service.id ? 'text-brand-500' : 'text-surface-300'}`}>
-                    <service.icon className="w-5 h-5" />
-                  </div>
-                  <h3 className="text-sm font-semibold text-foreground">
-                    {service.title}
-                  </h3>
-                </button>
-              ))}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+          <div className="max-w-2xl">
+            <div className="inline-block px-3 py-1 rounded-full glass-card border-glass-border mb-4">
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-accent">Expertise</span>
             </div>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-white mb-6">
+              Level up your <br /> <span className="text-accent italic">development</span> game
+            </h2>
+            <p className="text-lg text-foreground/60 font-light">
+              We provide high-impact solutions for digital products, from rapid bug 
+              fixes to full-scale architectural modernization.
+            </p>
           </div>
+          <Button variant="secondary" className="rounded-2xl px-8 h-14">
+            Browse All Services
+          </Button>
+        </div>
 
-          {/* Detail Panel */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 p-6 rounded-xl bg-surface-800 border border-surface-700">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="text-brand-500 flex-shrink-0">
-                  <selectedService.icon className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground">
-                  {selectedService.title}
-                </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {services.map((service, index) => (
+            <div 
+              key={service.id}
+              className="glass-card group p-8 rounded-[2.5rem] flex flex-col items-start hover:scale-[1.02] transition-all duration-500"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center mb-6 group-hover:bg-accent/10 group-hover:border-accent/20 transition-colors">
+                <service.icon className="w-7 h-7 text-accent" />
               </div>
-
-              <p className="text-sm text-surface-300 leading-relaxed mb-4">
-                {selectedService.description}
+              
+              <h3 className="text-xl font-display font-medium text-white mb-3 tracking-tight">
+                {service.title}
+              </h3>
+              
+              <p className="text-sm text-foreground/50 leading-relaxed font-light mb-8">
+                {service.description}
               </p>
 
-              <div className="pt-4 border-t border-surface-700">
-                <p className="text-xs font-semibold text-surface-400 mb-2 uppercase tracking-wider">
-                  Overview
-                </p>
-                <p className="text-sm text-surface-300 leading-relaxed">
-                  {selectedService.details}
-                </p>
+              <div className="mt-auto pt-6 border-t border-white/5 w-full flex items-center justify-between">
+                <span className="text-[10px] font-medium uppercase tracking-widest text-foreground/30">0{index + 1}</span>
+                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-accent group-hover:border-accent transition-all duration-300">
+                  <ArrowRight className="w-4 h-4 text-white/30 group-hover:text-white" />
+                </div>
               </div>
-
-              <button className="mt-6 w-full px-4 py-2 bg-brand-500 hover:bg-brand-600 text-foreground font-semibold rounded-lg transition-colors">
-                Get Quote
-              </button>
             </div>
-          </div>
+          ))}
         </div>
       </Container>
-    </SectionWrapper>
+    </section>
   );
 }
