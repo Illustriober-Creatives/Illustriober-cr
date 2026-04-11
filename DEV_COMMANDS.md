@@ -34,6 +34,7 @@ npm run dev --workspace apps/web
   - `/work`
   - `/tech-stack`
   - `/enquiry`
+  - `/login`, `/register`, `/dashboard` (portal shell)
 
 ### Run only the API
 
@@ -46,7 +47,12 @@ npm run dev --workspace apps/api
   - `GET /`
   - `GET /health`
   - `POST /api/enquiries`
-  - `POST /api/auth/*`
+  - `POST /api/auth/register`, `login`, `logout`, `refresh`
+  - `GET /api/auth/me` (Bearer access token)
+
+## Vercel / production (web)
+
+Set **`API_PROXY_URL`** to the public base URL of the VPS API (no trailing slash), e.g. `https://api.example.com`, so Next.js can rewrite `/api/*` to the live Express server. On the API VPS, set **`JWT_SECRET`**, **`CORS_ORIGIN`** (comma-separated front-end origins), and optional **Resend** vars (`RESEND_API_KEY`, `ENQUIRY_FROM_EMAIL`, `ENQUIRY_ADMIN_EMAIL`). See root `README.md`.
 
 ## 3) Build and start (production mode)
 

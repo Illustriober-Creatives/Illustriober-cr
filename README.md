@@ -34,10 +34,10 @@ This project combines two core systems:
 
 ## 🧭 Current Status (April 2026)
 - ✅ Public website pages are available: `/`, `/about`, `/services`, `/work`, `/tech-stack`, `/enquiry`
-- ✅ Enquiry flow is connected (`apps/web` form → `apps/api` `/api/enquiries`)
+- ✅ Enquiry flow is connected (`apps/web` form → `apps/api` `/api/enquiries`) with optional **Resend** confirmation + admin emails
 - ✅ API health and root docs endpoints are live
-- 🟡 Auth routes exist but return `501 Not Implemented` (`/api/auth/register|login|logout`)
-- 🟡 Client dashboard/admin modules are defined in specs and Prisma schema, with phased implementation pending
+- ✅ Auth: register, login, logout, refresh, and `GET /api/auth/me` (JWT access token + httpOnly refresh cookie when using same-origin `/api` proxy)
+- ✅ Client portal shell: `/login`, `/register`, `/dashboard` (full project/ticket features still phased per specs)
 
 ## 🧱 Monorepo Structure
 ```text
@@ -46,7 +46,7 @@ illustriober-cr/
 │   ├── web/                 # Next.js (App Router) frontend
 │   └── api/                 # Express + Prisma backend
 ├── packages/
-│   └── shared/              # Shared schemas/types (WIP integration)
+│   └── shared/              # Shared Zod schemas (`enquiry`, `login`, `register`)
 ├── ai-spec/                 # Product, architecture, and roadmap specs
 ├── DEV_COMMANDS.md          # Local development command cheat sheet
 └── package.json             # Root workspace scripts
@@ -76,12 +76,25 @@ CORS_ORIGIN=http://localhost:3000
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/illustriober?schema=public
 # Optional fallback if using Prisma proxy URL in DATABASE_URL
 # DIRECT_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/illustriober?schema=public
+
+# Auth (required in production)
+JWT_SECRET=your-long-random-secret
+
+# Optional: transactional email (enquiry confirmation + admin alert)
+# RESEND_API_KEY=re_...
+# ENQUIRY_FROM_EMAIL="Illustriober <onboarding@resend.dev>"
+# ENQUIRY_ADMIN_EMAIL=you@yourdomain.com
+
+# Set to "false" to disable public self-service registration (invite-only later)
+# ALLOW_PUBLIC_REGISTRATION=true
 ```
 
 Create `apps/web/.env.local`:
 
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:4000
+# Vercel: proxy browser requests from /api/* to your VPS API (no trailing slash)
+# API_PROXY_URL=https://api.your-domain.com
 # Optional
 # NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 ```
@@ -177,13 +190,20 @@ curl -I http://localhost:3000/
 - `/tech-stack`
 - `/enquiry`
 
+### Web (portal shell)
+- `/login`
+- `/register`
+- `/dashboard`
+
 ### API
 - `GET /`
 - `GET /health`
 - `POST /api/enquiries`
-- `POST /api/auth/register` (not implemented)
-- `POST /api/auth/login` (not implemented)
-- `POST /api/auth/logout` (not implemented)
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `POST /api/auth/refresh`
+- `GET /api/auth/me` (Bearer access token)
 
 ## 📚 Internal Documentation
 - Product overview: [`ai-spec/00_PROJECT_OVERVIEW.md`](./ai-spec/00_PROJECT_OVERVIEW.md)

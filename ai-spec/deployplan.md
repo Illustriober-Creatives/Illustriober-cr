@@ -1,4 +1,7 @@
 # [Goal Description]
+
+**Status (April 2026):** Auto-deploy for the VPS-hosted API via GitHub Actions on `main` is implemented (see `.github/workflows/deploy-vps.yml`). API dev runtime uses `tsx` per `ai-spec/errorhistory.md` (ESM resolution). Treat the sections below as the original design notes and secret checklist.
+
 Analyze the current state of the infrastructure setup for Illustriober Creatives and implement an automated deployment system ("auto-deploy") for the VPS-hosted API, triggered by GitHub pushes. This will complete the setup by ensuring the server automatically pulls, builds, and restarts on every update to the `main` branch.
 
 ## User Review Required

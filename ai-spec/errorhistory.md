@@ -65,6 +65,18 @@ Mandatory agent rule: before starting any implementation, investigation, or refa
   - Load env before initializing Prisma client modules.
   - Prefer `DIRECT_DATABASE_URL` for predictable local/dev runtime.
 
+## ERR-2026-04-11-CORS-CALLBACK
+
+- Area: `apps/api` (`src/app.ts`)
+- Symptom:
+  - CORS middleware called `callback(new Error(...))` for disallowed origins, which surfaces as a failed request / 500-style behavior instead of a clean deny.
+- Root cause:
+  - `cors` treats `callback(err)` as an error path rather than “do not reflect this origin”.
+- Implemented fix:
+  - Use `callback(null, false)` and log a warning for blocked origins.
+- Prevention:
+  - Prefer `callback(null, false)` for origin denial; add explicit origins via `CORS_ORIGIN` (comma-separated) for new frontends (e.g. preview domains).
+
 ## Quick Triage Checklist
 
 1. Reproduce with workspace scripts (`npm run dev` at repo root).

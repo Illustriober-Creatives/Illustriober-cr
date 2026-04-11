@@ -9,6 +9,7 @@
     "dev": "npm run dev --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
-    "install:skills": "npx antigravity-awesome-skills --path ./.awesome-skills"
+    "install:skills": "npx antigravity-awesome-skills --path ./.awesome-skills",
+    "postinstall": "npm run build --workspace @illustriober/shared"
   }
 }

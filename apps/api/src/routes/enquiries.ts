@@ -9,6 +9,7 @@ import { z } from "zod";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import prisma from "../lib/prisma";
 import { rateLimit } from "../middleware/rateLimit";
+import { sendEnquiryEmails } from "../lib/email";
 
 const router = Router();
 
@@ -75,8 +76,18 @@ router.post(
       },
     });
 
-    // TODO: Send confirmation email via Resend
-    // TODO: Send admin notification
+    const clientName = `${firstName} ${lastName}`.trim();
+    try {
+      await sendEnquiryEmails({
+        enquiryId: enquiry.id,
+        clientEmail: enquiry.email,
+        clientName,
+        projectType: data.projectType,
+        description: data.description,
+      });
+    } catch (emailErr) {
+      console.error("[enquiries] email send failed:", emailErr);
+    }
 
     res.status(201).json({
       success: true,

@@ -24,10 +24,10 @@
 
 | Layer | Platform | Status |
 |---|---|---|
-| Frontend (Next.js) | Vercel | Pending deployment |
-| API (Express + Prisma) | VPS | Running, ESM error blocking |
+| Frontend (Next.js) | Vercel | Deployed (illustriober.com) |
+| API (Express + Prisma) | VPS | Running; GitHub Actions deploy on `main` |
 | Database (PostgreSQL 15) | VPS | Running |
-| DNS Management | Cloudflare | Propagating |
+| DNS Management | Cloudflare | Active |
 | Domain Registrar | Truehost | Nameservers updated |
 
 ### Why This Split
