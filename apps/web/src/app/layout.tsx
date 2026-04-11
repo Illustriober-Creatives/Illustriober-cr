@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { Bodoni_Moda, Jost } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { generateOrganizationSchema } from "@/lib/seo";
 import "./globals.css";
 
@@ -91,9 +92,11 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-surface-950">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

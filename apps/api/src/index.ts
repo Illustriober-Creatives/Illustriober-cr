@@ -8,6 +8,11 @@ import app from "./app";
 const PORT = process.env.PORT || 4000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 
+if (NODE_ENV === "production" && !process.env.JWT_SECRET) {
+  console.error("FATAL: JWT_SECRET must be set in production");
+  process.exit(1);
+}
+
 /**
  * Start the API server
  * Listen on configured port and log startup information

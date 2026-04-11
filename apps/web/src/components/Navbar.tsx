@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { Button } from './Button';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * Navbar component - Responsive header with navigation links and CTA
@@ -11,6 +12,7 @@ import { Button } from './Button';
  */
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   // Navigation links for the site
   const navLinks = [
@@ -56,8 +58,34 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Desktop CTA Button */}
-          <div className="hidden md:block">
+          {/* Desktop CTA + account */}
+          <div className="hidden md:flex items-center gap-4">
+            {user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="text-sm font-medium text-foreground/70 hover:text-accent transition-colors"
+                >
+                  Dashboard
+                </Link>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="rounded-xl"
+                  onClick={() => void logout()}
+                >
+                  Sign out
+                </Button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm font-medium text-foreground/70 hover:text-accent transition-colors"
+              >
+                Sign in
+              </Link>
+            )}
             <Link href="/enquiry">
               <Button
                 variant="primary"
@@ -96,7 +124,38 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <div className="pt-4">
+            <div className="pt-4 space-y-2">
+              {user ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    onClick={handleLinkClick}
+                    className="block px-4 py-3 text-sm font-medium text-foreground/70 hover:bg-white/5 hover:text-accent rounded-xl transition-all"
+                  >
+                    Dashboard
+                  </Link>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="md"
+                    className="w-full rounded-xl"
+                    onClick={() => {
+                      handleLinkClick();
+                      void logout();
+                    }}
+                  >
+                    Sign out
+                  </Button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={handleLinkClick}
+                  className="block px-4 py-3 text-sm font-medium text-foreground/70 hover:bg-white/5 hover:text-accent rounded-xl transition-all"
+                >
+                  Sign in
+                </Link>
+              )}
               <Link href="/enquiry" onClick={handleLinkClick} className="block">
                 <Button variant="primary" size="md" className="w-full rounded-xl">
                   Start a Project

@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+/** Backend base URL for proxying /api/* (Vercel → VPS). Local dev defaults to localhost:4000. */
+const apiProxyBase =
+  process.env.API_PROXY_URL?.replace(/\/$/, "") || "http://localhost:4000";
+
 const nextConfig: NextConfig = {
   // Image optimization
   images: {
@@ -9,13 +13,13 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 31536000, // 1 year
   },
 
-  // API rewriting
+  // API rewriting — browser calls same-origin /api/*; edge proxies to Express (local or VPS).
   rewrites: async () => {
     return {
       beforeFiles: [
         {
           source: "/api/:path*",
-          destination: "http://localhost:4000/api/:path*",
+          destination: `${apiProxyBase}/api/:path*`,
         },
       ],
     };

@@ -82,7 +82,8 @@ export const deploymentChecklist = {
   "Post-Deployment": [
     "Visit https://illustriober.com",
     "Test all forms work end-to-end",
-    "Verify enquiry emails are sent",
+    "Verify enquiry emails are sent (Resend + ENQUIRY_* env on API)",
+    "Smoke-test /login → /dashboard and sign out",
     "Check analytics are tracking",
     "Run Lighthouse audit on production",
     "Monitor error logs for 24 hours",
@@ -111,6 +112,7 @@ export const deploymentCommands = {
 export const requiredEnvVars = {
   web: [
     "NEXT_PUBLIC_API_URL",
+    "API_PROXY_URL (Vercel → VPS API base, no trailing slash)",
     "NEXT_PUBLIC_PLAUSIBLE_DOMAIN (optional)",
     "NEXT_PUBLIC_GA_ID (optional)",
   ],

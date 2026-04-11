@@ -16,15 +16,15 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
 
-    /* Module Resolution */
+    /* Module Resolution — baseUrl must be package root so `@illustriober/shared` resolves via node_modules, not ./src */
     "rootDir": "./src",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@routes/*": ["./routes/*"],
-      "@middleware/*": ["./middleware/*"],
-      "@lib/*": ["./lib/*"],
-      "@controllers/*": ["./controllers/*"]
+      "@/*": ["./src/*"],
+      "@routes/*": ["./src/routes/*"],
+      "@middleware/*": ["./src/middleware/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@controllers/*": ["./src/controllers/*"]
     },
 
     /* Emit */

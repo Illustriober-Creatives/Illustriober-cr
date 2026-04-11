@@ -5,6 +5,7 @@
 
 import express, { Request, Response } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 
 // Middleware imports
@@ -31,6 +32,7 @@ const app = express();
 app.use(requestLogger);
 
 const LOCAL_ORIGIN_REGEX = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i;
+const VERCEL_PREVIEW_REGEX = /^https:\/\/[\w-]+\.vercel\.app$/i;
 const allowNullOrigin = process.env.NODE_ENV !== "production";
 const configuredOrigins = (process.env.CORS_ORIGIN || "")
   .split(",")
@@ -40,6 +42,8 @@ const configuredOrigins = (process.env.CORS_ORIGIN || "")
 const allowedOrigins = new Set<string>([
   "http://localhost:3000",
   "http://localhost:3001",
+  "https://illustriober.com",
+  "https://www.illustriober.com",
   ...configuredOrigins,
 ]);
 
@@ -57,16 +61,24 @@ app.use(
         return;
       }
 
-      if (allowedOrigins.has(origin) || LOCAL_ORIGIN_REGEX.test(origin)) {
+      if (
+        allowedOrigins.has(origin) ||
+        LOCAL_ORIGIN_REGEX.test(origin) ||
+        VERCEL_PREVIEW_REGEX.test(origin)
+      ) {
         callback(null, true);
         return;
       }
 
-      callback(new Error(`CORS blocked for origin: ${origin}`));
+      console.warn(`[cors] blocked origin: ${origin}`);
+      callback(null, false);
     },
     credentials: true,
   })
 );
+
+// Cookies (refresh token)
+app.use(cookieParser());
 
 // Body parsing (parse JSON and URL-encoded bodies)
 app.use(express.json());
@@ -87,7 +99,7 @@ app.get("/", (_req: Request, res: Response) => {
   res.json({
     service: "illustriober-api",
     status: "ok",
-    docs: ["/health", "/api/auth", "/api/enquiries"],
+    docs: ["/health", "/api/auth/login", "/api/enquiries"],
   });
 });
 
