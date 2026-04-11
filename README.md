@@ -48,7 +48,6 @@ illustriober-cr/
 ├── packages/
 │   └── shared/              # Shared Zod schemas (`enquiry`, `login`, `register`)
 ├── ai-spec/                 # Product, architecture, and roadmap specs
-├── DEV_COMMANDS.md          # Local development command cheat sheet
 └── package.json             # Root workspace scripts
 ```
 
@@ -210,7 +209,6 @@ curl -I http://localhost:3000/
 - Tech stack: [`ai-spec/01_TECH_STACK.md`](./ai-spec/01_TECH_STACK.md)
 - Architecture: [`ai-spec/02_ARCHITECTURE.md`](./ai-spec/02_ARCHITECTURE.md)
 - Pages/components: [`ai-spec/05_PAGES_AND_COMPONENTS.md`](./ai-spec/05_PAGES_AND_COMPONENTS.md)
-- Commands cheat sheet: [`DEV_COMMANDS.md`](./DEV_COMMANDS.md)
 
 ## 🔒 License / Usage
 All rights reserved. This codebase, design assets, and documentation are proprietary to Illustriober Creatives.
