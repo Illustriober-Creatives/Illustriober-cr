@@ -1,7 +1,8 @@
-import { cn } from './lib/utils';
+import { cn } from '@/lib/utils';
 
 /**
  * SectionHeader - Consistent section title and subtitle styling
+ * Theme-aware component that adapts to light and dark modes
  * Used at the beginning of each major page section
  */
 interface SectionHeaderProps {
@@ -21,20 +22,20 @@ export function SectionHeader({
     <div className={cn('mb-12 lg:mb-16', align === 'center' && 'text-center')}>
       {/* Subtitle / Overline */}
       {subtitle && (
-        <p className="text-sm font-semibold text-brand-500 mb-2 uppercase tracking-wider">
+        <p className="text-xs sm:text-sm font-semibold text-accent mb-3 sm:mb-2 uppercase tracking-wider">
           {subtitle}
         </p>
       )}
 
       {/* Title */}
-      <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4 leading-tight">
+      <h2 className="text-3xl lg:text-5xl font-display font-semibold text-foreground mb-4 sm:mb-6 leading-tight">
         {title}
       </h2>
 
       {/* Description */}
       {description && (
         <p className={cn(
-          'text-lg text-surface-300 leading-relaxed',
+          'text-base sm:text-lg text-foreground/60 leading-relaxed',
           align === 'center' && 'max-w-2xl mx-auto'
         )}>
           {description}

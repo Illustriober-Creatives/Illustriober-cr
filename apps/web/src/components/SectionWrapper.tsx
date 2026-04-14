@@ -1,20 +1,21 @@
 import { ReactNode } from 'react';
-import { cn } from './lib/utils';
+import { cn } from '@/lib/utils';
 
 /**
  * SectionWrapper - Consistent section padding and styling
- * Provides visual rhythm and spacing between major page sections
+ * Theme-aware component that provides visual rhythm between page sections
+ * Automatically adapts to light and dark modes
  */
 interface SectionWrapperProps {
   children: ReactNode;
   className?: string;
-  variant?: 'default' | 'gradient' | 'dark';
+  variant?: 'default' | 'subtle' | 'bordered';
 }
 
 const sectionVariants = {
-  default: 'bg-surface-950',           // Default dark background
-  gradient: 'bg-gradient-to-br from-surface-900 to-surface-950', // Subtle gradient
-  dark: 'bg-surface-950 border-t border-surface-800',              // With top border
+  default: 'bg-background',
+  subtle: 'bg-surface/5 transition-colors',
+  bordered: 'bg-background border-t border-surface/10 transition-colors',
 };
 
 export function SectionWrapper({

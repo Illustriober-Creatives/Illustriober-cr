@@ -81,7 +81,7 @@ const categories = [
 
 export default function TechStackPage() {
   return (
-    <main className="flex flex-col w-full bg-surface-950">
+    <main className="flex flex-col w-full bg-background">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-black via-zinc-900 to-black py-20 lg:py-32">
         <div className="absolute inset-0 overflow-hidden">

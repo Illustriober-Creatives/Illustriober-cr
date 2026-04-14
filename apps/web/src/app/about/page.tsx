@@ -1,6 +1,7 @@
 /**
  * About Page
  * Company story, mission, values, and team introduction
+ * Fully theme-aware with light and dark mode support
  */
 
 import { Button } from "@/components/Button";
@@ -17,24 +18,24 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="flex flex-col w-full bg-surface-950">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-black via-zinc-900 to-black py-20 lg:py-32">
+    <main className="flex flex-col w-full bg-background">
+      {/* Hero Section - Theme aware gradient background */}
+      <section className="relative overflow-hidden bg-background py-20 lg:py-32">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-80 w-80 bg-orange-500/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-orange-600/5 rounded-full blur-3xl" />
+          {/* Gradient orbs - theme responsive */}
+          <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
+          <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-accent/3 rounded-full blur-3xl dark:opacity-75 light:opacity-40" />
         </div>
 
         <Container className="relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <p className="inline-block mb-6 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-sm font-medium uppercase tracking-wider">
+            <p className="inline-block mb-6 px-4 py-2 rounded-full bg-accent-soft border border-accent/20 text-accent text-sm font-medium uppercase tracking-wider">
               About Our Studio
             </p>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-6 text-white">
-              Crafting <span className="text-orange-500">exceptional</span> digital
-              experiences
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-semibold leading-tight tracking-tight mb-6 text-foreground">
+              Crafting <span className="text-accent italic">exceptional</span> digital experiences
             </h1>
-            <p className="text-lg md:text-xl text-zinc-300 leading-relaxed">
+            <p className="text-lg md:text-xl text-foreground/60 leading-relaxed">
               Founded on the belief that great design and technology can transform
               businesses, we partner with companies to build products that matter.
             </p>
@@ -53,21 +54,21 @@ export default function AboutPage() {
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-zinc-300 text-lg leading-relaxed mb-6">
+              <p className="text-foreground/70 text-lg leading-relaxed mb-6">
                 Illustriober Creatives was born from a simple idea: exceptional
                 digital experiences require both artistic vision and technical
                 excellence. We started as a boutique team of developers and designers
                 who believed that every project deserves thoughtful, custom-crafted
                 solutions.
               </p>
-              <p className="text-zinc-300 text-lg leading-relaxed mb-6">
+              <p className="text-foreground/70 text-lg leading-relaxed mb-6">
                 Over the years, we&apos;ve grown into a full-service creative studio,
                 working with startups, scale-ups, and enterprises to design and
                 build digital products that create real impact. Today, we&apos;re proud
                 to have delivered over 500 projects while maintaining our commitment
                 to quality and innovation.
               </p>
-              <p className="text-zinc-300 text-lg leading-relaxed">
+              <p className="text-foreground/70 text-lg leading-relaxed">
                 What drives us is the opportunity to solve complex problems through
                 elegant design and robust technology. We&apos;re not just building
                 websites and apps—we&apos;re creating experiences that connect businesses
@@ -75,11 +76,11 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="relative h-96 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl overflow-hidden border border-orange-500/20">
+            <div className="relative h-96 bg-accent-soft border border-accent/20 rounded-xl overflow-hidden glass-card">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <p className="text-6xl font-bold text-orange-500 mb-2">10+</p>
-                  <p className="text-zinc-400">Years of Excellence</p>
+                  <p className="text-6xl font-display font-semibold text-accent mb-2">10+</p>
+                  <p className="text-foreground/60">Years of Excellence</p>
                 </div>
               </div>
             </div>
@@ -131,12 +132,12 @@ export default function AboutPage() {
             ].map((value) => (
               <div
                 key={value.title}
-                className="p-8 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-orange-500/30 transition-colors"
+                className="p-8 rounded-xl glass-card border-glass-border hover:border-accent/40 hover:bg-glass-bg-hover transition-all"
               >
-                <h3 className="text-xl font-bold text-white mb-3">
+                <h3 className="text-xl font-semibold text-foreground mb-3">
                   {value.title}
                 </h3>
-                <p className="text-zinc-400">{value.description}</p>
+                <p className="text-foreground/60">{value.description}</p>
               </div>
             ))}
           </div>
@@ -161,31 +162,32 @@ export default function AboutPage() {
             ].map((member) => (
               <div
                 key={member.name}
-                className="text-center p-6 rounded-xl bg-zinc-900/30 border border-zinc-800"
+                className="text-center p-6 rounded-xl glass-card border-glass-border hover:border-accent/40 transition-all"
               >
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/10" />
-                <h3 className="text-lg font-bold text-white mb-1">
+                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-accent-soft border border-accent/20" />
+                <h3 className="text-lg font-semibold text-foreground mb-1">
                   {member.name}
                 </h3>
-                <p className="text-orange-500 text-sm">{member.role}</p>
+                <p className="text-accent text-sm font-medium">{member.role}</p>
               </div>
             ))}
           </div>
         </Container>
       </SectionWrapper>
 
-      {/* CTA Section */}
-      <SectionWrapper className="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border-y border-orange-500/20">
-        <Container>
+      {/* CTA Section - Theme aware */}
+      <SectionWrapper className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-accent-soft/20 border-y border-accent/20" />
+        <Container className="relative z-10">
           <div className="text-center max-w-2xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-4xl md:text-5xl font-display font-semibold text-foreground mb-6">
               Ready to work together?
             </h2>
-            <p className="text-zinc-300 text-lg mb-8">
+            <p className="text-foreground/60 text-lg mb-8">
               Let&apos;s discuss your project and how we can help bring your vision to
               life.
             </p>
-            <Button size="lg" variant="primary">
+            <Button size="lg" variant="primary" className="rounded-full px-12">
               Start a Conversation
               <ArrowRight className="w-5 h-5" />
             </Button>

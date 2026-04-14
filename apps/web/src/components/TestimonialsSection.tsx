@@ -63,7 +63,7 @@ export function TestimonialsSection() {
   };
 
   return (
-    <SectionWrapper variant="gradient">
+    <SectionWrapper variant="subtle">
       <Container>
         {/* Header */}
         <SectionHeader
