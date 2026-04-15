@@ -70,12 +70,12 @@ export default function EnquiryPage() {
       <section className="relative overflow-hidden bg-background py-20 lg:py-32">
         <div className="absolute inset-0 overflow-hidden">
           {/* Gradient orbs - theme responsive */}
-          <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-accent/3 rounded-full blur-3xl dark:opacity-75 light:opacity-40" />
-        </div>
+            <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
+            <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-accent/3 rounded-full blur-3xl dark:opacity-75 light:opacity-40" />
+          </div>
 
-        <Container className="relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
+          <Container className="relative z-10">
+            <div className="max-w-3xl mx-auto text-center">
             <p className="inline-block mb-6 px-4 py-2 rounded-full bg-accent-soft border border-accent/20 text-accent text-sm font-medium uppercase tracking-wider">
               Let&apos;s Connect
             </p>
