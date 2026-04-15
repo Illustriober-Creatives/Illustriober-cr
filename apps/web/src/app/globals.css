@@ -25,6 +25,9 @@
   /* Additional surface variants for form inputs and cards */
   --surface-50: rgba(255, 255, 255, 0.05);
   --surface-100: rgba(255, 255, 255, 0.1);
+  --surface-rgb: 17, 17, 17;
+  --foreground-rgb: 248, 250, 252;
+  --accent-rgb: 249, 115, 22;
   
   /* Border colors */
   --border-subtle: rgba(255, 255, 255, 0.05);
@@ -56,6 +59,9 @@
   
   --surface-50: rgba(0, 0, 0, 0.02);
   --surface-100: rgba(0, 0, 0, 0.05);
+  --surface-rgb: 255, 255, 255;
+  --foreground-rgb: 17, 24, 39;
+  --accent-rgb: 234, 88, 12;
   
   --border-subtle: rgba(0, 0, 0, 0.03);
   --border-default: rgba(0, 0, 0, 0.06);
@@ -112,7 +118,7 @@ html.no-transition *:after {
   box-shadow: 0 0 40px var(--accent-soft);
 }
 
-.text-glow {
+@utility text-glow {
   text-shadow: 0 0 15px var(--accent-glow);
 }
 
@@ -136,8 +142,49 @@ html.no-transition *:after {
   100% { transform: translateX(-50%); }
 }
 
+@keyframes enter {
+  from {
+    opacity: var(--tw-enter-opacity, 1);
+    transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0);
+  }
+}
+
 .animate-scroll {
   animation: scroll 40s linear infinite;
+}
+
+@utility animate-in {
+  animation-name: enter;
+  animation-duration: var(--tw-duration, 300ms);
+  animation-fill-mode: both;
+}
+
+@utility fade-in {
+  --tw-enter-opacity: 0;
+}
+
+@utility slide-in-from-top-4 {
+  --tw-enter-translate-y: -1rem;
+}
+
+@utility slide-in-from-bottom-4 {
+  --tw-enter-translate-y: 1rem;
+}
+
+@utility slide-in-from-bottom-6 {
+  --tw-enter-translate-y: 1.5rem;
+}
+
+@utility slide-in-from-bottom-8 {
+  --tw-enter-translate-y: 2rem;
+}
+
+@utility slide-in-from-bottom-10 {
+  --tw-enter-translate-y: 2.5rem;
+}
+
+@utility slide-in-from-bottom-12 {
+  --tw-enter-translate-y: 3rem;
 }
 
 /* Form input theme-aware utility class */
@@ -194,8 +241,13 @@ html.no-transition *:after {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
   --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-glow: var(--accent-glow);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  --color-glass-bg-hover: var(--glass-bg-hover);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
 }
-
