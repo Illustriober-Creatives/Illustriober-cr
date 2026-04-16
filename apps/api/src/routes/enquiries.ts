@@ -8,7 +8,7 @@ import { Router, Request, Response } from "express";
 import { z } from "zod";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import prisma from "../lib/prisma";
-import { rateLimit } from "../middleware/rateLimit";
+//import { rateLimit } from "../middleware/rateLimit";
 import { sendEnquiryEmails } from "../lib/email";
 
 const router = Router();

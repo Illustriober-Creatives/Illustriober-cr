@@ -81,22 +81,6 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
   }
 );
 
-        {error && (
-          <p className="mt-2 text-sm text-red-500 dark:text-red-400 light:text-red-600">
-            {error}
-          </p>
-        )}
-
-        {helperText && !error && (
-          <p className="mt-2 text-sm text-foreground/50 dark:text-zinc-400 light:text-slate-500">
-            {helperText}
-          </p>
-        )}
-      </div>
-    );
-  }
-);
-
 FormInput.displayName = 'FormInput';
 
 export { FormInput };
