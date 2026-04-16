@@ -14,6 +14,7 @@
  * 9. CTASection - Final call-to-action banner
  */
 
+import { createMetadata } from "@/lib/seo";
 import { HeroSection } from "@/components/HeroSection";
 import { ClientLogosBar } from "@/components/ClientLogosBar";
 import { StatsBar } from "@/components/StatsBar";
@@ -23,6 +24,10 @@ import { WhyUsSection } from "@/components/WhyUsSection";
 import { PortfolioTeaser } from "@/components/PortfolioTeaser";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { CTASection } from "@/components/CTASection";
+
+export const metadata = createMetadata({
+  path: "/",
+});
 
 export default function Home() {
   return (

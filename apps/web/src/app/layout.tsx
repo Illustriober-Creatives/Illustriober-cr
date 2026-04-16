@@ -4,7 +4,13 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { generateOrganizationSchema } from "@/lib/seo";
+import {
+  getDefaultKeywords,
+  getOrganizationSchema,
+  getRobots,
+  getWebsiteSchema,
+  siteConfig,
+} from "@/lib/seo";
 import "./globals.css";
 
 const bodoni = Bodoni_Moda({
@@ -24,54 +30,32 @@ const jost = Jost({
  * Used in browser title, social sharing, and search results
  */
 export const metadata: Metadata = {
-  title:
-    "Illustriober Creatives - Full-Stack Web & Mobile Development Studio",
-  description:
-    "Premium creative studio specializing in full-stack web development, mobile apps, UI/UX design, and cloud deployment. We build remarkable digital experiences.",
-  keywords: [
-    "web development",
-    "mobile app",
-    "UI/UX design",
-    "full-stack",
-    "React",
-    "Next.js",
-  ],
-  authors: [{ name: "Illustriober Creatives" }],
-  metadataBase: new URL("https://illustriober.com"),
-  alternates: {
-    canonical: "/",
-  },
+  title: siteConfig.defaultTitle,
+  description: siteConfig.defaultDescription,
+  keywords: getDefaultKeywords(),
+  authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  metadataBase: new URL(siteConfig.url),
   openGraph: {
-    title: "Illustriober Creatives - Premium Tech Studio",
-    description:
-      "Build remarkable digital experiences with our expert team of developers and designers.",
-    url: "https://illustriober.com",
-    siteName: "Illustriober Creatives",
+    siteName: siteConfig.name,
     images: [
       {
-        url: "https://illustriober.com/og-image.png",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Illustriober Creatives",
+        alt: `${siteConfig.name} social preview`,
       },
     ],
     type: "website",
-    locale: "en_US",
+    locale: siteConfig.locale,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Illustriober Creatives",
-    description: "Premium tech studio for web & mobile development",
-    creator: "@illustriober",
+    creator: siteConfig.twitterHandle,
+    images: ["/twitter-image"],
   },
-  robots: {
-    index: true,
-    follow: true,
-    "max-image-preview": "large",
-    "max-snippet": -1,
-    "max-video-preview": -1,
-    googleBot: "index, follow",
-  },
+  robots: getRobots(),
 };
 
 export default function RootLayout({
@@ -79,7 +63,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const schema = generateOrganizationSchema();
+  const schema = [getOrganizationSchema(), getWebsiteSchema()];
 
   return (
     <html
@@ -107,6 +91,5 @@ export default function RootLayout({
         />
       </body>
     </html>
-
   );
 }

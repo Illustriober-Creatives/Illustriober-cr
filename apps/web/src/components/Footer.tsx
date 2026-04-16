@@ -17,12 +17,11 @@ export function Footer() {
     ],
     Company: [
       { label: 'About', href: '/about' },
-      { label: 'Blog', href: '/blog' }, // Placeholder, update if blog exists
       { label: 'Contact', href: '/enquiry' },
     ],
     Legal: [
-      { label: 'Privacy', href: '/privacy' }, // Placeholder, update if privacy page exists
-      { label: 'Terms', href: '/terms' }, // Placeholder, update if terms page exists
+      { label: 'Privacy', href: '/privacy' },
+      { label: 'Terms', href: '/terms' },
     ],
   };
 

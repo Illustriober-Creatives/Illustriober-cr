@@ -7,13 +7,15 @@ import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SectionWrapper } from "@/components/SectionWrapper";
+import { createMetadata } from "@/lib/seo";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 
-export const metadata = {
-  title: "Services | Illustriober",
+export const metadata = createMetadata({
+  title: "Services",
   description:
     "Full-stack web development, mobile apps, UI/UX design, and digital strategy services.",
-};
+  path: "/services",
+});
 
 const services = [
   {
@@ -269,4 +271,3 @@ export default function ServicesPage() {
     </main>
   );
 }
-

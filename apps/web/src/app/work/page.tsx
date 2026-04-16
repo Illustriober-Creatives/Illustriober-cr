@@ -6,13 +6,15 @@
 import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { SectionWrapper } from "@/components/SectionWrapper";
+import { createMetadata } from "@/lib/seo";
 import { ArrowRight } from "lucide-react";
 
-export const metadata = {
-  title: "Our Work | Illustriober",
+export const metadata = createMetadata({
+  title: "Work",
   description:
     "Featured projects showcasing our expertise in web development, design, and digital strategy.",
-};
+  path: "/work",
+});
 
 const projects = [
   {
@@ -209,4 +211,3 @@ export default function WorkPage() {
     </main>
   );
 }
-

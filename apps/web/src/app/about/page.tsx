@@ -8,13 +8,15 @@ import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SectionWrapper } from "@/components/SectionWrapper";
+import { createMetadata } from "@/lib/seo";
 import { ArrowRight } from "lucide-react";
 
-export const metadata = {
-  title: "About Illustriober | Premium Tech Studio",
+export const metadata = createMetadata({
+  title: "About",
   description:
     "Learn about Illustriober Creatives - a premium tech studio specializing in full-stack web development, mobile apps, and design.",
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (
