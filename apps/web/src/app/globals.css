@@ -1,4 +1,4 @@
-@config "../../tailwind.config.ts";
+ @config "../../tailwind.config.ts";
 @import "tailwindcss";
 
 /* 
@@ -192,11 +192,11 @@ html.no-transition *:after {
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  background-color: rgba(var(--surface-rgb), 0.5);
-  border: 1px solid rgba(var(--surface-rgb), 0.2);
+  background-color: var(--surface);
+  border: 1px solid var(--border-default);
   color: var(--foreground);
   font-size: 1rem;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .form-input::placeholder {
@@ -207,11 +207,17 @@ html.no-transition *:after {
   border-color: var(--accent);
   outline: none;
   box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+  background-color: var(--surface);
 }
 
 .form-input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.form-input:hover:not(:disabled) {
+  border-color: var(--accent);
+  background-color: var(--surface);
 }
 
 /* Form label utility class */

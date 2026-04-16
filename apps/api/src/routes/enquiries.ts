@@ -8,7 +8,7 @@ import { Router, Request, Response } from "express";
 import { z } from "zod";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import prisma from "../lib/prisma";
-import { rateLimit } from "../middleware/rateLimit";
+//import { rateLimit } from "../middleware/rateLimit";
 import { sendEnquiryEmails } from "../lib/email";
 
 const router = Router();
@@ -38,11 +38,9 @@ type EnquiryInput = z.infer<typeof enquirySchema>;
 /**
  * POST /api/enquiries
  * Create a new enquiry from public form
- * Rate limited: 3 per IP per hour
  */
 router.post(
   "/",
-  rateLimit({ windowMs: 60 * 60 * 1000, maxRequests: 3 }),
   asyncHandler(async (req: Request, res: Response) => {
     // Validate request body
     let data: EnquiryInput;
@@ -77,16 +75,18 @@ router.post(
     });
 
     const clientName = `${firstName} ${lastName}`.trim();
-    try {
-      await sendEnquiryEmails({
-        enquiryId: enquiry.id,
-        clientEmail: enquiry.email,
-        clientName,
-        projectType: data.projectType,
-        description: data.description,
-      });
-    } catch (emailErr) {
-      console.error("[enquiries] email send failed:", emailErr);
+    
+    // Send confirmation emails (non-blocking - enquiry created even if email fails)
+    const emailResult = await sendEnquiryEmails({
+      enquiryId: enquiry.id,
+      clientEmail: enquiry.email,
+      clientName,
+      projectType: data.projectType,
+      description: data.description,
+    });
+
+    if (!emailResult.success) {
+      console.warn(`[enquiries] Email send warning: ${emailResult.error}`);
     }
 
     res.status(201).json({

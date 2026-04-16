@@ -6,6 +6,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { SectionWrapper } from "@/components/SectionWrapper";
@@ -13,6 +14,7 @@ import { FormInput } from "@/components/FormInput";
 import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
 
 export default function EnquiryPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -45,17 +47,11 @@ export default function EnquiryPage() {
       });
 
       if (response.ok) {
-        setSubmitted(true);
-        setFormData({
-          name: "",
-          email: "",
-          company: "",
-          projectType: "",
-          budget: "",
-          timeline: "",
-          description: "",
-        });
-        setTimeout(() => setSubmitted(false), 5000);
+        const data = await response.json();
+        // Redirect to thank you page with email param
+        router.push(`/thank-you?email=${encodeURIComponent(formData.email)}`);
+      } else {
+        console.error("Form submission failed");
       }
     } catch (error) {
       console.error("Form submission error:", error);
@@ -220,15 +216,6 @@ export default function EnquiryPage() {
                   {loading ? "Sending..." : "Send Inquiry"}
                   <Send className="w-5 h-5" />
                 </Button>
-
-                {submitted && (
-                  <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20 dark:border-green-500/30 light:border-green-300/50 flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <p className="text-green-600 dark:text-green-400 light:text-green-700 text-sm">
-                      Thank you! We&apos;ll get back to you within 24 hours.
-                    </p>
-                  </div>
-                )}
               </form>
             </div>
 
