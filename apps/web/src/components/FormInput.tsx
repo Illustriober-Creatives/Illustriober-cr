@@ -13,7 +13,7 @@ export interface FormInputProps
 /**
  * FormInput Component
  * Theme-aware form input with label and error states
- * Automatically adapts to light and dark modes using CSS variables
+ * Uses CSS variables for perfect theme integration
  */
 const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
   (
@@ -44,22 +44,42 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
           ref={ref}
           type={type}
           id={id}
+          style={{
+            backgroundColor: 'var(--surface)',
+            borderColor: 'var(--border-default)',
+            color: 'var(--foreground)',
+          }}
           className={cn(
             'w-full px-4 py-3',
             'rounded-lg',
-            'bg-surface/50 dark:bg-zinc-900/50 light:bg-slate-50',
-            'border border-surface/20 dark:border-zinc-800 light:border-slate-200',
-            'text-foreground dark:text-white light:text-slate-900',
-            'placeholder-foreground/40 dark:placeholder-zinc-500 light:placeholder-slate-400',
+            'border',
             'focus:border-accent focus:outline-none',
             'focus:ring-2 focus:ring-accent/20',
+            'hover:border-accent/50',
             'transition-all duration-200',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             error && 'border-red-500 focus:border-red-500 focus:ring-red-500/20',
             className
           )}
+          placeholder={props.placeholder}
           {...props}
         />
+
+        {error && (
+          <p className="mt-2 text-sm text-red-500 dark:text-red-400 light:text-red-600">
+            {error}
+          </p>
+        )}
+
+        {helperText && !error && (
+          <p className="mt-2 text-sm text-foreground/50 dark:text-zinc-400 light:text-slate-500">
+            {helperText}
+          </p>
+        )}
+      </div>
+    );
+  }
+);
 
         {error && (
           <p className="mt-2 text-sm text-red-500 dark:text-red-400 light:text-red-600">
