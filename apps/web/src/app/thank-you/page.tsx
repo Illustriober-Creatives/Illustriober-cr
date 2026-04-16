@@ -4,7 +4,15 @@
  */
 
 import { Suspense } from "react";
+import { createMetadata } from "@/lib/seo";
 import { ThankYouContent } from "./ThankYouContent";
+
+export const metadata = createMetadata({
+  title: "Thank You",
+  description: "Illustriober enquiry submission confirmation page.",
+  path: "/thank-you",
+  noIndex: true,
+});
 
 function ThankYouFallback() {
   return (

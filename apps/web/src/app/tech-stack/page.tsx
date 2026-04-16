@@ -6,12 +6,14 @@
 import { Container } from "@/components/Container";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SectionWrapper } from "@/components/SectionWrapper";
+import { createMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Tech Stack | Illustriober",
+export const metadata = createMetadata({
+  title: "Tech Stack",
   description:
     "The modern technologies and tools we use to build exceptional digital products.",
-};
+  path: "/tech-stack",
+});
 
 const categories = [
   {
@@ -286,4 +288,3 @@ export default function TechStackPage() {
     </main>
   );
 }
-

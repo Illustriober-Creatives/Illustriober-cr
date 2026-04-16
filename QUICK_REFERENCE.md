@@ -279,3 +279,51 @@ A platform for distributed teams to collaborate on code reviews.
 → See [SKILL_PACK_SUMMARY.md](SKILL_PACK_SUMMARY.md) for full guide  
 → See [SKILL_PACK_ARCHITECTURE.md](SKILL_PACK_ARCHITECTURE.md) for visual diagrams  
 → Open [project-spec-orchestrator/README.md](my-skills/project-spec-orchestrator/README.md) for detailed instructions
+
+Google Search Console
+This is the one external setup I would treat as mandatory.
+
+Add a Domain property for your domain.
+Verify ownership using a DNS record in Cloudflare.
+Submit your sitemap: https://yourdomain.com/sitemap.xml.
+Use URL Inspection on /, /about, /services, etc., then request indexing for important pages.
+Official docs:
+
+Add property
+Verify ownership
+URL Inspection / request indexing
+Sitemaps
+What You Do Not Need
+
+You do not need to manually submit every page to Google if your sitemap is live.
+You do not need extra SEO tools before launch.
+Cloudflare and Vercel alone do not guarantee indexing; they only make the site reachable.
+What Happens After Deploy
+Once deployed on the real domain, this should work:
+
+robots.txt will be available
+sitemap.xml will be available
+canonicals/meta tags will be live
+bots can crawl public pages
+private pages like login/dashboard should stay out of the index
+What does not happen instantly:
+
+Google does not index immediately
+search snippets can take days or weeks to settle
+ranking takes longer than indexing
+Recommended Minimum Launch Checklist
+
+Deploy to the final production domain
+Confirm only one canonical domain wins (www or non-www) and redirect the other
+Check https://yourdomain.com/robots.txt
+Check https://yourdomain.com/sitemap.xml
+Add domain to Search Console
+Verify via Cloudflare DNS
+Submit sitemap
+Request indexing for the homepage and 3–5 core pages
+Optional But Worth Doing
+
+Bing Webmaster Tools
+GA4 for traffic measurement
+Rich Results Test for schema validation: Rich Results Test
+If you want, I can give you a step-by-step exact setup for your current Cloudflare + Vercel domain, including which DNS records to create and what to click in Search Console.
