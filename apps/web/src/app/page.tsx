@@ -26,7 +26,7 @@ import { CTASection } from "@/components/CTASection";
 
 export default function Home() {
   return (
-    <main className="flex flex-col w-full bg-surface-950">
+    <main className="flex flex-col w-full bg-background">
       {/* Section 1: Hero */}
       <HeroSection />
 

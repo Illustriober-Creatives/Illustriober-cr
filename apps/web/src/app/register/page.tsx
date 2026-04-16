@@ -6,10 +6,8 @@ import { useRouter } from "next/navigation";
 import { Container } from "@/components/Container";
 import { SectionWrapper } from "@/components/SectionWrapper";
 import { Button } from "@/components/Button";
+import { FormInput } from "@/components/FormInput";
 import { useAuth } from "@/contexts/AuthContext";
-
-const inputClass =
-  "w-full px-4 py-3 rounded-lg bg-zinc-900/50 border border-zinc-800 text-white placeholder-zinc-500 focus:border-orange-500 focus:outline-none transition-colors";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -42,21 +40,24 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex flex-col w-full bg-surface-950 min-h-[70vh]">
-      <section className="relative overflow-hidden bg-gradient-to-br from-black via-zinc-900 to-black py-16 lg:py-24">
+    <div className="flex flex-col w-full bg-background min-h-[70vh]">
+      {/* Premium Header Section with theme-aware gradient */}
+      <section className="relative overflow-hidden bg-background pt-32 pb-16 lg:pt-48 lg:pb-24">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-orange-600/5 rounded-full blur-3xl" />
+          {/* Gradient orbs - theme responsive */}
+          <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
+          <div className="absolute -top-20 -right-20 h-60 w-60 bg-accent/3 rounded-full blur-3xl dark:opacity-75 light:opacity-30" />
         </div>
         <Container className="relative z-10">
           <div className="max-w-xl mx-auto text-center mb-10">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Create <span className="text-orange-500">account</span>
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
+              Create <span className="text-accent italic">Account</span>
             </h1>
-            <p className="text-zinc-400">
+            <p className="text-foreground/60">
               Already registered?{" "}
               <Link
                 href="/login"
-                className="text-orange-500 hover:text-orange-400 underline underline-offset-4"
+                className="text-accent hover:text-accent/80 underline underline-offset-4 transition-colors"
               >
                 Sign in
               </Link>
@@ -70,76 +71,112 @@ export default function RegisterPage() {
           <div className="max-w-md mx-auto">
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
-                <p
-                  className="text-sm text-red-400 bg-red-950/40 border border-red-900/50 rounded-lg px-4 py-3"
+                <div
+                  className="text-sm text-red-500 bg-red-500/10 border border-red-500/20 dark:bg-red-950/40 dark:border-red-900/50 light:bg-red-50 light:border-red-200 rounded-lg px-4 py-3"
                   role="alert"
                 >
                   {error}
-                </p>
+                </div>
               )}
+
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">
-                    First name
-                  </label>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                    className={inputClass}
-                    autoComplete="given-name"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">
-                    Last name
-                  </label>
-                  <input
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                    className={inputClass}
-                    autoComplete="family-name"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-white mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                <FormInput
+                  type="text"
+                  label="First name"
+                  placeholder="John"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   required
-                  className={inputClass}
-                  autoComplete="email"
+                  autoComplete="given-name"
+                  disabled={submitting}
+                />
+                <FormInput
+                  type="text"
+                  label="Last name"
+                  placeholder="Doe"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                  autoComplete="family-name"
+                  disabled={submitting}
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-white mb-2">
-                  Password (min 8 characters)
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={8}
-                  className={inputClass}
-                  autoComplete="new-password"
-                />
+
+              <FormInput
+                type="email"
+                label="Email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                disabled={submitting}
+              />
+
+              <FormInput
+                type="password"
+                label="Password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="new-password"
+                helperText="At least 8 characters"
+                disabled={submitting}
+              />
+
+              <div className="text-xs text-foreground/50">
+                By creating an account, you agree to our{" "}
+                <Link href="/terms" className="text-accent hover:text-accent/80">
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link href="/privacy" className="text-accent hover:text-accent/80">
+                  Privacy Policy
+                </Link>
               </div>
+
               <Button
                 type="submit"
                 variant="primary"
-                className="w-full rounded-xl"
-                disabled={submitting || authLoading}
+                size="md"
+                className="w-full rounded-lg"
+                disabled={submitting}
               >
-                {submitting ? "Creating account…" : "Create account"}
+                {submitting ? "Creating account..." : "Create account"}
               </Button>
+
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-surface/20" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background dark:bg-black light:bg-white px-2 text-foreground/50">
+                    Or sign up with
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="md"
+                  className="rounded-lg"
+                  disabled={submitting}
+                >
+                  GitHub
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="md"
+                  className="rounded-lg"
+                  disabled={submitting}
+                >
+                  Google
+                </Button>
+              </div>
             </form>
           </div>
         </Container>

@@ -12,17 +12,18 @@ package-lock.json
 .env.*.local
 
 # Documentation & Guides (Excluded by request)
-00_PROJECT_OVERVIEW.md
-01_TECH_STACK.md
-02_ARCHITECTURE.md
-03_DATABASE_SCHEMA.md
-04_API_SPEC.md
-05_PAGES_AND_COMPONENTS.md
-06_FEATURES.md
-07_IMPLEMENTATION_PLAN.md
-08_THIRD_PARTY_AND_ENV.md
-09_UI_DESIGN_SYSTEM.md
-AGENT_INSTRUCTIONS.md
+ai-spec/00_PROJECT_OVERVIEW.md
+ai-spec/01_TECH_STACK.md
+ai-spec/02_ARCHITECTURE.md
+ai-spec/03_DATABASE_SCHEMA.md
+ai-spec/04_API_SPEC.md
+ai-spec/05_PAGES_AND_COMPONENTS.md
+ai-spec/06_FEATURES.md
+ai-spec/07_IMPLEMENTATION_PLAN.md
+ai-spec/08_THIRD_PARTY_AND_ENV.md
+ai-spec/09_UI_DESIGN_SYSTEM.md
+ai-spec/AGENT_INSTRUCTIONS.md
+ai-spec/GITHUB_PROJECT_TASKS.md
 Inspirations/
 
 # OS
@@ -30,4 +31,4 @@ Inspirations/
 .awesome-skills/
 
 # Agent Skills
-my-skills/
+#my-skills/

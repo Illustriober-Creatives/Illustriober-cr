@@ -1,4 +1,5 @@
 'use client';
+// Ref: CACHE_BUST_001
 
 import { useEffect, useState } from 'react';
 import { Container } from './Container';
@@ -71,13 +72,13 @@ export function StatsBar() {
   }, []);
 
   return (
-    <div id="stats-section" className="py-12 lg:py-16 bg-surface-900 border-y border-surface-800">
+    <div id="stats-section" className="py-20 lg:py-32 bg-background border-y border-foreground/5">
       <Container>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
           {stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              {/* Counter Value */}
-              <div className="text-3xl lg:text-4xl font-bold text-brand-500 mb-2">
+            <div key={index} className="text-center group">
+              {/* Counter Value - Luxury feel with font-display */}
+              <div className="text-4xl lg:text-6xl font-display font-medium text-accent mb-4 group-hover:-translate-y-1 transition-transform duration-500" suppressHydrationWarning>
                 {isVisible ? (
                   <>
                     <AnimatedCounter value={stat.value} />
@@ -88,7 +89,7 @@ export function StatsBar() {
                 )}
               </div>
               {/* Label */}
-              <p className="text-sm text-surface-300">
+              <p className="text-xs uppercase tracking-[0.3em] text-foreground/30">
                 {stat.label}
               </p>
             </div>
@@ -96,5 +97,6 @@ export function StatsBar() {
         </div>
       </Container>
     </div>
+
   );
 }

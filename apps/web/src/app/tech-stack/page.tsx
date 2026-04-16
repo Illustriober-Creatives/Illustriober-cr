@@ -1,6 +1,6 @@
 /**
  * Tech Stack Page
- * Overview of technologies and tools used
+ * Structured capability map with brand-consistent, adaptive visual language.
  */
 
 import { Container } from "@/components/Container";
@@ -9,13 +9,14 @@ import { SectionWrapper } from "@/components/SectionWrapper";
 
 export const metadata = {
   title: "Tech Stack | Illustriober",
-  description: "The modern technologies and tools we use to build exceptional digital products.",
+  description:
+    "The modern technologies and tools we use to build exceptional digital products.",
 };
 
 const categories = [
   {
     name: "Frontend",
-    description: "Client-side technologies for beautiful, interactive UIs",
+    description: "Client-side technologies for high-performance, expressive interfaces.",
     technologies: [
       { name: "React", proficiency: "Expert" },
       { name: "Next.js", proficiency: "Expert" },
@@ -26,7 +27,7 @@ const categories = [
   },
   {
     name: "Backend",
-    description: "Server-side technologies for robust, scalable APIs",
+    description: "Service architecture for reliability, security, and velocity.",
     technologies: [
       { name: "Node.js", proficiency: "Expert" },
       { name: "Express", proficiency: "Expert" },
@@ -36,8 +37,8 @@ const categories = [
     ],
   },
   {
-    name: "Databases",
-    description: "Data storage and management solutions",
+    name: "Data",
+    description: "Data systems optimized for consistency and scale.",
     technologies: [
       { name: "PostgreSQL", proficiency: "Expert" },
       { name: "MongoDB", proficiency: "Advanced" },
@@ -48,7 +49,7 @@ const categories = [
   },
   {
     name: "Mobile",
-    description: "Cross-platform and native mobile development",
+    description: "Cross-platform delivery tuned for performance and maintainability.",
     technologies: [
       { name: "React Native", proficiency: "Advanced" },
       { name: "Swift", proficiency: "Advanced" },
@@ -57,8 +58,8 @@ const categories = [
     ],
   },
   {
-    name: "DevOps & Cloud",
-    description: "Infrastructure and deployment platforms",
+    name: "Cloud & DevOps",
+    description: "Automation and infrastructure for confident deployment at scale.",
     technologies: [
       { name: "Vercel", proficiency: "Expert" },
       { name: "AWS", proficiency: "Advanced" },
@@ -68,8 +69,8 @@ const categories = [
     ],
   },
   {
-    name: "Design Tools",
-    description: "Tools for crafting exceptional user experiences",
+    name: "Design Ops",
+    description: "Collaborative tooling that keeps product design systems coherent.",
     technologies: [
       { name: "Figma", proficiency: "Expert" },
       { name: "Adobe XD", proficiency: "Advanced" },
@@ -79,204 +80,210 @@ const categories = [
   },
 ];
 
+const scoreWidth = (proficiency: string) => {
+  if (proficiency === "Expert") return "w-full";
+  if (proficiency === "Advanced") return "w-3/4";
+  return "w-1/2";
+};
+
 export default function TechStackPage() {
   return (
-    <main className="flex flex-col w-full bg-surface-950">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-black via-zinc-900 to-black py-20 lg:py-32">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-80 w-80 bg-orange-500/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-orange-600/5 rounded-full blur-3xl" />
+    <main className="flex flex-col w-full bg-background">
+      <section className="relative overflow-hidden pt-36 pb-24 lg:pt-44 lg:pb-32">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/45 to-transparent" />
+          <div className="absolute -top-24 right-0 h-80 w-80 rounded-full bg-accent-soft blur-3xl" />
+          <div className="absolute -bottom-24 left-[-8%] h-72 w-72 rounded-full bg-accent-soft/50 blur-3xl" />
         </div>
 
         <Container className="relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="inline-block mb-6 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-sm font-medium uppercase tracking-wider">
-              Technology
+          <div className="mx-auto max-w-4xl text-center">
+            <p className="inline-block rounded-full border border-accent/25 bg-accent-soft px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+              Tech Capability
             </p>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-6 text-white">
-              Built with <span className="text-orange-500">modern tools</span>
+            <h1 className="mt-8 text-5xl md:text-6xl lg:text-7xl font-display font-medium leading-[0.95] tracking-tight text-foreground">
+              Engineered with
+              <span className="block italic text-accent">Proven Tools</span>
             </h1>
-            <p className="text-lg md:text-xl text-zinc-300 leading-relaxed">
-              We carefully select the best technologies and tools to deliver
-              scalable, performant, and maintainable solutions.
+            <p className="mt-7 text-lg md:text-xl leading-relaxed text-foreground/65 max-w-3xl mx-auto">
+              We choose technologies for durability and delivery speed, then
+              align the stack to your business stage and constraints.
             </p>
           </div>
         </Container>
       </section>
 
-      {/* Tech Stack Categories */}
       <SectionWrapper>
         <Container>
           <SectionHeader
-            subtitle="Our Arsenal"
-            title="Technology Categories"
-            description="From frontend to infrastructure, here's what powers our projects"
+            subtitle="Stack Map"
+            title="Technology Domains"
+            description="Each domain combines production readiness with maintainable long-term architecture."
           />
 
-          <div className="space-y-12">
-            {categories.map((category) => (
-              <div key={category.name}>
-                <div className="mb-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    {category.name}
-                  </h3>
-                  <p className="text-zinc-400">{category.description}</p>
+          <div className="space-y-10">
+            {categories.map((category, index) => (
+              <article
+                key={category.name}
+                className="rounded-2xl border border-glass-border bg-surface/30 p-6 md:p-8"
+              >
+                <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-2">
+                      Domain 0{index + 1}
+                    </p>
+                    <h3 className="text-2xl font-display font-medium text-foreground">
+                      {category.name}
+                    </h3>
+                    <p className="mt-2 text-sm text-foreground/65">
+                      {category.description}
+                    </p>
+                  </div>
+                  <div className="h-px w-28 bg-gradient-to-r from-accent/50 to-transparent" />
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {category.technologies.map((tech) => (
                     <div
                       key={tech.name}
-                      className="p-4 rounded-lg bg-zinc-900/50 border border-zinc-800 hover:border-orange-500/30 transition-colors"
+                      className="rounded-xl border border-glass-border bg-background/60 p-4 hover:border-accent/35 transition-colors"
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-bold text-white">{tech.name}</h4>
-                        <span className="text-xs px-2 py-1 rounded bg-orange-500/10 text-orange-500 font-medium">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <h4 className="text-sm font-semibold text-foreground">
+                          {tech.name}
+                        </h4>
+                        <span className="rounded-full border border-accent/20 bg-accent-soft px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-accent">
                           {tech.proficiency}
                         </span>
                       </div>
-                      <div className="w-full bg-zinc-800 rounded-full h-2">
+                      <div className="h-2 w-full rounded-full bg-surface/70 overflow-hidden">
                         <div
-                          className={`h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-400 ${
-                            tech.proficiency === "Expert"
-                              ? "w-full"
-                              : tech.proficiency === "Advanced"
-                                ? "w-3/4"
-                                : "w-1/2"
-                          }`}
+                          className={`h-2 rounded-full bg-gradient-to-r from-accent to-orange-400 ${scoreWidth(
+                            tech.proficiency,
+                          )}`}
                         />
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </Container>
       </SectionWrapper>
 
-      {/* Why These Tools */}
-      <SectionWrapper className="bg-zinc-900/30 border-y border-zinc-800">
+      <SectionWrapper className="border-y border-glass-border/60">
         <Container>
           <SectionHeader
-            subtitle="Our Philosophy"
-            title="Why We Choose These Tools"
-            description="Selection criteria for our technology stack"
+            subtitle="Selection Criteria"
+            title="Why These Technologies"
+            description="Every tool is selected against business-critical constraints, not trend cycles."
           />
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-xl bg-zinc-900/50 border border-zinc-800">
-              <div className="text-3xl font-bold text-orange-500 mb-3">⚡</div>
-              <h3 className="text-xl font-bold text-white mb-3">Performance</h3>
-              <p className="text-zinc-400">
-                We prioritize speed and efficiency. Every tool must deliver
-                measurable performance benefits for end users.
-              </p>
-            </div>
-
-            <div className="p-8 rounded-xl bg-zinc-900/50 border border-zinc-800">
-              <div className="text-3xl font-bold text-orange-500 mb-3">🔒</div>
-              <h3 className="text-xl font-bold text-white mb-3">Security</h3>
-              <p className="text-zinc-400">
-                We only use technologies with strong security practices and
-                active maintenance. Your data is protected.
-              </p>
-            </div>
-
-            <div className="p-8 rounded-xl bg-zinc-900/50 border border-zinc-800">
-              <div className="text-3xl font-bold text-orange-500 mb-3">📈</div>
-              <h3 className="text-xl font-bold text-white mb-3">Scalability</h3>
-              <p className="text-zinc-400">
-                Our tools can grow with your business. We build architectures
-                that scale without requiring rewrites.
-              </p>
-            </div>
-
-            <div className="p-8 rounded-xl bg-zinc-900/50 border border-zinc-800">
-              <div className="text-3xl font-bold text-orange-500 mb-3">👥</div>
-              <h3 className="text-xl font-bold text-white mb-3">Community</h3>
-              <p className="text-zinc-400">
-                Active, thriving communities mean better documentation, more
-                solutions, and continuous evolution.
-              </p>
-            </div>
-
-            <div className="p-8 rounded-xl bg-zinc-900/50 border border-zinc-800">
-              <div className="text-3xl font-bold text-orange-500 mb-3">📚</div>
-              <h3 className="text-xl font-bold text-white mb-3">Learning</h3>
-              <p className="text-zinc-400">
-                Our team stays current through continuous learning and hands-on
-                experience with cutting-edge tools.
-              </p>
-            </div>
-
-            <div className="p-8 rounded-xl bg-zinc-900/50 border border-zinc-800">
-              <div className="text-3xl font-bold text-orange-500 mb-3">🎯</div>
-              <h3 className="text-xl font-bold text-white mb-3">Fit</h3>
-              <p className="text-zinc-400">
-                Every project is unique. We select tools that are the best fit
-                for your specific requirements.
-              </p>
-            </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                label: "Performance",
+                detail:
+                  "Prioritized for latency, throughput, and user-perceived speed under production load.",
+              },
+              {
+                label: "Security",
+                detail:
+                  "Chosen for mature security posture, patch cadence, and ecosystem stability.",
+              },
+              {
+                label: "Scalability",
+                detail:
+                  "Designed to evolve from launch-stage usage to enterprise-level adoption.",
+              },
+              {
+                label: "Community",
+                detail:
+                  "Strong ecosystems ensure maintainability, documentation quality, and hiring viability.",
+              },
+              {
+                label: "Developer Velocity",
+                detail:
+                  "Tooling accelerates delivery while preserving quality gates and test confidence.",
+              },
+              {
+                label: "Context Fit",
+                detail:
+                  "Stack decisions are tailored to your constraints, budget, and product trajectory.",
+              },
+            ].map((item, index) => (
+              <article
+                key={item.label}
+                className="rounded-xl border border-glass-border bg-surface/25 p-6 hover:border-accent/35 transition-colors"
+              >
+                <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-3">
+                  0{index + 1}
+                </p>
+                <h3 className="text-xl font-display font-medium text-foreground mb-3">
+                  {item.label}
+                </h3>
+                <p className="text-sm leading-relaxed text-foreground/65">
+                  {item.detail}
+                </p>
+              </article>
+            ))}
           </div>
         </Container>
       </SectionWrapper>
 
-      {/* Integration & CI/CD */}
       <SectionWrapper>
         <Container>
           <SectionHeader
-            subtitle="DevOps & Workflow"
-            title="Our Development Workflow"
-            description="Tools and practices that ensure quality and reliability"
+            subtitle="Delivery Workflow"
+            title="Operational Quality Standards"
+            description="Engineering workflow practices that protect reliability and release confidence."
           />
 
           <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-xl font-bold text-white mb-6">
-                Continuous Integration & Deployment
+            <article className="glass-card rounded-2xl border-glass-border p-8">
+              <h3 className="text-2xl font-display font-medium text-foreground mb-6">
+                CI/CD Discipline
               </h3>
-              <ul className="space-y-4">
+              <ul className="space-y-3">
                 {[
-                  "Automated testing on every commit",
-                  "Code quality analysis with ESLint & TypeScript",
-                  "Pre-commit hooks for consistency",
-                  "Automated deployment pipelines",
-                  "Production monitoring & alerting",
-                  "Rollback capabilities for safety",
+                  "Automated tests on every commit",
+                  "Type and lint quality gates",
+                  "Release pipeline controls and rollback safety",
+                  "Environment-aware deployment automation",
+                  "Runtime monitoring and actionable alerts",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <span className="text-orange-500 font-bold">✓</span>
-                    <span className="text-zinc-300">{item}</span>
+                    <span className="text-accent font-semibold mt-0.5">✓</span>
+                    <span className="text-sm text-foreground/70">{item}</span>
                   </li>
                 ))}
               </ul>
-            </div>
+            </article>
 
-            <div>
-              <h3 className="text-xl font-bold text-white mb-6">
-                Quality Assurance
+            <article className="glass-card rounded-2xl border-glass-border p-8">
+              <h3 className="text-2xl font-display font-medium text-foreground mb-6">
+                Product Quality
               </h3>
-              <ul className="space-y-4">
+              <ul className="space-y-3">
                 {[
-                  "Unit testing with Jest & Vitest",
-                  "Integration testing with Playwright",
-                  "Performance profiling & optimization",
-                  "Security scanning with industry tools",
-                  "Accessibility testing (WCAG compliance)",
-                  "Manual QA & user testing",
+                  "Unit and integration testing coverage",
+                  "Performance profiling and budgets",
+                  "Security checks in delivery flow",
+                  "Accessibility-first verification",
+                  "Manual QA for edge-case confidence",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <span className="text-orange-500 font-bold">✓</span>
-                    <span className="text-zinc-300">{item}</span>
+                    <span className="text-accent font-semibold mt-0.5">✓</span>
+                    <span className="text-sm text-foreground/70">{item}</span>
                   </li>
                 ))}
               </ul>
-            </div>
+            </article>
           </div>
         </Container>
       </SectionWrapper>
     </main>
   );
 }
+

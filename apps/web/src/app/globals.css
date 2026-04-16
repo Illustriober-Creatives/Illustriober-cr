@@ -4,10 +4,11 @@
 /* 
  * LIQUID GLASS DESIGN SYSTEM
  * A premium, high-impact aesthetic for Illustriober Creatives
+ * with comprehensive theme support for light and dark modes
  */
 
 :root {
-  /* Core Palette */
+  /* Core Palette - Dark Mode (Default) */
   --background: #080808;
   --foreground: #F8FAFC;
   --surface: #111111;
@@ -18,17 +19,60 @@
   /* Glass Tokens */
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg-hover: rgba(255, 255, 255, 0.06);
   --glass-blur: blur(12px);
+  
+  /* Additional surface variants for form inputs and cards */
+  --surface-50: rgba(255, 255, 255, 0.05);
+  --surface-100: rgba(255, 255, 255, 0.1);
+  --surface-rgb: 17, 17, 17;
+  --foreground-rgb: 248, 250, 252;
+  --accent-rgb: 249, 115, 22;
+  
+  /* Border colors */
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-default: rgba(255, 255, 255, 0.08);
   
   /* Typography */
   --font-display: var(--font-bodoni), serif;
   --font-body: var(--font-jost), sans-serif;
+  
+  /* Transition timing */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.light {
+  /* Luxury White Palette - Subtle and eye-friendly */
+  --background: #F9FAFB; 
+  --foreground: #111827;
+  --surface: #FFFFFF;
+  --accent: #EA580C; /* Slightly deeper orange for contrast on white */
+  --accent-soft: rgba(234, 88, 12, 0.08);
+  --accent-glow: rgba(234, 88, 12, 0.2);
+  
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-hover: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-blur: blur(16px);
+  
+  --surface-50: rgba(0, 0, 0, 0.02);
+  --surface-100: rgba(0, 0, 0, 0.05);
+  --surface-rgb: 255, 255, 255;
+  --foreground-rgb: 17, 24, 39;
+  --accent-rgb: 234, 88, 12;
+  
+  --border-subtle: rgba(0, 0, 0, 0.03);
+  --border-default: rgba(0, 0, 0, 0.06);
 }
 
 html {
   scroll-behavior: smooth;
   background-color: var(--background);
   color: var(--foreground);
+  /* Smooth transitions between theme changes */
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 body {
@@ -36,45 +80,174 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 h1, h2, h3, h4, .font-display {
   font-family: var(--font-display);
+  transition: color var(--transition-base);
 }
 
-/* Custom Utilities for Liquid Glass */
-@layer utilities {
-  .glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .glass-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: var(--accent-soft);
-    box-shadow: 0 0 30px var(--accent-soft);
-  }
+/* Enable smooth theme transitions for all elements */
+* {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: var(--transition-fast);
+}
 
-  .text-glow {
-    text-shadow: 0 0 15px var(--accent-glow);
-  }
+/* Disable transitions on page load to avoid flash */
+html.no-transition,
+html.no-transition *,
+html.no-transition *:before,
+html.no-transition *:after {
+  transition: none !important;
+}
 
-  .bg-mesh {
-    background-image: radial-gradient(at 0% 0%, hsla(20, 100%, 50%, 0.1) 0, transparent 50%),
-                      radial-gradient(at 100% 100%, hsla(200, 100%, 50%, 0.1) 0, transparent 50%);
-  }
-  
+/* Glass Card Utility */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--accent-soft);
+  box-shadow: 0 0 40px var(--accent-soft);
+}
+
+@utility text-glow {
+  text-shadow: 0 0 15px var(--accent-glow);
+}
+
+.bg-mesh {
+  background-image: radial-gradient(at 0% 0%, hsla(20, 100%, 50%, 0.1) 0, transparent 50%),
+                    radial-gradient(at 100% 100%, hsla(200, 100%, 50%, 0.1) 0, transparent 50%);
+}
+
+.section-padding {
+  padding: 10rem 0;
+}
+
+@media (max-width: 768px) {
   .section-padding {
-    @apply py-24 lg:py-32;
+    padding: 4rem 0;
   }
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes enter {
+  from {
+    opacity: var(--tw-enter-opacity, 1);
+    transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
+
+@utility animate-in {
+  animation-name: enter;
+  animation-duration: var(--tw-duration, 300ms);
+  animation-fill-mode: both;
+}
+
+@utility fade-in {
+  --tw-enter-opacity: 0;
+}
+
+@utility slide-in-from-top-4 {
+  --tw-enter-translate-y: -1rem;
+}
+
+@utility slide-in-from-bottom-4 {
+  --tw-enter-translate-y: 1rem;
+}
+
+@utility slide-in-from-bottom-6 {
+  --tw-enter-translate-y: 1.5rem;
+}
+
+@utility slide-in-from-bottom-8 {
+  --tw-enter-translate-y: 2rem;
+}
+
+@utility slide-in-from-bottom-10 {
+  --tw-enter-translate-y: 2.5rem;
+}
+
+@utility slide-in-from-bottom-12 {
+  --tw-enter-translate-y: 3rem;
+}
+
+/* Form input theme-aware utility class */
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(var(--surface-rgb), 0.5);
+  border: 1px solid rgba(var(--surface-rgb), 0.2);
+  color: var(--foreground);
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.form-input::placeholder {
+  color: rgba(var(--foreground-rgb), 0.4);
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+}
+
+.form-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Form label utility class */
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+  transition: color 0.2s;
+}
+
+/* Card with glass effect and theme support */
+.card-glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.card-glass:hover {
+  border-color: rgba(var(--accent-rgb), 0.4);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
   --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-glow: var(--accent-glow);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  --color-glass-bg-hover: var(--glass-bg-hover);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
 }

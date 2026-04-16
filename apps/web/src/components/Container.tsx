@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
-import { cn } from './lib/utils';
+import { cn } from '@/lib/utils';
 
 /**
  * Container - Consistent max-width and padding wrapper for sections
- * Ensures content stays readable and respects design system spacing
+ * Theme-aware responsive container for consistent content layout
  */
 interface ContainerProps {
   children: ReactNode;
@@ -12,9 +12,9 @@ interface ContainerProps {
 }
 
 const containerVariants = {
-  default: 'max-w-6xl',    // Standard content width
-  hero: 'max-w-7xl',       // Wider for hero sections
-  narrow: 'max-w-4xl',     // Narrower for text-heavy sections
+  default: 'max-w-6xl',
+  hero: 'max-w-7xl',
+  narrow: 'max-w-4xl',
 };
 
 export function Container({

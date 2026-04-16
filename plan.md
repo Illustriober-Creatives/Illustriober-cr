@@ -1,22 +1,47 @@
-# Illustriober — development roadmap (concise)
+# Illustriober Creatives — Master Roadmap
 
-This file is the **living product roadmap** for the monorepo. Infra details live in [`ai-spec/illustriober-setup-log.md`](ai-spec/illustriober-setup-log.md) and [`ai-spec/deployplan.md`](ai-spec/deployplan.md).
+This plan focuses on scaling the Illustriober Creatives platform from a marketing site into a full-featured client portal.
 
-## Done (baseline)
+## 📍 Project State (April 2026)
 
-- **Phase 0:** npm workspaces, Next.js app, Express API, Prisma, `@illustriober/shared`.
-- **Public marketing site:** core routes and enquiry form proxied to the API (`API_PROXY_URL` on Vercel, rewrite in `apps/web/next.config.ts`).
-- **Deploy:** Vercel (web) + VPS + GitHub Actions (`deploy-vps.yml`).
-- **Phase 1 closeout:** optional Resend emails on enquiry; production-oriented CORS; env-driven API proxy.
-- **Phase 2 (started):** JWT access tokens, refresh sessions (DB + httpOnly cookie), auth API routes, `/login`, `/register`, `/dashboard` shell.
+| Milestone | Status | Details |
+| :--- | :--- | :--- |
+| **0: Foundation** | ✅ Done | Monorepo set up, Next.js, Express, Prisma. |
+| **1: Public Site** | ✅ Done | Portfolio, services, enquiry form (Resend integration). |
+| **2: Authentication** | 🚧 In Progress | JWT access/refresh, `/login`, `/register`, Auth context. |
+| **3: Client Portal** | 📅 Next | Dashboard, projects, milestones, ticket management. |
+| **4: Real-time** | 📅 Backlog | Live comments, notifications via Socket.io. |
+| **5: Files & Polish** | 📅 Backlog | Cloudinary uploads, SEO fine-tuning, PWA. |
 
-## Next (prioritized)
+---
 
-1. **Portal features:** projects, tickets, messages per Prisma schema and local specs (`04_API_SPEC.md`, `06_FEATURES.md` when present).
-2. **Hardening:** refresh-token rotation, admin-only registration or invites, rate limits on auth routes, `trust proxy` on the VPS for accurate IP rate limiting.
-3. **Phase 3 (later):** CMS for portfolio/static content (per original phase plan).
-4. **Quality:** integration tests for auth + enquiry; Lighthouse and analytics from [`apps/web/src/lib/deployment.ts`](apps/web/src/lib/deployment.ts) checklist.
+## 🚀 Active Phase: Auth & Portal Shell
 
-## Agent rule
+**Goal:** Secure the platform and provide a foundation for client-specific data.
 
-Before implementation, read [`ai-spec/errorhistory.md`](ai-spec/errorhistory.md).
+- [x] Implement JWT access + refresh token strategy.
+- [x] Configure httpOnly cookies for secure session management.
+- [x] Build `AuthContext` and protect routes using Next.js Middleware.
+- [ ] **Verify Production Secrets:** Ensure `JWT_SECRET` and `CORS_ORIGIN` are active on VPS.
+- [ ] **Registration Policy:** Implement role-based access for `ADMIN` vs `CLIENT`.
+
+## ⏭️ Upcoming: Full Client Portal (The Core)
+
+**Goal:** Allow Harmon to manage clients and projects directly from the platform.
+
+1. **Client Management:** Admin panel to list/create/edit clients and project assignments.
+2. **Project Milestones:** Visual progress tracker for active client projects.
+3. **Ticket System:** Submission and tracking of bugs and feature requests.
+4. **Collaboration:** Comment threads on projects and tickets.
+
+---
+
+## 🛠 Tech Stack Recap
+
+- **Apps:** Next.js 15 (Web) & Express (API)
+- **Database:** PostgreSQL via Prisma ORM
+- **Infrastructure:** Vercel (Frontend) & VPS (Backend/DB)
+- **Deployment:** GitHub Actions + PM2
+
+> [!TIP]
+> Refer to `ai-spec/` for detailed architectural and design specifications.

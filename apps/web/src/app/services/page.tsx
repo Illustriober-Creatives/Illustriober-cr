@@ -1,13 +1,13 @@
 /**
  * Services Page
- * Detailed overview of all services offered by Illustriober
+ * Editorial, brand-led service architecture with light/dark adaptive tokens.
  */
 
 import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SectionWrapper } from "@/components/SectionWrapper";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Sparkles } from "lucide-react";
 
 export const metadata = {
   title: "Services | Illustriober",
@@ -17,229 +17,249 @@ export const metadata = {
 
 const services = [
   {
+    id: "01",
     title: "Web Development",
-    description: "Custom web applications built with modern tech stack",
+    description: "Custom web applications built with modern, scalable architecture.",
     features: [
       "React & Next.js applications",
-      "Full-stack development",
-      "Real-time features",
+      "Full-stack delivery",
+      "Real-time product features",
       "Progressive Web Apps",
     ],
   },
   {
+    id: "02",
     title: "Mobile Apps",
-    description: "Native and cross-platform mobile solutions",
+    description: "Native-feeling mobile products engineered for growth and retention.",
     features: [
-      "iOS & Android development",
-      "Cross-platform apps",
-      "Performance optimization",
-      "App store deployment",
+      "iOS & Android delivery",
+      "Cross-platform architecture",
+      "Performance-first optimization",
+      "Store deployment support",
     ],
   },
   {
+    id: "03",
     title: "UI/UX Design",
-    description: "User-centered design that converts",
+    description: "Conversion-aware product design systems with premium visual craft.",
     features: [
-      "User research & testing",
-      "Wireframing & prototyping",
-      "Design systems",
-      "Responsive design",
+      "Research-led UX decisions",
+      "Wireframes and interactive prototypes",
+      "Design systems and governance",
+      "Responsive interaction patterns",
     ],
   },
   {
+    id: "04",
     title: "Digital Strategy",
-    description: "Strategic guidance for digital transformation",
+    description: "Technical and product strategy aligned to measurable business outcomes.",
     features: [
-      "Technology roadmap",
-      "Platform selection",
-      "Scalability planning",
-      "Integration strategy",
+      "Technology roadmap planning",
+      "Platform and stack selection",
+      "Scale and reliability planning",
+      "System integration strategy",
     ],
   },
 ];
 
 const process = [
   {
-    step: "1",
+    step: "01",
     title: "Discovery",
-    description: "We dive deep into understanding your business, goals, and users",
+    description:
+      "We align on market context, constraints, and desired business outcomes.",
   },
   {
-    step: "2",
-    title: "Strategy",
-    description: "We create a comprehensive roadmap for your digital solution",
+    step: "02",
+    title: "Blueprint",
+    description:
+      "We define architecture, delivery cadence, and clear milestone sequencing.",
   },
   {
-    step: "3",
+    step: "03",
     title: "Design",
-    description: "Beautiful, intuitive interfaces that users love",
+    description:
+      "We create high-fidelity interactions and a reusable UI pattern library.",
   },
   {
-    step: "4",
-    title: "Development",
-    description: "Clean, scalable code built for the long term",
+    step: "04",
+    title: "Build",
+    description:
+      "We ship in fast iterations with engineering rigor and transparent progress.",
   },
   {
-    step: "5",
-    title: "Testing",
-    description: "Rigorous quality assurance and user testing",
+    step: "05",
+    title: "Validate",
+    description:
+      "We run quality gates for performance, accessibility, and reliability.",
   },
   {
-    step: "6",
+    step: "06",
     title: "Launch",
-    description: "Smooth deployment and ongoing support",
+    description:
+      "We deploy safely, monitor actively, and support continuous improvement.",
   },
 ];
 
 const faqs = [
   {
-    question: "What's your typical project timeline?",
+    question: "What is your typical timeline?",
     answer:
-      "Projects vary widely, but most web applications take 3-6 months from discovery to launch. We provide detailed timelines after understanding your requirements.",
+      "Most core builds run 8-20 weeks depending on complexity. We scope milestones in discovery so delivery expectations are clear from day one.",
   },
   {
-    question: "Do you provide ongoing support?",
+    question: "Do you support products after launch?",
     answer:
-      "Yes, we offer maintenance, updates, and enhancement services after launch. We can scale up or down based on your needs.",
+      "Yes. We offer maintenance, enhancement sprints, and reliability support. Engagement can scale with your roadmap.",
   },
   {
-    question: "What technologies do you use?",
+    question: "Can you work with existing products?",
     answer:
-      "We specialize in React, Next.js, Node.js, TypeScript, and modern cloud platforms. We choose the best tech for each project.",
-  },
-  {
-    question: "Can you work with an existing codebase?",
-    answer:
-      "Absolutely. We can audit, refactor, and enhance existing applications. Technical debt reduction is one of our specialties.",
+      "Absolutely. We can audit architecture, reduce technical debt, and extend legacy systems without disrupting operations.",
   },
 ];
 
 export default function ServicesPage() {
   return (
-    <main className="flex flex-col w-full bg-surface-950">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-black via-zinc-900 to-black py-20 lg:py-32">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-80 w-80 bg-orange-500/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-orange-600/5 rounded-full blur-3xl" />
+    <main className="flex flex-col w-full bg-background">
+      <section className="relative overflow-hidden pt-36 pb-24 lg:pt-44 lg:pb-32">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
+          <div className="absolute -top-16 right-0 h-80 w-80 rounded-full bg-accent-soft blur-3xl" />
+          <div className="absolute -bottom-24 left-[-10%] h-72 w-72 rounded-full bg-accent-soft/50 blur-3xl" />
         </div>
 
         <Container className="relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="inline-block mb-6 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-sm font-medium uppercase tracking-wider">
-              Our Services
+          <div className="mx-auto max-w-4xl text-center">
+            <p className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent-soft px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+              <Sparkles className="h-3.5 w-3.5" />
+              Service Architecture
             </p>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-6 text-white">
-              End-to-end <span className="text-orange-500">digital solutions</span>
+            <h1 className="mt-8 text-5xl md:text-6xl lg:text-7xl font-display font-medium leading-[0.95] tracking-tight text-foreground">
+              Crafting Products
+              <span className="block text-accent italic">That Outperform</span>
             </h1>
-            <p className="text-lg md:text-xl text-zinc-300 leading-relaxed">
-              From concept to launch, we handle every aspect of building your
-              digital product. Our full-service approach ensures seamless
-              collaboration and exceptional results.
+            <p className="mt-7 text-lg md:text-xl leading-relaxed text-foreground/65 max-w-3xl mx-auto">
+              Strategy, design, and engineering delivered as one integrated
+              system, with execution quality visible at every step.
             </p>
           </div>
         </Container>
       </section>
 
-      {/* Services Grid */}
       <SectionWrapper>
         <Container>
           <SectionHeader
-            subtitle="What We Do"
-            title="Core Services"
-            description="Comprehensive solutions for modern digital challenges"
+            subtitle="What We Deliver"
+            title="Core Service Pillars"
+            description="A modular delivery model that scales from MVP to enterprise platforms."
           />
 
           <div className="grid md:grid-cols-2 gap-8">
             {services.map((service) => (
-              <div
+              <article
                 key={service.title}
-                className="p-8 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-orange-500/30 transition-colors"
+                className="glass-card rounded-2xl p-8 border-glass-border hover:border-accent/40 hover:bg-glass-bg-hover transition-all duration-300"
               >
-                <h3 className="text-2xl font-bold text-white mb-3">
+                <div className="mb-5 flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-[0.22em] text-foreground/40">
+                    {service.id}
+                  </span>
+                  <div className="h-px w-20 bg-gradient-to-r from-accent/50 to-transparent" />
+                </div>
+                <h3 className="text-2xl font-display font-medium text-foreground mb-3">
                   {service.title}
                 </h3>
-                <p className="text-zinc-400 mb-6">{service.description}</p>
-                <ul className="space-y-2">
+                <p className="text-foreground/65 mb-7 leading-relaxed">
+                  {service.description}
+                </p>
+                <ul className="space-y-3">
                   {service.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-zinc-300">{feature}</span>
+                    <li key={feature} className="flex items-start gap-3 text-sm">
+                      <Check className="w-4 h-4 mt-0.5 text-accent flex-shrink-0" />
+                      <span className="text-foreground/70">{feature}</span>
                     </li>
                   ))}
                 </ul>
-              </div>
+              </article>
             ))}
           </div>
         </Container>
       </SectionWrapper>
 
-      {/* Our Process */}
-      <SectionWrapper>
+      <SectionWrapper className="border-y border-glass-border/60">
         <Container>
           <SectionHeader
-            subtitle="How We Work"
-            title="Our Development Process"
-            description="A proven methodology for delivering successful projects"
+            subtitle="Execution Model"
+            title="Six-Step Delivery Loop"
+            description="A predictable process designed for speed, quality, and controlled risk."
           />
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {process.map((item) => (
-              <div key={item.title} className="relative">
-                <div className="p-6 rounded-xl bg-zinc-900/30 border border-zinc-800">
-                  <div className="text-4xl font-bold text-orange-500 mb-3">
-                    {item.step}
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-zinc-400">{item.description}</p>
-                </div>
-              </div>
+              <article
+                key={item.title}
+                className="rounded-2xl border border-glass-border bg-surface/35 p-6 hover:border-accent/35 transition-colors"
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">
+                  Step {item.step}
+                </p>
+                <h3 className="text-xl font-display font-medium text-foreground mb-3">
+                  {item.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-foreground/65">
+                  {item.description}
+                </p>
+              </article>
             ))}
           </div>
         </Container>
       </SectionWrapper>
 
-      {/* FAQ */}
       <SectionWrapper>
         <Container>
           <SectionHeader
-            subtitle="Questions?"
-            title="Frequently Asked"
-            description="Everything you need to know about working with us"
+            subtitle="FAQ"
+            title="Engagement Clarity"
+            description="Answers to common questions before kickoff."
           />
 
-          <div className="max-w-3xl mx-auto space-y-4">
+          <div className="mx-auto max-w-3xl space-y-4">
             {faqs.map((faq) => (
               <details
                 key={faq.question}
-                className="group p-6 rounded-lg bg-zinc-900/30 border border-zinc-800 cursor-pointer hover:border-orange-500/30 transition-colors"
+                className="group rounded-xl border border-glass-border bg-surface/30 p-6 open:border-accent/40 transition-colors"
               >
-                <summary className="flex items-center justify-between font-bold text-white">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-semibold text-foreground">
                   {faq.question}
-                  <span className="text-orange-500 text-xl group-open:rotate-45 transition-transform">
+                  <span className="text-accent text-xl transition-transform group-open:rotate-45">
                     +
                   </span>
                 </summary>
-                <p className="text-zinc-400 mt-4">{faq.answer}</p>
+                <p className="mt-4 text-sm leading-relaxed text-foreground/65">
+                  {faq.answer}
+                </p>
               </details>
             ))}
           </div>
         </Container>
       </SectionWrapper>
 
-      {/* CTA Section */}
-      <SectionWrapper className="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border-y border-orange-500/20">
+      <SectionWrapper className="relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
         <Container>
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Let&apos;s build something great
-            </h2>
-            <p className="text-zinc-300 text-lg mb-8">
-              Tell us about your project and let&apos;s explore how we can help.
+          <div className="mx-auto max-w-3xl text-center glass-card rounded-[2rem] border-glass-border p-10 md:p-14">
+            <p className="text-xs uppercase tracking-[0.24em] text-accent font-semibold mb-4">
+              Start Here
             </p>
-            <Button size="lg" variant="primary">
+            <h2 className="text-4xl md:text-5xl font-display font-medium text-foreground mb-6">
+              Let&apos;s build your next competitive edge
+            </h2>
+            <p className="text-foreground/65 text-lg mb-8 max-w-2xl mx-auto">
+              Share your objective and constraints. We&apos;ll respond with a
+              practical build path and scoped execution plan.
+            </p>
+            <Button size="lg" variant="primary" className="rounded-full px-10">
               Start a Project
               <ArrowRight className="w-5 h-5" />
             </Button>
@@ -249,3 +269,4 @@ export default function ServicesPage() {
     </main>
   );
 }
+

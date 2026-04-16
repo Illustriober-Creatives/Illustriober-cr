@@ -31,7 +31,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col w-full bg-surface-950 min-h-[70vh]">
+    <div className="flex flex-col w-full bg-background min-h-[70vh]">
       <SectionWrapper className="pt-28">
         <Container>
           <div className="max-w-2xl mx-auto glass-card rounded-2xl p-8 md:p-10 border border-zinc-800/80">

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { Button } from './Button';
+import { ModeToggle } from './ModeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 
 /**
@@ -32,18 +33,19 @@ export function Navbar() {
   };
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-7xl">
-      <div className="glass-card rounded-2xl px-6 py-3 md:py-4">
+    <nav className="fixed top-10 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-3rem)] max-w-7xl">
+      <div className="glass-card rounded-[2.5rem] px-10 py-5">
         <div className="flex items-center justify-between">
           {/* Logo / Brand */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-accent shadow-[0_0_15px_var(--accent-glow)] rounded-xl flex items-center justify-center">
-              <span className="text-white font-display font-bold text-lg">S</span>
+          <Link href="/" className="flex items-center gap-4 group">
+            <div className="w-12 h-12 bg-accent shadow-[0_0_25px_var(--accent-glow)] rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:rotate-[10deg]">
+              <span className="text-white font-display font-bold text-xl">S</span>
             </div>
-            <span className="hidden sm:inline font-display font-bold text-xl text-foreground tracking-tight">
-              Illustriober <span className="text-accent underline decoration-accent/30 underline-offset-4">Creatives</span>
+            <span className="hidden sm:inline font-display font-bold text-2xl text-foreground tracking-tighter">
+              Illustriober <span className="text-accent italic selection:bg-accent/30 tracking-tight">Creatives</span>
             </span>
           </Link>
+
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-10">
@@ -60,7 +62,10 @@ export function Navbar() {
 
           {/* Desktop CTA + account */}
           <div className="hidden md:flex items-center gap-4">
+            <ModeToggle />
+            <div className="w-[1px] h-6 bg-foreground/10 mx-2" />
             {user ? (
+
               <>
                 <Link
                   href="/dashboard"
@@ -97,18 +102,21 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 hover:bg-white/5 rounded-xl transition-colors"
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? (
-              <X className="w-5 h-5 text-foreground" />
-            ) : (
-              <Menu className="w-5 h-5 text-foreground" />
-            )}
-          </button>
+          {/* Mobile Menu Actions */}
+          <div className="md:hidden flex items-center gap-2">
+            <ModeToggle />
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 hover:bg-white/5 rounded-xl transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? (
+                <X className="w-5 h-5 text-foreground" />
+              ) : (
+                <Menu className="w-5 h-5 text-foreground" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}

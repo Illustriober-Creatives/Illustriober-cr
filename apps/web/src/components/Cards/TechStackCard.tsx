@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 /**
  * TechStackCard - Display a technology with logo and proficiency level
- * Used in /tech-stack page
+ * Theme-aware component for /tech-stack page
  */
 interface TechStackCardProps {
   logo: string;
@@ -15,15 +15,15 @@ export function TechStackCard({
   name,
   proficiency,
 }: TechStackCardProps) {
-  // Map proficiency to color
+  // Map proficiency to theme-aware colors
   const proficiencyColor = {
-    Expert: 'bg-brand-500/20 text-brand-400',
-    Proficient: 'bg-blue-500/20 text-blue-400',
-    Familiar: 'bg-surface-700 text-surface-300',
+    Expert: 'bg-accent/15 text-accent',
+    Proficient: 'bg-blue-500/15 dark:text-blue-400 light:text-blue-600',
+    Familiar: 'bg-surface/20 text-foreground/60',
   };
 
   return (
-    <div className="p-6 rounded-xl bg-surface-800 border border-surface-700 hover:border-brand-500 transition-all flex flex-col items-center text-center group">
+    <div className="p-6 rounded-xl glass-card border-glass-border hover:border-accent/40 transition-all flex flex-col items-center text-center group">
       {/* Logo */}
       <div className="w-12 h-12 mb-4 relative group-hover:scale-110 transition-transform">
         <Image

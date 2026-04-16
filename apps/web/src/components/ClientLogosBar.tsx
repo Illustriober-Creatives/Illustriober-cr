@@ -24,45 +24,23 @@ export function ClientLogosBar() {
   const duplicatedLogos = [...logos, ...logos];
 
   return (
-    <div className="overflow-hidden bg-surface-950 border-y border-surface-800">
+    <div className="overflow-hidden bg-background border-y border-foreground/5 py-8">
       <div
         ref={scrollContainerRef}
         className="flex whitespace-nowrap animate-scroll"
-        style={{
-          animationDuration: '30s',
-          // Using CSS animation for better performance
-        }}
       >
         {duplicatedLogos.map((logo, index) => (
           <div
             key={`${logo.id}-${index}`}
-            className="flex-shrink-0 inline-flex items-center justify-center px-8 sm:px-12 h-24"
+            className="flex-shrink-0 inline-flex items-center justify-center px-10 sm:px-16"
           >
-            <Image
-              src={logo.url}
-              alt={logo.name}
-              width={40}
-              height={40}
-              className="h-10 object-contain opacity-60 hover:opacity-100 transition-opacity"
-            />
+            <div className="flex items-center gap-3 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+              <span className="text-xl font-display font-medium text-foreground">{logo.name}</span>
+            </div>
           </div>
         ))}
       </div>
-
-      <style>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        
-        .animate-scroll {
-          animation: scroll 30s linear infinite;
-        }
-      `}</style>
     </div>
+
   );
 }

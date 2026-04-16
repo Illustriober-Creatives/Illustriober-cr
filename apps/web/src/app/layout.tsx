@@ -3,6 +3,7 @@ import { Bodoni_Moda, Jost } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { generateOrganizationSchema } from "@/lib/seo";
 import "./globals.css";
 
@@ -84,20 +85,28 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${bodoni.variable} ${jost.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <head>
+      <body className="min-h-full flex flex-col">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </AuthProvider>
+        </ThemeProvider>
+        {/* SEO JSON-LD Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
-      </head>
-      <body className="min-h-full flex flex-col bg-surface-950">
-        <AuthProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </AuthProvider>
       </body>
     </html>
+
   );
 }

@@ -1,4 +1,5 @@
 'use client';
+// Ref: CACHE_BUST_001
 
 import { Container } from './Container';
 import {
@@ -89,10 +90,10 @@ export function ServicesSection() {
             <div className="inline-block px-3 py-1 rounded-full glass-card border-glass-border mb-4">
               <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-accent">Expertise</span>
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-white mb-6">
-              Level up your <br /> <span className="text-accent italic">development</span> game
+            <h2 className="text-4xl md:text-5xl lg:text-7xl font-display font-medium text-foreground mb-8 leading-[1.1] tracking-tight">
+              Level up your <br /> <span className="text-accent italic">digital</span> reality
             </h2>
-            <p className="text-lg text-foreground/60 font-light">
+            <p className="text-xl text-foreground/40 font-light max-w-xl">
               We provide high-impact solutions for digital products, from rapid bug 
               fixes to full-scale architectural modernization.
             </p>
@@ -112,7 +113,7 @@ export function ServicesSection() {
                 <service.icon className="w-7 h-7 text-accent" />
               </div>
               
-              <h3 className="text-xl font-display font-medium text-white mb-3 tracking-tight">
+              <h3 className="text-2xl font-display font-medium text-foreground mb-4 tracking-tight">
                 {service.title}
               </h3>
               
@@ -122,9 +123,10 @@ export function ServicesSection() {
 
               <div className="mt-auto pt-6 border-t border-white/5 w-full flex items-center justify-between">
                 <span className="text-[10px] font-medium uppercase tracking-widest text-foreground/30">0{index + 1}</span>
-                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-accent group-hover:border-accent transition-all duration-300">
-                  <ArrowRight className="w-4 h-4 text-white/30 group-hover:text-white" />
+                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-accent group-hover:border-accent transition-all duration-300" suppressHydrationWarning>
+                  <ArrowRight className="w-4 h-4 opacity-30 group-hover:opacity-100 transition-opacity" />
                 </div>
+
               </div>
             </div>
           ))}
