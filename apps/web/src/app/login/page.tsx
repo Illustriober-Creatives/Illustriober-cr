@@ -1,5 +1,7 @@
 "use client";
 
+import type { LoginInput } from "@illustriober/shared";
+import { loginSchema } from "@illustriober/shared";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,12 +11,15 @@ import { Button } from "@/components/Button";
 import { FormInput } from "@/components/FormInput";
 import { useAuth } from "@/contexts/AuthContext";
 
+type LoginFieldErrors = Partial<Record<keyof LoginInput, string>>;
+
 export default function LoginPage() {
   const router = useRouter();
   const { login, user, loading: authLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<LoginFieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -26,6 +31,17 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    const parsed = loginSchema.safeParse({ email, password });
+    if (!parsed.success) {
+      const flattened = parsed.error.flatten().fieldErrors;
+      setFieldErrors({
+        email: flattened.email?.[0],
+        password: flattened.password?.[0],
+      });
+      return;
+    }
+
+    setFieldErrors({});
     setSubmitting(true);
     try {
       await login(email, password);
@@ -81,26 +97,36 @@ export default function LoginPage() {
               <FormInput
                 type="email"
                 label="Email"
+                name="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setFieldErrors((current) => ({ ...current, email: undefined }));
+                }}
                 required
                 autoComplete="email"
                 disabled={submitting}
+                error={fieldErrors.email}
               />
-
-
-              
 
               <FormInput
                 type="password"
                 label="Password"
+                name="password"
                 placeholder="••••••••"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setFieldErrors((current) => ({
+                    ...current,
+                    password: undefined,
+                  }));
+                }}
                 required
                 autoComplete="current-password"
                 disabled={submitting}
+                error={fieldErrors.password}
               />
 
               <div className="flex items-center justify-between text-sm">

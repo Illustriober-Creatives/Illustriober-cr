@@ -11,5 +11,9 @@
     "lint": "npm run lint --workspaces --if-present",
     "install:skills": "npx antigravity-awesome-skills --path ./.awesome-skills",
     "postinstall": "npm run build --workspace @illustriober/shared"
+  },
+  "dependencies": {
+    "gitnexus": "^1.6.1",
+    "prisma": "^7.8.0"
   }
 }

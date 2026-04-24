@@ -1,5 +1,7 @@
 "use client";
 
+import type { RegisterInput } from "@illustriober/shared";
+import { registerSchema } from "@illustriober/shared";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,6 +11,10 @@ import { Button } from "@/components/Button";
 import { FormInput } from "@/components/FormInput";
 import { useAuth } from "@/contexts/AuthContext";
 
+type RegisterFieldErrors = Partial<Record<keyof RegisterInput, string>> & {
+  confirmPassword?: string;
+};
+
 export default function RegisterPage() {
   const router = useRouter();
   const { register, user, loading: authLoading } = useAuth();
@@ -16,7 +22,9 @@ export default function RegisterPage() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<RegisterFieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -28,6 +36,31 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    const parsed = registerSchema.safeParse({
+      email,
+      password,
+      firstName,
+      lastName,
+    });
+    const nextFieldErrors: RegisterFieldErrors = parsed.success
+      ? {}
+      : {
+          email: parsed.error.flatten().fieldErrors.email?.[0],
+          password: parsed.error.flatten().fieldErrors.password?.[0],
+          firstName: parsed.error.flatten().fieldErrors.firstName?.[0],
+          lastName: parsed.error.flatten().fieldErrors.lastName?.[0],
+        };
+
+    if (confirmPassword !== password) {
+      nextFieldErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (Object.values(nextFieldErrors).some(Boolean)) {
+      setFieldErrors(nextFieldErrors);
+      return;
+    }
+
+    setFieldErrors({});
     setSubmitting(true);
     try {
       await register({ email, password, firstName, lastName });
@@ -83,46 +116,95 @@ export default function RegisterPage() {
                 <FormInput
                   type="text"
                   label="First name"
+                  name="firstName"
                   placeholder="John"
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                    setFieldErrors((current) => ({
+                      ...current,
+                      firstName: undefined,
+                    }));
+                  }}
                   required
                   autoComplete="given-name"
                   disabled={submitting}
+                  error={fieldErrors.firstName}
                 />
                 <FormInput
                   type="text"
                   label="Last name"
+                  name="lastName"
                   placeholder="Doe"
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                    setFieldErrors((current) => ({
+                      ...current,
+                      lastName: undefined,
+                    }));
+                  }}
                   required
                   autoComplete="family-name"
                   disabled={submitting}
+                  error={fieldErrors.lastName}
                 />
               </div>
 
               <FormInput
                 type="email"
                 label="Email"
+                name="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setFieldErrors((current) => ({ ...current, email: undefined }));
+                }}
                 required
                 autoComplete="email"
                 disabled={submitting}
+                error={fieldErrors.email}
               />
 
               <FormInput
                 type="password"
                 label="Password"
+                name="password"
                 placeholder="••••••••"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setFieldErrors((current) => ({
+                    ...current,
+                    password: undefined,
+                    confirmPassword: undefined,
+                  }));
+                }}
                 required
                 autoComplete="new-password"
                 helperText="At least 8 characters"
                 disabled={submitting}
+                error={fieldErrors.password}
+              />
+
+              <FormInput
+                type="password"
+                label="Confirm password"
+                name="confirmPassword"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  setFieldErrors((current) => ({
+                    ...current,
+                    confirmPassword: undefined,
+                  }));
+                }}
+                required
+                autoComplete="new-password"
+                disabled={submitting}
+                error={fieldErrors.confirmPassword}
               />
 
               <div className="text-xs text-foreground/50">
