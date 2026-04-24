@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { Bodoni_Moda, Jost } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -12,18 +11,6 @@ import {
   siteConfig,
 } from "@/lib/seo";
 import "./globals.css";
-
-const bodoni = Bodoni_Moda({
-  variable: "--font-bodoni",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
 
 /**
  * Page metadata for SEO and branding
@@ -68,7 +55,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bodoni.variable} ${jost.variable} h-full antialiased`}
+      className="h-full antialiased"
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

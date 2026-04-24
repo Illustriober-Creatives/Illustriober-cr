@@ -32,6 +32,11 @@
   /* Border colors */
   --border-subtle: rgba(255, 255, 255, 0.05);
   --border-default: rgba(255, 255, 255, 0.08);
+
+  /* Build-safe font stacks that do not depend on remote fetches */
+  --font-bodoni: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-jost: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   
   /* Typography */
   --font-display: var(--font-bodoni), serif;

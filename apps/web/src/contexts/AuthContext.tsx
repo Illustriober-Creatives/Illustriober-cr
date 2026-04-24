@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -36,6 +37,11 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+type AuthSuccessResponse = {
+  accessToken: string;
+  user: AuthUser;
+};
+
 async function readErrorMessage(res: Response): Promise<string> {
   try {
     const data = (await res.json()) as { error?: string; message?: string };
@@ -48,56 +54,140 @@ async function readErrorMessage(res: Response): Promise<string> {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const accessTokenRef = useRef<string | null>(null);
+  const refreshPromiseRef = useRef<Promise<string | null> | null>(null);
 
   const clearSession = useCallback(() => {
+    accessTokenRef.current = null;
     if (typeof window !== "undefined") {
       sessionStorage.removeItem(ACCESS_KEY);
     }
     setUser(null);
   }, []);
 
-  const persistAccess = useCallback((token: string) => {
-    sessionStorage.setItem(ACCESS_KEY, token);
+  const getStoredAccessToken = useCallback(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
+    if (accessTokenRef.current !== null) {
+      return accessTokenRef.current;
+    }
+
+    const token = sessionStorage.getItem(ACCESS_KEY);
+    accessTokenRef.current = token;
+    return token;
   }, []);
+
+  const persistAccess = useCallback((token: string) => {
+    accessTokenRef.current = token;
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(ACCESS_KEY, token);
+    }
+  }, []);
+
+  const storeAuth = useCallback(
+    (data: AuthSuccessResponse) => {
+      persistAccess(data.accessToken);
+      setUser(data.user);
+    },
+    [persistAccess]
+  );
+
+  const refreshAccessToken = useCallback(async () => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
+    if (refreshPromiseRef.current) {
+      return refreshPromiseRef.current;
+    }
+
+    const refreshRequest = (async () => {
+      const res = await fetch("/api/auth/refresh", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        clearSession();
+        return null;
+      }
+
+      const data = (await res.json()) as AuthSuccessResponse;
+      storeAuth(data);
+      return data.accessToken;
+    })().finally(() => {
+      refreshPromiseRef.current = null;
+    });
+
+    refreshPromiseRef.current = refreshRequest;
+    return refreshRequest;
+  }, [clearSession, storeAuth]);
+
+  const authFetch = useCallback(
+    async (input: RequestInfo | URL, init?: RequestInit) => {
+      const requestInit: RequestInit = {
+        credentials: "include",
+        ...init,
+      };
+
+      const send = async (token: string | null) => {
+        const headers = new Headers(requestInit.headers);
+        if (token) {
+          headers.set("Authorization", `Bearer ${token}`);
+        }
+
+        return fetch(input, {
+          ...requestInit,
+          headers,
+        });
+      };
+
+      const token = getStoredAccessToken();
+      let res = await send(token);
+
+      if (res.status !== 401 || !token) {
+        return res;
+      }
+
+      const refreshedToken = await refreshAccessToken();
+      if (!refreshedToken) {
+        return res;
+      }
+
+      res = await send(refreshedToken);
+      return res;
+    },
+    [getStoredAccessToken, refreshAccessToken]
+  );
 
   const refreshSession = useCallback(async () => {
     if (typeof window === "undefined") {
       return;
     }
+
     setLoading(true);
+
     try {
-      const token = sessionStorage.getItem(ACCESS_KEY);
+      const token = getStoredAccessToken();
       if (!token) {
-        setUser(null);
+        clearSession();
         return;
       }
-      let res = await fetch("/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-        credentials: "include",
-      });
-      if (res.ok) {
-        const data = (await res.json()) as { user: AuthUser };
-        setUser(data.user);
-        return;
-      }
-      res = await fetch("/api/auth/refresh", {
-        method: "POST",
-        credentials: "include",
-      });
+
+      const res = await authFetch("/api/auth/me");
       if (!res.ok) {
         clearSession();
         return;
       }
-      const data = (await res.json()) as {
-        accessToken: string;
-        user: AuthUser;
-      };
-      persistAccess(data.accessToken);
+
+      const data = (await res.json()) as { user: AuthUser };
       setUser(data.user);
     } finally {
       setLoading(false);
     }
-  }, [clearSession, persistAccess]);
+  }, [authFetch, clearSession, getStoredAccessToken]);
 
   useEffect(() => {
     void refreshSession();
@@ -114,14 +204,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!res.ok) {
         throw new Error(await readErrorMessage(res));
       }
-      const data = (await res.json()) as {
-        accessToken: string;
-        user: AuthUser;
-      };
-      persistAccess(data.accessToken);
-      setUser(data.user);
+      const data = (await res.json()) as AuthSuccessResponse;
+      storeAuth(data);
     },
-    [persistAccess]
+    [storeAuth]
   );
 
   const register = useCallback(
@@ -140,27 +226,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!res.ok) {
         throw new Error(await readErrorMessage(res));
       }
-      const data = (await res.json()) as {
-        accessToken: string;
-        user: AuthUser;
-      };
-      persistAccess(data.accessToken);
-      setUser(data.user);
+      const data = (await res.json()) as AuthSuccessResponse;
+      storeAuth(data);
     },
-    [persistAccess]
+    [storeAuth]
   );
 
   const logout = useCallback(async () => {
-    const token =
-      typeof window !== "undefined"
-        ? sessionStorage.getItem(ACCESS_KEY)
-        : null;
-    await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
     clearSession();
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch {
+      // Local session state is already cleared even if the network request fails.
+    }
   }, [clearSession]);
 
   const value = useMemo(

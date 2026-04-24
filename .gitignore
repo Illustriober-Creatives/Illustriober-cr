@@ -4,7 +4,6 @@ dist/
 build/
 .next/
 .turbo/
-package-lock.json
 
 # Environment
 .env
@@ -32,3 +31,4 @@ Inspirations/
 
 # Agent Skills
 #my-skills/my-skills/
+.gitnexus

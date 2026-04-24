@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { Button } from './Button';
 import { ModeToggle } from './ModeToggle';
@@ -13,6 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
  */
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
   const { user, logout } = useAuth();
 
   // Navigation links for the site
@@ -30,6 +32,12 @@ export function Navbar() {
    */
   const handleLinkClick = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    setIsMenuOpen(false);
+    await logout();
+    router.replace('/login');
   };
 
   return (
@@ -78,7 +86,7 @@ export function Navbar() {
                   variant="secondary"
                   size="sm"
                   className="rounded-xl"
-                  onClick={() => void logout()}
+                  onClick={() => void handleLogout()}
                 >
                   Sign out
                 </Button>
@@ -147,10 +155,7 @@ export function Navbar() {
                     variant="secondary"
                     size="md"
                     className="w-full rounded-xl"
-                    onClick={() => {
-                      handleLinkClick();
-                      void logout();
-                    }}
+                    onClick={() => void handleLogout()}
                   >
                     Sign out
                   </Button>
