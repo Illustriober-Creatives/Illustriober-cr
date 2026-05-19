@@ -106,7 +106,7 @@ export default function EnquiryDetailPage() {
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-8 max-w-6xl">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="mb-2 flex items-center gap-2">
@@ -158,38 +158,80 @@ export default function EnquiryDetailPage() {
         </div>
       )}
 
-      {/* Detail fields */}
-      <div className="grid gap-4">
-        {[
-          ["Status", enquiry.status],
-          ["Project type", enquiry.projectType],
-          ["Budget", enquiry.budgetRange ?? "—"],
-          ["Timeline", enquiry.timeline ?? "—"],
-          ["Phone", enquiry.phone ?? "—"],
-          ["Referral source", enquiry.referralSource ?? "—"],
-          ["Submitted", new Date(enquiry.createdAt).toLocaleString()],
-        ].map(([label, value]) => (
-          <div key={label} className="flex gap-4 rounded-xl border border-border bg-muted/30 px-5 py-4">
-            <span className="w-36 shrink-0 text-sm text-muted-foreground">{label}</span>
-            <span className="text-sm text-foreground">{value}</span>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Left Column - Meta & Info */}
+        <div className="space-y-6 lg:col-span-1">
+          {/* Identity Card */}
+          <div className="glass-card rounded-2xl bg-surface/30 p-6">
+            <div className="mb-4 flex items-center gap-2 border-b border-zinc-800/50 pb-3">
+              <User className="h-4 w-4 text-accent" />
+              <h2 className="text-sm font-bold uppercase tracking-widest text-zinc-400">Client Identity</h2>
+            </div>
+            <div className="space-y-4">
+              {[
+                { label: "Full Name", value: `${enquiry.firstName} ${enquiry.lastName}` },
+                { label: "Email Address", value: enquiry.email },
+                { label: "Phone Number", value: enquiry.phone ?? "Not provided" },
+                { label: "Company", value: enquiry.company ?? "Individual" },
+              ].map((item) => (
+                <div key={item.label}>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{item.label}</p>
+                  <p className="mt-0.5 text-base font-medium text-foreground">{item.value}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
 
-        <div className="rounded-xl border border-border bg-muted/30 px-5 py-4">
-          <p className="mb-2 text-sm text-muted-foreground">Description</p>
-          <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
-            {enquiry.description}
-          </p>
+          {/* Specs Card */}
+          <div className="glass-card rounded-2xl bg-surface/30 p-6">
+            <div className="mb-4 flex items-center gap-2 border-b border-zinc-800/50 pb-3">
+              <Briefcase className="h-4 w-4 text-accent" />
+              <h2 className="text-sm font-bold uppercase tracking-widest text-zinc-400">Project Specs</h2>
+            </div>
+            <div className="space-y-4">
+              {[
+                { label: "Project Type", value: enquiry.projectType },
+                { label: "Budget Range", value: enquiry.budgetRange ?? "Unspecified" },
+                { label: "Timeline", value: enquiry.timeline ?? "Flexible" },
+                { label: "Referral Source", value: enquiry.referralSource ?? "Direct" },
+                { label: "Submitted On", value: new Date(enquiry.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' }) },
+              ].map((item) => (
+                <div key={item.label}>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{item.label}</p>
+                  <p className="mt-0.5 text-base font-medium text-foreground">{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {enquiry.adminNotes && (
-          <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 px-5 py-4">
-            <p className="mb-2 text-sm text-yellow-500/70">Admin notes</p>
-            <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
-              {enquiry.adminNotes}
-            </p>
+        {/* Right Column - Content */}
+        <div className="lg:col-span-2">
+          <div className="glass-card h-full rounded-2xl bg-surface/30 p-8">
+            <div className="mb-6 flex items-center gap-2 border-b border-zinc-800/50 pb-4">
+              <Info className="h-5 w-5 text-accent" />
+              <h2 className="text-lg font-bold text-foreground">Project Description</h2>
+            </div>
+            
+            <div className="prose prose-invert max-w-none">
+              <p className="whitespace-pre-wrap text-lg leading-relaxed text-foreground/80">
+                {enquiry.description}
+              </p>
+            </div>
+
+            {enquiry.adminNotes && (
+              <div className="mt-12 rounded-xl border border-accent/20 bg-accent/5 p-6">
+                <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-accent">
+                  <Info className="h-3 w-3" />
+                  Admin Notes
+                </p>
+                <p className="text-sm leading-relaxed text-foreground/70">
+                  {enquiry.adminNotes}
+                </p>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
