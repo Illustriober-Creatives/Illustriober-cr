@@ -162,15 +162,23 @@ router.post(
       include: { user: true },
     });
 
-    if (
-      !record ||
-      record.revokedAt ||
-      record.expiresAt < new Date() ||
-      !record.user.isActive
-    ) {
+    if (!record || record.expiresAt < new Date() || !record.user.isActive) {
       res.clearCookie(REFRESH_COOKIE_NAME, { path: "/" });
       throw new AppError(401, "Invalid or expired session");
     }
+
+    // Replay attack: token already rotated — revoke all sessions for this user
+    if (record.revokedAt) {
+      await prisma.refreshToken.updateMany({
+        where: { userId: record.user.id },
+        data: { revokedAt: new Date() },
+      });
+      res.clearCookie(REFRESH_COOKIE_NAME, { path: "/" });
+      throw new AppError(401, "Invalid or expired session");
+    }
+
+    // Rotate: revoke old token family and issue a new one
+    await issueRefreshCookie(res, record.user.id);
 
     const accessToken = signAccessToken({
       sub: record.user.id,

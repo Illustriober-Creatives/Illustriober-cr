@@ -177,6 +177,52 @@ describe("auth routes", () => {
     );
   });
 
+  it("rotates the refresh token on a successful refresh", async () => {
+    prismaMock.refreshToken.findUnique.mockResolvedValueOnce({
+      token: "old-refresh-token",
+      revokedAt: null,
+      expiresAt: new Date(Date.now() + 60_000),
+      user: userFixture,
+    });
+
+    const response = await request(app)
+      .post("/api/auth/refresh")
+      .set("Cookie", `${REFRESH_COOKIE_NAME}=old-refresh-token`);
+
+    expect(response.status).toBe(200);
+    expect(prismaMock.refreshToken.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ userId: userFixture.id, revokedAt: null }),
+        data: { revokedAt: expect.any(Date) },
+      })
+    );
+    expect(prismaMock.refreshToken.create).toHaveBeenCalled();
+    expect(response.headers["set-cookie"]).toEqual(
+      expect.arrayContaining([expect.stringContaining(`${REFRESH_COOKIE_NAME}=`)])
+    );
+  });
+
+  it("revokes all user sessions when a replayed (stolen) token is detected", async () => {
+    prismaMock.refreshToken.findUnique.mockResolvedValueOnce({
+      token: "stolen-old-token",
+      revokedAt: new Date(Date.now() - 60_000),
+      expiresAt: new Date(Date.now() + 60_000),
+      user: userFixture,
+    });
+
+    const response = await request(app)
+      .post("/api/auth/refresh")
+      .set("Cookie", `${REFRESH_COOKIE_NAME}=stolen-old-token`);
+
+    expect(response.status).toBe(401);
+    expect(prismaMock.refreshToken.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ userId: userFixture.id }),
+        data: { revokedAt: expect.any(Date) },
+      })
+    );
+  });
+
   it("rejects refresh after logout revokes the session", async () => {
     prismaMock.refreshToken.updateMany.mockResolvedValueOnce({ count: 1 });
     prismaMock.refreshToken.findUnique.mockResolvedValueOnce({
