@@ -17,6 +17,7 @@ import { rateLimit } from "./middleware/rateLimit";
 import authRoutes from "./routes/auth";
 import enquiryRoutes from "./routes/enquiries";
 import inviteRoutes from "./routes/invites";
+import adminRoutes from "./routes/admin";
 
 // Load environment variables
 dotenv.config();
@@ -99,6 +100,9 @@ app.use("/api/enquiries", enquiryRoutes);
 
 // Invite endpoints: admin sends invites, clients accept them
 app.use("/api/invites", inviteRoutes);
+
+// Admin endpoints: enquiry management, lead conversion
+app.use("/api/admin", adminRoutes);
 
 // Root endpoint for quick API reachability checks
 app.get("/", (_req: Request, res: Response) => {
