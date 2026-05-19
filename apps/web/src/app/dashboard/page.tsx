@@ -1,14 +1,43 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Container } from "@/components/Container";
 import { SectionWrapper } from "@/components/SectionWrapper";
 import { Button } from "@/components/Button";
 import { useAuth } from "@/contexts/AuthContext";
 
+interface Project {
+  id: string;
+  name: string;
+  slug: string;
+  status: string;
+  createdAt: string;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout, fetchWithAuth } = useAuth();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadProjects() {
+      if (!user) return;
+      try {
+        const res = await fetchWithAuth("/api/projects");
+        if (res.ok) {
+          const data = await res.json();
+          setProjects(data.projects);
+        }
+      } catch (err) {
+        console.error("Failed to load projects", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    void loadProjects();
+  }, [user, fetchWithAuth]);
 
   const handleLogout = async () => {
     await logout();
@@ -37,9 +66,48 @@ export default function DashboardPage() {
               <span className="text-zinc-300">{user.role}</span>
             </p>
             <p className="max-w-2xl text-base leading-relaxed text-zinc-500 md:text-lg">
-              Project tracking, tickets, and deliverables will appear here in
-              upcoming releases. This area confirms your session is working.
+              Project tracking, tickets, and deliverables will appear here.
+              Click a project to see its progress and tickets.
             </p>
+
+            <div className="mt-12 space-y-4">
+              <h2 className="text-xl font-bold text-white">Your Projects</h2>
+              {loading ? (
+                <p className="text-zinc-500">Loading your projects...</p>
+              ) : projects.length === 0 ? (
+                <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-8 text-center">
+                  <p className="text-zinc-500">No active projects found.</p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {projects.map((project) => (
+                    <div
+                      key={project.id}
+                      className="group flex items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 transition-all hover:border-zinc-700 hover:bg-zinc-900/50"
+                    >
+                      <div>
+                        <h3 className="text-lg font-semibold text-white group-hover:text-orange-500 transition-colors">
+                          {project.name}
+                        </h3>
+                        <p className="text-sm text-zinc-500 uppercase tracking-wider">
+                          Status: <span className="text-zinc-300">{project.status}</span>
+                        </p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        className="rounded-xl text-xs"
+                        onClick={() => router.push(`/dashboard/projects/${project.slug}`)}
+                      >
+                        View Project
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <div className="mt-10 flex flex-wrap gap-4">
               <Button
                 type="button"

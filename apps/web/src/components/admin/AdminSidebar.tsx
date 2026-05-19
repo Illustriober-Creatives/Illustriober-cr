@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const NAV = [
   { href: "/admin/enquiries", label: "Enquiries" },
+  { href: "/admin/projects", label: "Projects" },
 ];
 
 export function AdminSidebar() {
@@ -19,7 +20,7 @@ export function AdminSidebar() {
   };
 
   return (
-    <aside className="flex h-full w-56 flex-col border-r border-zinc-800 bg-zinc-950 px-4 py-8">
+    <aside className="flex h-full w-56 flex-col border-r border-glass-border bg-surface px-4 py-8">
       <p className="mb-8 text-xs font-bold uppercase tracking-widest text-accent">
         Admin
       </p>
@@ -34,7 +35,7 @@ export function AdminSidebar() {
               className={`rounded-lg px-3 py-2 text-sm transition-colors ${
                 active
                   ? "bg-accent/10 text-accent font-medium"
-                  : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                  : "text-foreground/60 hover:bg-glass-bg hover:text-foreground"
               }`}
             >
               {label}
@@ -45,7 +46,7 @@ export function AdminSidebar() {
 
       <button
         onClick={() => void handleLogout()}
-        className="mt-4 rounded-lg px-3 py-2 text-left text-sm text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+        className="mt-4 rounded-lg px-3 py-2 text-left text-sm text-foreground/40 transition-colors hover:bg-glass-bg hover:text-foreground/80"
       >
         Sign out
       </button>

@@ -32,3 +32,13 @@ export const loginSchema = z.object({
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+
+export const createProjectSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  slug: z.string().min(2, "Slug must be at least 2 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  clientId: z.string().min(1, "Client ID is required"),
+  status: z.enum(["PLANNING", "ACTIVE", "ON_HOLD", "COMPLETE", "CANCELLED"]).optional(),
+});
+
+export type CreateProjectInput = z.infer<typeof createProjectSchema>;

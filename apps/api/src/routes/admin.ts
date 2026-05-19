@@ -91,4 +91,57 @@ router.post(
   })
 );
 
+// GET /api/admin/clients
+router.get(
+  "/clients",
+  ...adminOnly,
+  asyncHandler(async (_req: Request, res: Response) => {
+    const clients = await prisma.user.findMany({
+      where: { role: "CLIENT" },
+      select: { id: true, firstName: true, lastName: true, email: true },
+      orderBy: { createdAt: "desc" },
+    });
+    res.json({ success: true, clients });
+  })
+);
+
+// GET /api/admin/projects
+router.get(
+  "/projects",
+  ...adminOnly,
+  asyncHandler(async (_req: Request, res: Response) => {
+    const projects = await prisma.project.findMany({
+      include: { client: { select: { firstName: true, lastName: true, email: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+    res.json({ success: true, projects });
+  })
+);
+
+// POST /api/admin/projects
+router.post(
+  "/projects",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const { createProjectSchema } = await import("@illustriober/shared");
+    const data = createProjectSchema.parse(req.body);
+    
+    // verify client exists
+    const client = await prisma.user.findUnique({ where: { id: data.clientId, role: "CLIENT" } });
+    if (!client) throw new AppError(404, "Client not found");
+
+    const project = await prisma.project.create({
+      data: {
+        name: data.name,
+        slug: data.slug,
+        description: data.description,
+        status: data.status || "PLANNING",
+        clientId: data.clientId,
+      }
+    });
+
+    res.status(201).json({ success: true, project });
+  })
+);
+
 export default router;

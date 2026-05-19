@@ -5,6 +5,7 @@
  */
 
 import { Request, Response, NextFunction } from "express";
+import { ZodError } from "zod";
 
 /**
  * Application error class with status code and message
@@ -41,6 +42,17 @@ export function errorHandler(
       success: false,
       error: err.message,
       status: err.statusCode,
+    });
+    return;
+  }
+
+  // Handle Zod validation errors
+  if (err instanceof ZodError) {
+    res.status(400).json({
+      success: false,
+      error: "Validation failed",
+      details: err.issues.map((e) => ({ path: e.path, message: e.message })),
+      status: 400,
     });
     return;
   }

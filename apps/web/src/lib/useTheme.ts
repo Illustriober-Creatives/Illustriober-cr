@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { resolveTheme, type ThemeMode } from './theme';
+import { type ThemeMode } from './theme';
 
 /**
  * useThemeMode Hook
@@ -14,7 +14,9 @@ export function useThemeMode() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    // Prevent hydration mismatch by deferring theme initialization
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const isDark = resolvedTheme === 'dark';

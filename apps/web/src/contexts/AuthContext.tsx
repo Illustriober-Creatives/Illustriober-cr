@@ -24,7 +24,7 @@ export type AuthUser = {
 type AuthContextValue = {
   user: AuthUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthUser>;
   register: (input: {
     email: string;
     password: string;
@@ -33,6 +33,7 @@ type AuthContextValue = {
   }) => Promise<void>;
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
+  fetchWithAuth: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -125,7 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return refreshRequest;
   }, [clearSession, storeAuth]);
 
-  const authFetch = useCallback(
+  const fetchWithAuth = useCallback(
     async (input: RequestInfo | URL, init?: RequestInit) => {
       const requestInit: RequestInit = {
         credentials: "include",
@@ -176,7 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const res = await authFetch("/api/auth/me");
+      const res = await fetchWithAuth("/api/auth/me");
       if (!res.ok) {
         clearSession();
         return;
@@ -187,14 +188,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
-  }, [authFetch, clearSession, getStoredAccessToken]);
+  }, [fetchWithAuth, clearSession, getStoredAccessToken]);
 
   useEffect(() => {
     void refreshSession();
   }, [refreshSession]);
 
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string): Promise<AuthUser> => {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -206,6 +207,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       const data = (await res.json()) as AuthSuccessResponse;
       storeAuth(data);
+      return data.user;
     },
     [storeAuth]
   );
@@ -252,8 +254,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       logout,
       refreshSession,
+      fetchWithAuth,
     }),
-    [user, loading, login, register, logout, refreshSession]
+    [user, loading, login, register, logout, refreshSession, fetchWithAuth]
   );
 
   return (
