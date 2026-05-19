@@ -11,6 +11,7 @@ import dotenv from "dotenv";
 // Middleware imports
 import { errorHandler } from "./middleware/errorHandler";
 import { requestLogger } from "./middleware/requestLogger";
+import { rateLimit } from "./middleware/rateLimit";
 
 // Route imports
 import authRoutes from "./routes/auth";
@@ -89,7 +90,8 @@ app.use(express.urlencoded({ extended: true }));
 // ─────────────────────────────────────────
 
 // Authentication endpoints: login, signup, logout
-app.use("/api/auth", authRoutes);
+// 10 requests per 15 minutes per IP — covers brute-force on login/register/refresh
+app.use("/api/auth", rateLimit({ windowMs: 15 * 60 * 1000, maxRequests: 10 }), authRoutes);
 
 // Enquiry endpoints: form submissions (public)
 app.use("/api/enquiries", enquiryRoutes);

@@ -69,6 +69,10 @@ export function rateLimit(options: RateLimitOptions) {
   };
 }
 
+export function resetRateLimitStore() {
+  for (const key in store) delete store[key];
+}
+
 /**
  * Cleanup old entries from store (prevent memory leak)
  * Run this periodically in production
