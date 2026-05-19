@@ -16,6 +16,7 @@ import { rateLimit } from "./middleware/rateLimit";
 // Route imports
 import authRoutes from "./routes/auth";
 import enquiryRoutes from "./routes/enquiries";
+import inviteRoutes from "./routes/invites";
 
 // Load environment variables
 dotenv.config();
@@ -95,6 +96,9 @@ app.use("/api/auth", rateLimit({ windowMs: 15 * 60 * 1000, maxRequests: 10 }), a
 
 // Enquiry endpoints: form submissions (public)
 app.use("/api/enquiries", enquiryRoutes);
+
+// Invite endpoints: admin sends invites, clients accept them
+app.use("/api/invites", inviteRoutes);
 
 // Root endpoint for quick API reachability checks
 app.get("/", (_req: Request, res: Response) => {

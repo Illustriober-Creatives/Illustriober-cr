@@ -93,6 +93,39 @@ export async function sendEnquiryEmails(params: {
   return { success: true };
 }
 
+export async function sendInviteEmail(params: {
+  to: string;
+  inviteUrl: string;
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = getResend();
+  const from = process.env.ENQUIRY_FROM_EMAIL;
+
+  if (!resend || !from) {
+    console.warn("[email] Invite email skipped — RESEND_API_KEY or ENQUIRY_FROM_EMAIL not set");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  const { data, error } = await resend.emails.send({
+    from,
+    to: params.to,
+    subject: "You've been invited to Illustriober Creatives",
+    html: `
+      <p>You've been invited to the Illustriober Creatives client portal.</p>
+      <p><a href="${params.inviteUrl}">Accept your invitation</a></p>
+      <p>This link expires in 7 days.</p>
+    `,
+    tags: [{ name: "type", value: "client-invite" }],
+  });
+
+  if (error) {
+    console.error("[email] Failed to send invite:", error);
+    return { success: false, error: error.message };
+  }
+
+  console.log(`[email] Invite sent (ID: ${data?.id})`);
+  return { success: true };
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
