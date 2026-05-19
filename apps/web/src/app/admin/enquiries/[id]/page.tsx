@@ -110,12 +110,12 @@ export default function EnquiryDetailPage() {
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="mb-2 flex items-center gap-2">
-            <Link href="/admin/enquiries" className="group flex items-center gap-1 text-xs font-medium text-zinc-500 transition-colors hover:text-accent">
+            <Link href="/admin/enquiries" className="group flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-accent">
               <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
               Back to Enquiries
             </Link>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             {enquiry.firstName} {enquiry.lastName}
           </h1>
         </div>
@@ -145,8 +145,8 @@ export default function EnquiryDetailPage() {
       {convertResult && (
         <div className="mb-6 rounded-xl border border-green-500/30 bg-green-500/10 p-5">
           <p className="mb-2 font-semibold text-green-400">Invite sent to {convertResult.email}</p>
-          <p className="mb-3 text-sm text-zinc-400">Share this link if the email doesn&apos;t arrive:</p>
-          <code className="block rounded-lg bg-zinc-900 px-4 py-2 text-xs text-zinc-300 break-all select-all">
+          <p className="mb-3 text-sm text-muted-foreground">Share this link if the email doesn&apos;t arrive:</p>
+          <code className="block rounded-lg bg-muted px-4 py-2 text-xs text-foreground break-all select-all">
             {baseUrl}/invite/{convertResult.inviteToken}
           </code>
         </div>
@@ -169,15 +169,15 @@ export default function EnquiryDetailPage() {
           ["Referral source", enquiry.referralSource ?? "—"],
           ["Submitted", new Date(enquiry.createdAt).toLocaleString()],
         ].map(([label, value]) => (
-          <div key={label} className="flex gap-4 rounded-xl border border-zinc-800 bg-zinc-900/30 px-5 py-4">
-            <span className="w-36 shrink-0 text-sm text-zinc-500">{label}</span>
-            <span className="text-sm text-zinc-200">{value}</span>
+          <div key={label} className="flex gap-4 rounded-xl border border-border bg-muted/30 px-5 py-4">
+            <span className="w-36 shrink-0 text-sm text-muted-foreground">{label}</span>
+            <span className="text-sm text-foreground">{value}</span>
           </div>
         ))}
 
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 px-5 py-4">
-          <p className="mb-2 text-sm text-zinc-500">Description</p>
-          <p className="text-sm text-zinc-200 whitespace-pre-wrap leading-relaxed">
+        <div className="rounded-xl border border-border bg-muted/30 px-5 py-4">
+          <p className="mb-2 text-sm text-muted-foreground">Description</p>
+          <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
             {enquiry.description}
           </p>
         </div>
@@ -185,7 +185,7 @@ export default function EnquiryDetailPage() {
         {enquiry.adminNotes && (
           <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 px-5 py-4">
             <p className="mb-2 text-sm text-yellow-500/70">Admin notes</p>
-            <p className="text-sm text-zinc-200 whitespace-pre-wrap leading-relaxed">
+            <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
               {enquiry.adminNotes}
             </p>
           </div>
