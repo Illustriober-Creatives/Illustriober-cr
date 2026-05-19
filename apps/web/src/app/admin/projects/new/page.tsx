@@ -54,6 +54,7 @@ export default function NewProjectPage() {
     try {
       const res = await fetchWithAuth("/api/admin/projects", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
