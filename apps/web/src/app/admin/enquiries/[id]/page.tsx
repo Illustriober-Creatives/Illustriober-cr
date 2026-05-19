@@ -4,6 +4,19 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/Button";
+import { 
+  User, 
+  Mail, 
+  Phone, 
+  Building, 
+  Briefcase, 
+  Coins, 
+  Calendar, 
+  Info, 
+  Clock, 
+  ArrowLeft,
+  CheckCircle2
+} from "lucide-react";
 
 type Enquiry = {
   id: string;
@@ -94,35 +107,38 @@ export default function EnquiryDetailPage() {
 
   return (
     <div className="p-8 max-w-3xl">
-      <div className="mb-6 flex items-center gap-3">
-        <Link href="/admin/enquiries" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
-          ← Enquiries
-        </Link>
-        <span className="text-zinc-700">/</span>
-        <span className="text-sm text-zinc-400">{enquiry.firstName} {enquiry.lastName}</span>
-      </div>
-
-      <div className="mb-8 flex items-start justify-between gap-4">
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">
+          <div className="mb-2 flex items-center gap-2">
+            <Link href="/admin/enquiries" className="group flex items-center gap-1 text-xs font-medium text-zinc-500 transition-colors hover:text-accent">
+              <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
+              Back to Enquiries
+            </Link>
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-white">
             {enquiry.firstName} {enquiry.lastName}
           </h1>
-          <p className="mt-1 text-sm text-zinc-400">{enquiry.email}</p>
-          {enquiry.company && <p className="text-sm text-zinc-500">{enquiry.company}</p>}
         </div>
 
-        {canConvert && !convertResult && (
-          <Button
-            type="button"
-            variant="primary"
-            size="md"
-            className="rounded-xl shrink-0"
-            disabled={converting}
-            onClick={() => void handleConvert()}
-          >
-            {converting ? "Converting…" : "Convert to client"}
-          </Button>
-        )}
+        <div className="flex items-center gap-3">
+          {canConvert && !convertResult && (
+            <Button
+              type="button"
+              variant="primary"
+              className="rounded-xl px-6"
+              disabled={converting}
+              onClick={() => void handleConvert()}
+            >
+              {converting ? "Converting..." : "Convert to Client"}
+            </Button>
+          )}
+          {enquiry.status === "CONVERTED" && (
+            <div className="flex items-center gap-2 rounded-full bg-green-500/10 px-4 py-1.5 text-xs font-semibold text-green-400 border border-green-500/20">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              CONVERTED
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Conversion result banner */}
