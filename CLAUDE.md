@@ -34,6 +34,14 @@ npm run build --workspace apps/api    # Compiles TypeScript to dist/
 npm run build --workspace @illustriober/shared   # Must build before api
 ```
 
+**Testing (API workspace):**
+```bash
+npm run test --workspace apps/api           # Run all tests
+npx vitest run src/routes/auth.test.ts      # Run a single test file (from apps/api/)
+```
+
+Tests use vitest + supertest with prisma mocked via `vi.hoisted`. There are no frontend tests.
+
 **Linting:**
 ```bash
 npm run lint                  # Lint all workspaces
@@ -67,23 +75,25 @@ curl -I http://localhost:3000/
 ### Frontend (apps/web)
 
 - **Framework:** Next.js 16 with App Router, React 19, TypeScript, Tailwind CSS 4
-- **Route Groups:**
-  - `(public)/` — Marketing pages (/, /about, /services, /work, /tech-stack, /enquiry)
-  - `(auth)/` — Login, register, forgot-password
-  - `dashboard/` — Client portal (auth-gated)
-  - `admin/` — Admin panel (admin role only)
+- **Routes** (flat under `src/app/`):
+  - Marketing: `/`, `/about`, `/services`, `/work`, `/tech-stack`, `/enquiry`, `/thank-you`
+  - Auth: `/login`, `/register`, `/forgot-password`
+  - Portal: `/dashboard` (auth-gated)
+  - Legal: `/privacy`, `/terms`
 - **Key Files:**
   - `next.config.ts` — API proxy rewrites, image optimization, security headers
   - `src/contexts/AuthContext.tsx` — Client-side auth state, access token persistence, refresh recovery
   - `src/components/auth/ProtectedRoute.tsx` — Client-side route guard for authenticated areas
+  - `src/lib/` — SEO helpers, analytics, theme utilities, image fallback
 
 ### Backend (apps/api)
 
 - **Framework:** Express, TypeScript, Prisma ORM, PostgreSQL
 - **Entry:** `src/index.ts` → `src/app.ts` (middleware registration)
-- **Routes:** `src/routes/` (auth.ts, enquiries.ts)
-- **Middleware:** `src/middleware/` — authenticate.ts (JWT), authorize.ts (roles), validateBody.ts (Zod)
-- **Structure:** Routes → Controllers → Prisma Client → PostgreSQL
+- **Routes:** `src/routes/` — `auth.ts`, `enquiries.ts` (routes contain business logic directly, no separate controllers layer)
+- **Middleware:** `src/middleware/` — `authenticate.ts` (JWT Bearer), `authorize.ts` (role-based), `validateBody.ts` (Zod), `errorHandler.ts`, `requestLogger.ts`, `rateLimit.ts`
+- **Lib:** `src/lib/` — `prisma.ts` (singleton + URL resolver), `jwt.ts`, `cookies.ts`, `email.ts`
+- **CORS:** Dynamically allows localhost variants, configured origins, and `*.vercel.app` preview deployments
 
 ### Shared Package (packages/shared)
 
@@ -131,6 +141,8 @@ DATABASE_URL=postgresql://postgres:postgres@localhost:5432/illustriober_local?sc
 DIRECT_DATABASE_URL=
 JWT_SECRET=...
 RESEND_API_KEY=...           # Optional (email)
+ENQUIRY_FROM_EMAIL="Illustriober <onboarding@resend.dev>"  # Optional
+ENQUIRY_ADMIN_EMAIL=you@yourdomain.com                     # Optional
 ALLOW_PUBLIC_REGISTRATION=true
 ```
 
@@ -213,6 +225,7 @@ Managed by Prisma. See `apps/api/prisma/schema.prisma`. Key tables:
 ## API Endpoints
 
 ```
+GET  /                     # API info + docs links
 GET  /health
 POST /api/enquiries
 POST /api/auth/register
