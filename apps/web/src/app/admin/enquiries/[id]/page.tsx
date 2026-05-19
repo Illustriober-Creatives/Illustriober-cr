@@ -143,12 +143,36 @@ export default function EnquiryDetailPage() {
 
       {/* Conversion result banner */}
       {convertResult && (
-        <div className="mb-6 rounded-xl border border-green-500/30 bg-green-500/10 p-5">
-          <p className="mb-2 font-semibold text-green-400">Invite sent to {convertResult.email}</p>
-          <p className="mb-3 text-sm text-muted-foreground">Share this link if the email doesn&apos;t arrive:</p>
-          <code className="block rounded-lg bg-muted px-4 py-2 text-xs text-foreground break-all select-all">
-            {baseUrl}/invite/{convertResult.inviteToken}
-          </code>
+        <div className="mb-8 overflow-hidden rounded-2xl border border-green-500/30 bg-green-500/5">
+          <div className="flex items-center gap-3 bg-green-500/10 px-6 py-4">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-400">
+              <CheckCircle2 className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-green-400 uppercase tracking-wide">Client Successfully Converted</p>
+              <p className="text-xs text-muted-foreground">An invitation email has been sent to {convertResult.email}</p>
+            </div>
+          </div>
+          <div className="p-6">
+            <p className="mb-3 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Direct Invitation Link</p>
+            <div className="flex items-center gap-2 rounded-xl bg-black/40 p-1 pl-4 border border-white/5">
+              <code className="flex-1 text-sm text-zinc-300 break-all truncate">
+                {baseUrl}/invite/{convertResult.inviteToken}
+              </code>
+              <Button 
+                type="button"
+                variant="secondary" 
+                size="sm" 
+                className="rounded-lg text-xs"
+                onClick={() => {
+                  void navigator.clipboard.writeText(`${baseUrl}/invite/${convertResult.inviteToken}`);
+                  // Optional: alert or toast
+                }}
+              >
+                Copy Link
+              </Button>
+            </div>
+          </div>
         </div>
       )}
 
