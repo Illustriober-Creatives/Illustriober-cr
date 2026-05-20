@@ -111,6 +111,25 @@ export default function DashboardPage() {
             <div className="mt-10 flex flex-wrap gap-4">
               <Button
                 type="button"
+                variant="primary"
+                className="rounded-xl px-8"
+                onClick={() => router.push("/dashboard/tickets")}
+              >
+                Support Tickets
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                className="rounded-xl px-8"
+                onClick={() => router.push("/dashboard/tickets/new")}
+              >
+                Submit New Ticket
+              </Button>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-4 border-t border-zinc-800/50 pt-10">
+              <Button
+                type="button"
                 variant="secondary"
                 className="rounded-xl"
                 onClick={() => router.push("/")}
