@@ -249,6 +249,169 @@ html.no-transition *:after {
   border-color: rgba(var(--accent-rgb), 0.4);
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   NAVBAR & LAYOUT SYSTEM
+   Fixed navbar with consistent spacing across all pages
+────────────────────────────────────────────────────────────────────────────── */
+
+/* Navbar height constants */
+:root {
+  --navbar-height: 5.5rem; /* Approx 88px for fixed navbar */
+  --navbar-mobile-height: 4.5rem; /* Smaller on mobile */
+}
+
+/* Main content wrapper - Accounts for fixed navbar */
+main {
+  padding-top: var(--navbar-height);
+}
+
+@media (max-width: 768px) {
+  main {
+    padding-top: var(--navbar-mobile-height);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   PAGE SPACING SYSTEM
+   Use these classes on page containers for consistent spacing
+────────────────────────────────────────────────────────────────────────────── */
+
+/* Small page - Used for auth pages, simple dashboards */
+.page-small {
+  min-height: calc(100vh - var(--navbar-height));
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Medium page - Default for most content pages */
+.page-medium {
+  min-height: calc(100vh - var(--navbar-height));
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+/* Large page - For hero sections, landing pages */
+.page-large {
+  min-height: calc(100vh - var(--navbar-height));
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media (max-width: 768px) {
+  .page-small {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .page-medium {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .page-large {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   SECTION SPACING SYSTEM
+   Use these classes on <section> elements within pages
+────────────────────────────────────────────────────────────────────────────── */
+
+/* Minimal section - Tight spacing for lists, simple content */
+.section-xs {
+  padding: 1rem 0;
+}
+
+/* Small section - Sidebar content, supplementary sections */
+.section-sm {
+  padding: 2rem 0;
+}
+
+/* Medium section - Default content sections */
+.section-md {
+  padding: 3rem 0;
+}
+
+/* Large section - Hero, highlight sections */
+.section-lg {
+  padding: 4rem 0;
+}
+
+/* XL section - Major page divisions */
+.section-xl {
+  padding: 6rem 0;
+}
+
+@media (max-width: 768px) {
+  .section-xs { padding: 0.5rem 0; }
+  .section-sm { padding: 1rem 0; }
+  .section-md { padding: 1.5rem 0; }
+  .section-lg { padding: 2rem 0; }
+  .section-xl { padding: 3rem 0; }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   SPACING UTILITIES
+   Use for fine-grained control of gaps and margins
+────────────────────────────────────────────────────────────────────────────── */
+
+/* Gap utilities for flex containers */
+.gap-xs { gap: 0.5rem; }
+.gap-sm { gap: 1rem; }
+.gap-md { gap: 1.5rem; }
+.gap-lg { gap: 2rem; }
+.gap-xl { gap: 3rem; }
+
+/* Padding utilities for containers */
+.p-xs { padding: 0.5rem; }
+.p-sm { padding: 1rem; }
+.p-md { padding: 1.5rem; }
+.p-lg { padding: 2rem; }
+.p-xl { padding: 3rem; }
+
+/* Margin top - Create breathing room above elements */
+.mt-xs { margin-top: 0.5rem; }
+.mt-sm { margin-top: 1rem; }
+.mt-md { margin-top: 1.5rem; }
+.mt-lg { margin-top: 2rem; }
+.mt-xl { margin-top: 3rem; }
+
+/* Margin bottom - Create breathing room below elements */
+.mb-xs { margin-bottom: 0.5rem; }
+.mb-sm { margin-bottom: 1rem; }
+.mb-md { margin-bottom: 1.5rem; }
+.mb-lg { margin-bottom: 2rem; }
+.mb-xl { margin-bottom: 3rem; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   CONTENT CONTAINERS
+   Use these for consistent max-width and centering
+────────────────────────────────────────────────────────────────────────────── */
+
+.content-narrow {
+  max-width: 28rem; /* 448px */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.content-normal {
+  max-width: 42rem; /* 672px */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.content-wide {
+  max-width: 56rem; /* 896px */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.content-full {
+  max-width: 100%;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

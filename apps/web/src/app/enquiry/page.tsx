@@ -11,7 +11,7 @@ import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { SectionWrapper } from "@/components/SectionWrapper";
 import { FormInput } from "@/components/FormInput";
-import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Send } from "lucide-react";
 
 export default function EnquiryPage() {
   const router = useRouter();
@@ -25,7 +25,6 @@ export default function EnquiryPage() {
     description: "",
   });
 
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (
@@ -47,7 +46,6 @@ export default function EnquiryPage() {
       });
 
       if (response.ok) {
-        const data = await response.json();
         // Redirect to thank you page with email param
         router.push(`/thank-you?email=${encodeURIComponent(formData.email)}`);
       } else {
