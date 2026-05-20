@@ -11,7 +11,7 @@ import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { SectionWrapper } from "@/components/SectionWrapper";
 import { FormInput } from "@/components/FormInput";
-import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Send } from "lucide-react";
 
 export default function EnquiryPage() {
   const router = useRouter();
@@ -25,7 +25,6 @@ export default function EnquiryPage() {
     description: "",
   });
 
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (
@@ -47,7 +46,6 @@ export default function EnquiryPage() {
       });
 
       if (response.ok) {
-        const data = await response.json();
         // Redirect to thank you page with email param
         router.push(`/thank-you?email=${encodeURIComponent(formData.email)}`);
       } else {
@@ -61,9 +59,9 @@ export default function EnquiryPage() {
   };
 
   return (
-    <main className="flex flex-col w-full bg-background">
-      {/* Hero Section - Theme aware */}
-      <section className="relative overflow-hidden bg-background py-20 lg:py-32">
+    <div className="flex flex-col w-full">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden section-xl">
         <div className="absolute inset-0 overflow-hidden">
           {/* Gradient orbs - theme responsive */}
             <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
@@ -305,6 +303,6 @@ export default function EnquiryPage() {
           </div>
         </Container>
       </SectionWrapper>
-    </main>
+    </div>
   );
 }

@@ -18,7 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion';
  * - Theme persistence
  */
 export function ModeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
   const [isHovered, setIsHovered] = React.useState(false);
 
