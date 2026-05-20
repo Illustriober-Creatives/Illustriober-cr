@@ -51,8 +51,8 @@ export default function ClientTicketDetailPage() {
   if (!ticket) return null;
 
   return (
-    <div className="w-full bg-background min-h-screen">
-      <SectionWrapper className="pt-32 pb-20">
+    <div className="page-medium">
+      <SectionWrapper spacing="lg">
         <Container>
           <div className="mb-6">
             <Link href="/dashboard/tickets" className="group flex items-center gap-1 text-xs font-medium text-zinc-500 transition-colors hover:text-accent">

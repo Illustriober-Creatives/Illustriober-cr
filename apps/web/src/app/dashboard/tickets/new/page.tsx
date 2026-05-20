@@ -80,8 +80,8 @@ export default function NewTicketPage() {
   if (loading) return <div className="p-8">Loading projects...</div>;
 
   return (
-    <div className="w-full bg-background min-h-screen">
-      <SectionWrapper className="pt-32 pb-20">
+    <div className="page-medium">
+      <SectionWrapper spacing="lg">
         <Container variant="narrow">
           <div className="mb-8">
             <Link href="/dashboard/tickets" className="group mb-2 flex items-center gap-1 text-xs font-medium text-zinc-500 transition-colors hover:text-accent">

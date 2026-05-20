@@ -34,8 +34,8 @@ const sections = [
 
 export default function TermsPage() {
   return (
-    <main className="flex flex-col w-full bg-background">
-      <section className="relative overflow-hidden pt-36 pb-20 lg:pt-44 lg:pb-28">
+    <div className="flex flex-col w-full">
+      <section className="relative overflow-hidden section-xl">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-20 right-0 h-72 w-72 rounded-full bg-accent-soft blur-3xl" />
           <div className="absolute -bottom-24 left-[-8%] h-64 w-64 rounded-full bg-accent-soft/50 blur-3xl" />
@@ -73,6 +73,6 @@ export default function TermsPage() {
           </div>
         </Container>
       </SectionWrapper>
-    </main>
+    </div>
   );
 }

@@ -59,9 +59,9 @@ export default function EnquiryPage() {
   };
 
   return (
-    <main className="flex flex-col w-full bg-background">
-      {/* Hero Section - Theme aware */}
-      <section className="relative overflow-hidden bg-background py-20 lg:py-32">
+    <div className="flex flex-col w-full">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden section-xl">
         <div className="absolute inset-0 overflow-hidden">
           {/* Gradient orbs - theme responsive */}
             <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
@@ -303,6 +303,6 @@ export default function EnquiryPage() {
           </div>
         </Container>
       </SectionWrapper>
-    </main>
+    </div>
   );
 }

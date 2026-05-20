@@ -45,8 +45,8 @@ export default function ClientTicketsPage() {
   if (loading) return <div className="p-8">Loading tickets...</div>;
 
   return (
-    <div className="w-full bg-background min-h-screen">
-      <SectionWrapper className="pt-32 pb-20">
+    <div className="page-medium">
+      <SectionWrapper spacing="lg">
         <Container>
           <div className="mb-8 flex items-center justify-between">
             <div>

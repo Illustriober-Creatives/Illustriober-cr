@@ -279,37 +279,31 @@ main {
 /* Small page - Used for auth pages, simple dashboards */
 .page-small {
   min-height: calc(100vh - var(--navbar-height));
-  padding-top: 2rem;
   padding-bottom: 2rem;
 }
 
 /* Medium page - Default for most content pages */
 .page-medium {
   min-height: calc(100vh - var(--navbar-height));
-  padding-top: 3rem;
   padding-bottom: 3rem;
 }
 
 /* Large page - For hero sections, landing pages */
 .page-large {
   min-height: calc(100vh - var(--navbar-height));
-  padding-top: 5rem;
   padding-bottom: 5rem;
 }
 
 @media (max-width: 768px) {
   .page-small {
-    padding-top: 1rem;
     padding-bottom: 1rem;
   }
-  
+
   .page-medium {
-    padding-top: 1.5rem;
     padding-bottom: 1.5rem;
   }
-  
+
   .page-large {
-    padding-top: 2rem;
     padding-bottom: 2rem;
   }
 }

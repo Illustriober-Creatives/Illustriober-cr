@@ -49,8 +49,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="w-full bg-background min-h-screen">
-      <SectionWrapper className="pt-40 pb-20 lg:pt-44 lg:pb-24">
+    <div className="page-medium">
+      <SectionWrapper spacing="lg">
         <Container variant="narrow">
           <div className="mx-auto w-full glass-card rounded-[2rem] border border-zinc-800/80 p-8 md:p-10 lg:p-12">
             <p className="mb-3 text-sm uppercase tracking-[0.18em] text-orange-500">
