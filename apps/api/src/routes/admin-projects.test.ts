@@ -4,7 +4,7 @@ import { signAccessToken } from "../lib/jwt";
 
 const prismaMock = vi.hoisted(() => ({
   user: { findUnique: vi.fn(), findMany: vi.fn() },
-  project: { create: vi.fn() },
+  project: { create: vi.fn(), findMany: vi.fn() },
   refreshToken: { updateMany: vi.fn(), create: vi.fn(), findUnique: vi.fn() },
 }));
 
@@ -15,12 +15,47 @@ import app from "../app";
 function adminToken() {
   return signAccessToken({ sub: "admin_1", role: "ADMIN", email: "admin@example.com" });
 }
+function clientToken() {
+  return signAccessToken({ sub: "client_1", role: "CLIENT", email: "c@c.com" });
+}
 
 describe("admin projects and clients routes", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     prismaMock.refreshToken.updateMany.mockResolvedValue({ count: 0 });
     prismaMock.refreshToken.create.mockResolvedValue({ id: "r1" });
+  });
+
+  describe("GET /api/admin/projects", () => {
+    it("returns all projects with client info for admin", async () => {
+      prismaMock.project.findMany.mockResolvedValue([
+        {
+          id: "p1", name: "Test", slug: "test", status: "PLANNING", createdAt: new Date(),
+          client: { firstName: "Alice", lastName: "Client", email: "alice@example.com" },
+        },
+      ]);
+
+      const res = await request(app)
+        .get("/api/admin/projects")
+        .set("Authorization", `Bearer ${adminToken()}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.projects).toHaveLength(1);
+      expect(res.body.projects[0].client.firstName).toBe("Alice");
+    });
+
+    it("returns 401 for unauthenticated requests", async () => {
+      const res = await request(app).get("/api/admin/projects");
+      expect(res.status).toBe(401);
+    });
+
+    it("returns 403 for client role", async () => {
+      const res = await request(app)
+        .get("/api/admin/projects")
+        .set("Authorization", `Bearer ${clientToken()}`);
+      expect(res.status).toBe(403);
+    });
   });
 
   describe("GET /api/admin/clients", () => {

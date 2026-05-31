@@ -19,6 +19,7 @@ import enquiryRoutes from "./routes/enquiries";
 import inviteRoutes from "./routes/invites";
 import adminRoutes from "./routes/admin";
 import projectRoutes from "./routes/projects";
+import ticketRoutes from "./routes/tickets";
 
 // Load environment variables
 dotenv.config();
@@ -107,6 +108,9 @@ app.use("/api/admin", adminRoutes);
 
 // Project endpoints: client and admin project tracking
 app.use("/api/projects", projectRoutes);
+
+// Ticket endpoints: nested under projects
+app.use("/api/projects/:slug/tickets", ticketRoutes);
 
 // Root endpoint for quick API reachability checks
 app.get("/", (_req: Request, res: Response) => {
