@@ -20,6 +20,8 @@ import inviteRoutes from "./routes/invites";
 import adminRoutes from "./routes/admin";
 import projectRoutes from "./routes/projects";
 import ticketRoutes from "./routes/tickets";
+import uploadRoutes from "./routes/uploads";
+import portfolioRoutes from "./routes/portfolio";
 
 // Load environment variables
 dotenv.config();
@@ -111,6 +113,12 @@ app.use("/api/projects", projectRoutes);
 
 // Ticket endpoints: nested under projects
 app.use("/api/projects/:slug/tickets", ticketRoutes);
+
+// File upload endpoint (requires Cloudinary env vars)
+app.use("/api/upload", uploadRoutes);
+
+// Public portfolio endpoint
+app.use("/api/portfolio", portfolioRoutes);
 
 // Root endpoint for quick API reachability checks
 app.get("/", (_req: Request, res: Response) => {

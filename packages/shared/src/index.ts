@@ -57,3 +57,10 @@ export const updateTicketStatusSchema = z.object({
 });
 
 export type UpdateTicketStatusInput = z.infer<typeof updateTicketStatusSchema>;
+
+export const createCommentSchema = z.object({
+  content: z.string().min(1, "Comment cannot be empty").max(10000),
+  isInternal: z.boolean().optional().default(false),
+});
+
+export type CreateCommentInput = z.infer<typeof createCommentSchema>;

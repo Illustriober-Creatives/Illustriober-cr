@@ -1,6 +1,7 @@
 /**
  * Work Page
- * Case-study inspired portfolio with brand-led, adaptive surfaces.
+ * Case-study inspired portfolio — driven from the database when entries exist,
+ * falls back to placeholder content while the portfolio is being populated.
  */
 
 import { Button } from "@/components/Button";
@@ -16,66 +17,63 @@ export const metadata = createMetadata({
   path: "/work",
 });
 
-const projects = [
-  {
-    id: "01",
-    title: "TechFlow Pro",
-    category: "Web Platform",
-    description:
-      "Enterprise workflow orchestration with real-time collaboration and adaptive reporting.",
-    tags: ["Next.js", "Node.js", "Realtime"],
-    tone: "from-blue-500/25 to-cyan-500/10",
-  },
-  {
-    id: "02",
-    title: "DesignHub System",
-    category: "Design Infrastructure",
-    description:
-      "A governance-ready design system powering multiple product teams at scale.",
-    tags: ["Figma", "Design Tokens", "Storybook"],
-    tone: "from-purple-500/25 to-pink-500/10",
-  },
-  {
-    id: "03",
-    title: "DataVista",
-    category: "Analytics",
-    description:
-      "Decision dashboard for operations teams with high-density interactive data views.",
-    tags: ["D3", "WebSocket", "TypeScript"],
-    tone: "from-green-500/25 to-emerald-500/10",
-  },
-  {
-    id: "04",
-    title: "MobileFirst Care",
-    category: "Mobile Product",
-    description:
-      "Cross-platform service app focused on retention, onboarding, and speed.",
-    tags: ["React Native", "Expo", "Analytics"],
-    tone: "from-orange-500/30 to-amber-500/10",
-  },
-  {
-    id: "05",
-    title: "Mercury Commerce",
-    category: "E-Commerce",
-    description:
-      "High-throughput storefront architecture with conversion-first checkout.",
-    tags: ["Next.js", "Stripe", "Edge Caching"],
-    tone: "from-rose-500/25 to-orange-500/10",
-  },
-  {
-    id: "06",
-    title: "Orbit SaaS",
-    category: "SaaS",
-    description:
-      "Multi-tenant control center with role-driven access and workflow automation.",
-    tags: ["React", "PostgreSQL", "CI/CD"],
-    tone: "from-cyan-500/25 to-blue-500/10",
-  },
+const TONES = [
+  "from-blue-500/25 to-cyan-500/10",
+  "from-purple-500/25 to-pink-500/10",
+  "from-green-500/25 to-emerald-500/10",
+  "from-orange-500/30 to-amber-500/10",
+  "from-rose-500/25 to-orange-500/10",
+  "from-cyan-500/25 to-blue-500/10",
 ];
 
-const categories = ["All", "Web Platform", "Mobile Product", "Analytics", "Design Infrastructure"];
+interface PortfolioEntry {
+  id: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  liveUrl?: string | null;
+  featured: boolean;
+  project: { name: string; techStack: string[] };
+}
 
-export default function WorkPage() {
+async function getPortfolioEntries(): Promise<PortfolioEntry[]> {
+  try {
+    const apiBase = process.env.API_PROXY_URL?.replace(/\/$/, "") || "http://localhost:4000";
+    const res = await fetch(`${apiBase}/api/portfolio`, { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.entries ?? [];
+  } catch {
+    return [];
+  }
+}
+
+const PLACEHOLDER_PROJECTS = [
+  { id: "01", title: "TechFlow Pro",      category: "Web Platform",          description: "Enterprise workflow orchestration with real-time collaboration.", tags: ["Next.js", "Node.js", "Realtime"],         tone: TONES[0] },
+  { id: "02", title: "DesignHub System",  category: "Design Infrastructure", description: "Governance-ready design system powering multiple product teams.",  tags: ["Figma", "Design Tokens", "Storybook"],    tone: TONES[1] },
+  { id: "03", title: "DataVista",         category: "Analytics",             description: "Decision dashboard for operations teams with interactive data.",   tags: ["D3", "WebSocket", "TypeScript"],          tone: TONES[2] },
+  { id: "04", title: "MobileFirst Care",  category: "Mobile Product",        description: "Cross-platform service app focused on retention and speed.",       tags: ["React Native", "Expo", "Analytics"],      tone: TONES[3] },
+  { id: "05", title: "Mercury Commerce",  category: "E-Commerce",            description: "High-throughput storefront with conversion-first checkout.",       tags: ["Next.js", "Stripe", "Edge Caching"],      tone: TONES[4] },
+  { id: "06", title: "Orbit SaaS",        category: "SaaS",                  description: "Multi-tenant control center with role-driven workflow automation.", tags: ["React", "PostgreSQL", "CI/CD"],          tone: TONES[5] },
+];
+
+export default async function WorkPage() {
+  const dbEntries = await getPortfolioEntries();
+
+  const projects = dbEntries.length > 0
+    ? dbEntries.map((entry, i) => ({
+        id: String(i + 1).padStart(2, "0"),
+        title: entry.title,
+        category: entry.project.techStack[0] ?? "Project",
+        description: entry.summary,
+        tags: entry.tags.length > 0 ? entry.tags : entry.project.techStack.slice(0, 3),
+        tone: TONES[i % TONES.length],
+        liveUrl: entry.liveUrl,
+      }))
+    : PLACEHOLDER_PROJECTS;
+
+  const categories = ["All", ...Array.from(new Set(projects.map((p) => p.category)))];
+
   return (
     <main className="flex flex-col w-full bg-background">
       <section className="relative overflow-hidden pt-36 pb-24 lg:pt-44 lg:pb-32">

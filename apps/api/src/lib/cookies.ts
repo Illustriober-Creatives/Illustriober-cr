@@ -11,7 +11,7 @@ export function refreshCookieOptions(): CookieOptions {
   return {
     httpOnly: true,
     secure: isProd,
-    sameSite: isProd ? "lax" : "lax",
+    sameSite: "lax",
     path: "/",
     maxAge: 30 * 24 * 60 * 60 * 1000,
   };

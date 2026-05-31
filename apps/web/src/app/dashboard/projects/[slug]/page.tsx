@@ -206,12 +206,13 @@ export default function ProjectDetailPage() {
                         </div>
                         <div className="divide-y divide-zinc-800/60">
                           {col.tickets.map((ticket) => (
-                            <div
+                            <Link
                               key={ticket.id}
+                              href={`/dashboard/projects/${slug}/tickets/${ticket.id}`}
                               className="flex items-center justify-between gap-4 px-4 py-3 transition-colors hover:bg-zinc-900/40"
                             >
                               <div className="min-w-0">
-                                <p className="truncate text-sm font-medium text-zinc-200">
+                                <p className="truncate text-sm font-medium text-zinc-200 hover:text-orange-400 transition-colors">
                                   {ticket.title}
                                 </p>
                                 <p className="mt-0.5 text-xs text-zinc-600">
@@ -226,7 +227,7 @@ export default function ProjectDetailPage() {
                                   {ticket.priority}
                                 </span>
                               </div>
-                            </div>
+                            </Link>
                           ))}
                         </div>
                       </div>
