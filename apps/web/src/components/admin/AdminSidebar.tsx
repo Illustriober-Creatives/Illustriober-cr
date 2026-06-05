@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 const NAV = [
   { href: "/admin/enquiries", label: "Enquiries" },
   { href: "/admin/projects", label: "Projects" },
+  { href: "/admin/portfolio", label: "Portfolio" },
 ];
 
 export function AdminSidebar() {

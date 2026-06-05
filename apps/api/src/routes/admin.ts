@@ -144,4 +144,82 @@ router.post(
   })
 );
 
+// GET /api/admin/portfolio
+router.get(
+  "/portfolio",
+  ...adminOnly,
+  asyncHandler(async (_req: Request, res: Response) => {
+    const entries = await prisma.portfolioEntry.findMany({
+      orderBy: [{ featured: "desc" }, { order: "asc" }],
+      include: { project: { select: { name: true, slug: true } } },
+    });
+    res.json({ success: true, entries });
+  })
+);
+
+// POST /api/admin/portfolio
+router.post(
+  "/portfolio",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const schema = z.object({
+      projectId: z.string(),
+      title: z.string().min(2),
+      summary: z.string().min(10),
+      coverImageUrl: z.string().url(),
+      images: z.array(z.string().url()).default([]),
+      tags: z.array(z.string()).default([]),
+      featured: z.boolean().default(false),
+      order: z.number().int().default(0),
+      clientApproved: z.boolean().default(false),
+      liveUrl: z.string().url().nullable().optional(),
+    });
+    const data = schema.parse(req.body);
+
+    const project = await prisma.project.findUnique({ where: { id: data.projectId } });
+    if (!project) throw new AppError(404, "Project not found");
+
+    const entry = await prisma.portfolioEntry.create({ data: { ...data, liveUrl: data.liveUrl ?? null } });
+    res.status(201).json({ success: true, entry });
+  })
+);
+
+// PATCH /api/admin/portfolio/:id
+router.patch(
+  "/portfolio/:id",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const schema = z.object({
+      title: z.string().min(2).optional(),
+      summary: z.string().min(10).optional(),
+      coverImageUrl: z.string().url().optional(),
+      images: z.array(z.string().url()).optional(),
+      tags: z.array(z.string()).optional(),
+      featured: z.boolean().optional(),
+      order: z.number().int().optional(),
+      clientApproved: z.boolean().optional(),
+      liveUrl: z.string().url().nullable().optional(),
+    });
+    const data = schema.parse(req.body);
+
+    const existing = await prisma.portfolioEntry.findUnique({ where: { id: req.params.id } });
+    if (!existing) throw new AppError(404, "Portfolio entry not found");
+
+    const entry = await prisma.portfolioEntry.update({ where: { id: req.params.id }, data });
+    res.json({ success: true, entry });
+  })
+);
+
+// DELETE /api/admin/portfolio/:id
+router.delete(
+  "/portfolio/:id",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const existing = await prisma.portfolioEntry.findUnique({ where: { id: req.params.id } });
+    if (!existing) throw new AppError(404, "Portfolio entry not found");
+    await prisma.portfolioEntry.delete({ where: { id: req.params.id } });
+    res.json({ success: true });
+  })
+);
+
 export default router;
