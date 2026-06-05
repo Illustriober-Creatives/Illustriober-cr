@@ -8,6 +8,7 @@ import { Container } from "@/components/Container";
 import { SectionWrapper } from "@/components/SectionWrapper";
 import { Button } from "@/components/Button";
 import { MilestoneTracker } from "@/components/MilestoneTracker";
+import { FileUpload } from "@/components/FileUpload";
 
 type TicketStatus = "OPEN" | "IN_REVIEW" | "IN_PROGRESS" | "RESOLVED" | "CLOSED" | "REJECTED";
 type TicketPriority = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -42,6 +43,17 @@ interface Project {
   milestones: Milestone[];
 }
 
+interface UploadedFile {
+  id: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  url: string;
+  category: string;
+  createdAt: string;
+  uploadedBy: { firstName: string; lastName: string };
+}
+
 const STATUS_COLUMNS: { key: TicketStatus; label: string; color: string }[] = [
   { key: "OPEN",        label: "Open",        color: "text-zinc-400" },
   { key: "IN_REVIEW",   label: "In Review",   color: "text-blue-400" },
@@ -72,15 +84,17 @@ export default function ProjectDetailPage() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [files, setFiles] = useState<UploadedFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const [projRes, ticketRes] = await Promise.all([
+        const [projRes, ticketRes, fileRes] = await Promise.all([
           fetchWithAuth(`/api/projects/${slug}`),
           fetchWithAuth(`/api/projects/${slug}/tickets`),
+          fetchWithAuth(`/api/projects/${slug}/files`),
         ]);
 
         if (!projRes.ok) {
@@ -94,6 +108,11 @@ export default function ProjectDetailPage() {
         if (ticketRes.ok) {
           const ticketData = await ticketRes.json();
           setTickets(ticketData.tickets);
+        }
+
+        if (fileRes.ok) {
+          const fileData = await fileRes.json();
+          setFiles(fileData.files ?? []);
         }
       } catch {
         setError("Failed to load project.");
@@ -235,6 +254,16 @@ export default function ProjectDetailPage() {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Files section */}
+          <div className="mt-8 glass-card rounded-2xl border border-zinc-800/80 p-6">
+            <h2 className="mb-5 text-base font-semibold text-white">Files &amp; Deliverables</h2>
+            <FileUpload
+              projectId={project.id}
+              initialFiles={files}
+              onUploaded={(f) => setFiles((prev) => [f, ...prev])}
+            />
           </div>
         </Container>
       </SectionWrapper>

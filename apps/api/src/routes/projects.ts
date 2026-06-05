@@ -54,4 +54,30 @@ router.get(
   })
 );
 
+// GET /api/projects/:slug/files
+router.get(
+  "/:slug/files",
+  authenticate,
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user!.id;
+    const role = req.user!.role;
+    const { slug } = req.params;
+
+    const project = await prisma.project.findUnique({ where: { slug } });
+    if (!project) return res.status(404).json({ success: false, error: "Project not found" });
+
+    if (role !== "ADMIN" && project.clientId !== userId) {
+      return res.status(403).json({ success: false, error: "Access denied" });
+    }
+
+    const files = await prisma.file.findMany({
+      where: { projectId: project.id },
+      include: { uploadedBy: { select: { firstName: true, lastName: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return res.json({ success: true, files });
+  })
+);
+
 export default router;
