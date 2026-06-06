@@ -126,6 +126,37 @@ export async function sendInviteEmail(params: {
   return { success: true };
 }
 
+export async function sendTicketNotification(params: {
+  to: string;
+  subject: string;
+  clientName: string;
+  ticketTitle: string;
+  projectName: string;
+  message: string;
+}): Promise<void> {
+  const resend = getResend();
+  const from = process.env.ENQUIRY_FROM_EMAIL;
+  if (!resend || !from) return;
+
+  const { to, subject, clientName, ticketTitle, projectName, message } = params;
+
+  await resend.emails.send({
+    from,
+    to,
+    subject,
+    html: `
+      <p>Hi ${escapeHtml(clientName)},</p>
+      <p>${escapeHtml(message)}</p>
+      <p><strong>Project:</strong> ${escapeHtml(projectName)}<br>
+         <strong>Ticket:</strong> ${escapeHtml(ticketTitle)}</p>
+      <p>— Illustriober Creatives</p>
+    `,
+    tags: [{ name: "type", value: "ticket-notification" }],
+  }).catch((err: unknown) => {
+    console.error("[email] ticket notification failed:", err);
+  });
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")

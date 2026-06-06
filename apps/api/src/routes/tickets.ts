@@ -5,6 +5,7 @@ import prisma from "../lib/prisma";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
 import { createTicketSchema, updateTicketStatusSchema, createCommentSchema } from "@illustriober/shared";
+import { sendTicketNotification } from "../lib/email";
 
 const ALLOWED_HTML: sanitizeHtml.IOptions = {
   allowedTags: ["p", "strong", "em", "u", "s", "ul", "ol", "li", "blockquote", "code", "pre", "h2", "h3", "br"],
@@ -60,6 +61,19 @@ router.post(
         submittedById: req.user!.id,
       },
     });
+
+    // Notify admin when a HIGH or CRITICAL ticket is submitted
+    if ((data.priority === "HIGH" || data.priority === "CRITICAL") && process.env.ENQUIRY_ADMIN_EMAIL) {
+      const submitter = await prisma.user.findUnique({ where: { id: req.user!.id }, select: { firstName: true, lastName: true } });
+      void sendTicketNotification({
+        to: process.env.ENQUIRY_ADMIN_EMAIL,
+        subject: `[${data.priority}] New ticket: ${data.title}`,
+        clientName: "Team",
+        ticketTitle: data.title,
+        projectName: project.name,
+        message: `A ${data.priority.toLowerCase()} priority ticket was submitted by ${submitter?.firstName ?? "a client"}.`,
+      });
+    }
 
     res.status(201).json({ success: true, ticket });
   })
@@ -125,6 +139,21 @@ router.patch(
       },
     });
 
+    // Notify client when admin resolves or closes their ticket
+    if (req.user!.role === "ADMIN" && ["RESOLVED", "CLOSED"].includes(body.status)) {
+      const client = await prisma.user.findUnique({ where: { id: project.clientId }, select: { email: true, firstName: true } });
+      if (client) {
+        void sendTicketNotification({
+          to: client.email,
+          subject: `Your ticket has been ${body.status.toLowerCase()}`,
+          clientName: client.firstName,
+          ticketTitle: ticket.title,
+          projectName: project.name,
+          message: `Your ticket has been marked as ${body.status.toLowerCase()} by our team.`,
+        });
+      }
+    }
+
     res.json({ success: true, ticket: updated });
   })
 );
@@ -165,6 +194,35 @@ router.post(
         author: { select: { firstName: true, lastName: true, role: true } },
       },
     });
+
+    // Notify the other party about new public comments
+    if (!isInternal) {
+      if (req.user!.role === "ADMIN") {
+        // Admin replied → notify client
+        const client = await prisma.user.findUnique({ where: { id: project.clientId }, select: { email: true, firstName: true } });
+        if (client) {
+          void sendTicketNotification({
+            to: client.email,
+            subject: `New reply on your ticket: ${ticket.title}`,
+            clientName: client.firstName,
+            ticketTitle: ticket.title,
+            projectName: project.name,
+            message: "Our team has replied to your ticket.",
+          });
+        }
+      } else if (process.env.ENQUIRY_ADMIN_EMAIL) {
+        // Client replied → notify admin
+        const submitter = await prisma.user.findUnique({ where: { id: req.user!.id }, select: { firstName: true, lastName: true } });
+        void sendTicketNotification({
+          to: process.env.ENQUIRY_ADMIN_EMAIL,
+          subject: `Client replied on ticket: ${ticket.title}`,
+          clientName: "Team",
+          ticketTitle: ticket.title,
+          projectName: project.name,
+          message: `${submitter?.firstName ?? "A client"} has replied to a ticket.`,
+        });
+      }
+    }
 
     res.status(201).json({ success: true, comment });
   })
