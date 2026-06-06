@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/Button";
 import { CommentThread } from "@/components/CommentThread";
+import { toast } from "sonner";
 
 type TicketStatus = "OPEN" | "IN_REVIEW" | "IN_PROGRESS" | "RESOLVED" | "CLOSED" | "REJECTED";
 type TicketPriority = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -90,6 +91,9 @@ export default function TicketDetailPage() {
       if (res.ok) {
         const data = await res.json();
         setTicket((prev) => prev ? { ...prev, status: data.ticket.status } : prev);
+        toast.success(`Status updated to ${status.replace("_", " ").toLowerCase()}`);
+      } else {
+        toast.error("Failed to update status");
       }
     } finally {
       setUpdatingStatus(false);

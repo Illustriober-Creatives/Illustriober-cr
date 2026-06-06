@@ -3,6 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "sonner";
 import {
   getDefaultKeywords,
   getOrganizationSchema,
@@ -69,6 +70,7 @@ export default function RootLayout({
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />
+            <Toaster position="bottom-right" richColors closeButton />
           </AuthProvider>
         </ThemeProvider>
         {/* SEO JSON-LD Schema */}

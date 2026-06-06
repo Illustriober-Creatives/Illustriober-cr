@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 interface Author {
   firstName: string;
@@ -53,8 +54,11 @@ export function CommentThread({ ticketId, projectSlug, initialComments }: Commen
       setComments((prev) => [...prev, data.comment]);
       setContent("");
       setIsInternal(false);
+      toast.success("Comment posted");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to post comment");
+      const msg = err instanceof Error ? err.message : "Failed to post comment";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { RichTextEditor } from "@/components/RichTextEditor";
 import { Button } from "@/components/Button";
+import { toast } from "sonner";
 
 type TicketType = "BUG" | "FEATURE" | "IDEA" | "QUESTION" | "SUPPORT";
 type TicketPriority = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -60,9 +61,12 @@ export default function NewTicketPage() {
         throw new Error(data.error ?? "Failed to create ticket");
       }
 
+      toast.success("Ticket submitted");
       router.push(`/dashboard/projects/${slug}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred");
+      const msg = err instanceof Error ? err.message : "An unknown error occurred";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }

@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 interface UploadedFile {
   id: string;
@@ -52,11 +53,15 @@ export function FileUpload({ projectId, ticketId, onUploaded, initialFiles = [] 
 
   const uploadFile = useCallback(async (file: File) => {
     if (!ALLOWED_TYPES.includes(file.type)) {
-      setError(`File type not allowed: ${file.type}`);
+      const msg = `File type not allowed: ${file.type}`;
+      setError(msg);
+      toast.error(msg);
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      setError("File exceeds 10 MB limit");
+      const msg = "File exceeds 10 MB limit";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -79,8 +84,11 @@ export function FileUpload({ projectId, ticketId, onUploaded, initialFiles = [] 
       const data = (await res.json()) as { file: UploadedFile };
       setFiles((prev) => [data.file, ...prev]);
       onUploaded?.(data.file);
+      toast.success(`${file.name} uploaded`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
+      const msg = err instanceof Error ? err.message : "Upload failed";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setUploading(false);
     }
