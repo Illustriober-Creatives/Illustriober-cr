@@ -52,9 +52,9 @@ const stages = [
           { phase: 'Phase 5', title: 'Notifications',            status: '–', done: false },
         ].map((p) => (
           <div key={p.phase} className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${p.done ? 'bg-accent/5 border-accent/15' : 'bg-white/2 border-white/5'}`}>
-            <span className={`text-xs font-bold ${p.done ? 'text-accent' : 'text-foreground/25'}`}>{p.status}</span>
-            <span className="text-[10px] text-foreground/30 font-mono w-14 flex-shrink-0">{p.phase}</span>
-            <span className={`text-xs ${p.done ? 'text-foreground/70' : 'text-foreground/30'}`}>{p.title}</span>
+            <span className={`text-xs font-bold ${p.done ? 'text-accent' : 'text-foreground/35'}`}>{p.status}</span>
+            <span className="text-[10px] text-foreground/45 font-mono w-14 flex-shrink-0">{p.phase}</span>
+            <span className={`text-xs ${p.done ? 'text-foreground/70' : 'text-foreground/50'}`}>{p.title}</span>
           </div>
         ))}
       </div>
@@ -74,9 +74,9 @@ const stages = [
           { hash: '7f3a91', msg: 'feat: TipTap rich-text editor integration',     time: '2d ago',  hot: false },
         ].map((c) => (
           <div key={c.hash} className={`flex items-start gap-3 px-3 py-2.5 rounded-lg border ${c.hot ? 'border-accent/20 bg-accent/5' : 'border-white/5 bg-white/2'}`}>
-            <span className={`text-[9px] mt-0.5 flex-shrink-0 ${c.hot ? 'text-accent' : 'text-foreground/20'}`}>{c.hash}</span>
-            <span className={`text-[10px] flex-1 leading-relaxed ${c.hot ? 'text-foreground/70' : 'text-foreground/35'}`}>{c.msg}</span>
-            <span className="text-[9px] text-foreground/20 flex-shrink-0 whitespace-nowrap">{c.time}</span>
+            <span className={`text-[9px] mt-0.5 flex-shrink-0 ${c.hot ? 'text-accent' : 'text-foreground/35'}`}>{c.hash}</span>
+            <span className={`text-[10px] flex-1 leading-relaxed ${c.hot ? 'text-foreground/70' : 'text-foreground/50'}`}>{c.msg}</span>
+            <span className="text-[9px] text-foreground/35 flex-shrink-0 whitespace-nowrap">{c.time}</span>
           </div>
         ))}
       </div>
@@ -98,7 +98,7 @@ const stages = [
           ].map((m) => (
             <div key={m.label} className={`rounded-xl border p-3 text-center ${m.accent ? 'bg-accent/8 border-accent/15' : 'bg-white/3 border-white/5'}`}>
               <p className={`text-lg font-display font-medium ${m.accent ? 'text-accent' : 'text-foreground/70'}`}>{m.value}</p>
-              <p className="text-[9px] uppercase tracking-widest text-foreground/30 mt-1">{m.label}</p>
+              <p className="text-[9px] uppercase tracking-widest text-foreground/45 mt-1">{m.label}</p>
             </div>
           ))}
         </div>
@@ -146,10 +146,10 @@ export function ProcessSimulator() {
                     }`}
                   >
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${isActive ? 'bg-accent/20' : 'bg-white/5'}`}>
-                      <SIcon className={`w-4 h-4 ${isActive ? 'text-accent' : 'text-foreground/30'}`} />
+                      <SIcon className={`w-4 h-4 ${isActive ? 'text-accent' : 'text-foreground/40'}`} />
                     </div>
                     <div className="flex-1">
-                      <p className={`text-sm font-medium transition-colors ${isActive ? 'text-foreground' : 'text-foreground/40'}`}>{s.label}</p>
+                      <p className={`text-sm font-medium transition-colors ${isActive ? 'text-foreground' : 'text-foreground/55'}`}>{s.label}</p>
                     </div>
                     {isActive && (
                       <div className="w-1.5 h-6 rounded-full bg-accent" />

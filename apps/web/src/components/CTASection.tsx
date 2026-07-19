@@ -14,7 +14,7 @@ export function CTASection() {
 
           <div className="relative z-10">
             <h2 className="text-5xl lg:text-8xl font-display font-medium text-foreground mb-10 leading-[0.95] tracking-tighter">
-              Ready to <span className="text-accent italic">ship?</span>
+              Ready to <span className="text-accent">ship?</span>
             </h2>
 
             <div className="flex flex-wrap gap-8 justify-center">
@@ -27,10 +27,10 @@ export function CTASection() {
             </div>
 
             <div className="mt-12 flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
-              {['24h Response', 'Free Discovery', 'Senior Engineers Only'].map(t => (
+              {['24h Response', 'Free Discovery', 'Senior Engineers'].map(t => (
                 <div key={t} className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-accent" />
-                  <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-foreground/40">{t}</span>
+                  <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-foreground/60">{t}</span>
                 </div>
               ))}
             </div>

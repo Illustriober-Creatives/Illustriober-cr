@@ -18,19 +18,19 @@ export function HeroSection() {
           <div className="flex flex-col items-start">
             <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full glass-card border-glass-border mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-foreground/50">
-                Premium Tech Studio
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-foreground/70">
+                Full-Stack Development Studio
               </span>
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-medium leading-[0.95] tracking-tighter mb-8 text-foreground animate-in fade-in slide-in-from-bottom-6 duration-700">
-              We build <br />
-              <span className="text-accent italic">exceptional</span>
-              <br /> digital products.
+              We build software.
+              <br />
+              <span className="text-accent">End to end.</span>
             </h1>
 
-            <p className="text-lg text-foreground/45 font-light leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-8 duration-900 max-w-md">
-              Senior engineers. Bespoke design. From concept to shipped product.
+            <p className="text-lg text-foreground/70 leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-8 duration-900 max-w-md">
+              Senior engineers. Production code. From first commit to launch day.
             </p>
 
             <div className="flex flex-wrap gap-4 animate-in fade-in slide-in-from-bottom-10 duration-1000">

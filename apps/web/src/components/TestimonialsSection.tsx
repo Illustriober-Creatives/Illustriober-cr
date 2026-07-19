@@ -84,7 +84,7 @@ export function TestimonialsSection() {
             {/* Previous Button */}
             <button
               onClick={goToPrevious}
-              className="p-2 hover:bg-surface-700 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/5 rounded-lg transition-colors text-foreground/70 hover:text-foreground"
               aria-label="Previous testimonial"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -98,8 +98,8 @@ export function TestimonialsSection() {
                   onClick={() => goToIndex(index)}
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === currentIndex
-                      ? 'bg-brand-500 w-8'
-                      : 'bg-surface-600'
+                      ? 'bg-accent w-8'
+                      : 'bg-foreground/20'
                   }`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
@@ -109,7 +109,7 @@ export function TestimonialsSection() {
             {/* Next Button */}
             <button
               onClick={goToNext}
-              className="p-2 hover:bg-surface-700 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/5 rounded-lg transition-colors text-foreground/70 hover:text-foreground"
               aria-label="Next testimonial"
             >
               <ChevronRight className="w-5 h-5" />
@@ -117,7 +117,7 @@ export function TestimonialsSection() {
           </div>
 
           {/* Pagination Text */}
-          <p className="text-center text-xs text-surface-400 mt-4">
+          <p className="text-center text-xs text-foreground/45 mt-4">
             {currentIndex + 1} / {testimonials.length}
           </p>
         </div>

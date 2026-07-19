@@ -97,11 +97,11 @@ export function DashboardMockup() {
       {/* Floating stat pill */}
       <div className="absolute -bottom-4 -right-4 glass-card rounded-2xl px-4 py-3 border border-white/10 flex items-center gap-3">
         <div className="w-8 h-8 rounded-xl bg-accent/20 flex items-center justify-center">
-          <span className="text-accent text-sm font-bold">↑</span>
+          <span className="text-accent text-sm font-bold">✓</span>
         </div>
         <div>
-          <p className="text-xs font-semibold text-foreground">98%</p>
-          <p className="text-[9px] text-foreground/30 uppercase tracking-widest">Satisfaction</p>
+          <p className="text-xs font-semibold text-foreground">On Schedule</p>
+          <p className="text-[9px] text-foreground/45 uppercase tracking-widest">Milestone 3 of 4</p>
         </div>
       </div>
 
@@ -109,7 +109,7 @@ export function DashboardMockup() {
       <div className="absolute -top-3 -left-3 glass-card rounded-xl px-3 py-2 border border-white/10">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[9px] text-foreground/50 uppercase tracking-widest">500+ Projects</span>
+          <span className="text-[9px] text-foreground/65 uppercase tracking-widest">Systems Operational</span>
         </div>
       </div>
     </div>

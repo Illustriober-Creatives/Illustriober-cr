@@ -2,7 +2,6 @@
 import { createMetadata } from "@/lib/seo";
 import { HeroSection } from "@/components/HeroSection";
 import { ClientLogosBar } from "@/components/ClientLogosBar";
-import { WorkflowVisual } from "@/components/WorkflowVisual";
 import { ServicesSection } from "@/components/ServicesSection";
 import { ProcessSimulator } from "@/components/ProcessSimulator";
 import { PortfolioTeaser } from "@/components/PortfolioTeaser";
@@ -18,7 +17,6 @@ export default function Home() {
     <main className="flex flex-col w-full bg-background">
       <HeroSection />
       <ClientLogosBar />
-      <WorkflowVisual />
       <ServicesSection />
       <ProcessSimulator />
       <PortfolioTeaser />

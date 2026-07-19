@@ -33,7 +33,7 @@ export function ServicesSection() {
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent block mb-4">Expertise</span>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-foreground tracking-tight leading-[1.05]">
-              What we <span className="text-accent italic">ship.</span>
+              What we <span className="text-accent">ship.</span>
             </h2>
           </div>
         </div>
@@ -56,8 +56,8 @@ export function ServicesSection() {
                   {service.title}
                 </h3>
 
-                {/* Detail — hidden by default, revealed on hover */}
-                <p className="text-[11px] text-foreground/0 group-hover:text-foreground/45 transition-colors duration-300 font-light leading-relaxed mt-1">
+                {/* Detail */}
+                <p className="text-[11px] text-foreground/60 leading-relaxed mt-1">
                   {service.detail}
                 </p>
 
