@@ -1,0 +1,431 @@
+{
+  "version": 1,
+  "skills": {
+    "gsd-add-tests": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-add-tests/SKILL.md",
+      "computedHash": "b20bfa7a50c83899bf55461fcea91ac09cd5fec9c01f66aab17e4d630c11e476"
+    },
+    "gsd-ai-integration-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ai-integration-phase/SKILL.md",
+      "computedHash": "d6dd320ba03cf36e6424985ac270c78e66f1ba349519c35015fea1a6f66f506e"
+    },
+    "gsd-audit-fix": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-audit-fix/SKILL.md",
+      "computedHash": "3afeec1b2ae4565bd338265f2977e860fdf1c28cd699eb882260bbfddf0af510"
+    },
+    "gsd-audit-milestone": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-audit-milestone/SKILL.md",
+      "computedHash": "11d32b543748618e46c381342d7106b98bbb97da29c8e3df436f51a7ee4c7135"
+    },
+    "gsd-audit-uat": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-audit-uat/SKILL.md",
+      "computedHash": "87d6f1d20ce43085cd80edef1c38dbf7ee9f6550bf974960061113d82fe28c75"
+    },
+    "gsd-autonomous": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-autonomous/SKILL.md",
+      "computedHash": "4b69b3fa62466febc1e63f9ea3ff876b7537dbb61eef751efe2806a00534dfc2"
+    },
+    "gsd-capture": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-capture/SKILL.md",
+      "computedHash": "d25c6d8a6889659e6e459b50d3be7b4c5fbe3890aa0509600fd0a2fb9813ba63"
+    },
+    "gsd-cleanup": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-cleanup/SKILL.md",
+      "computedHash": "239f9a02dbcf98df0ca95448d9a9a049291036a155fa0396e673a831b90acbef"
+    },
+    "gsd-code-review": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-code-review/SKILL.md",
+      "computedHash": "9dcef16d1f40efdce758ffba3fa3ed002782b5dd19cf1cbce43e45b3d7602e2a"
+    },
+    "gsd-complete-milestone": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-complete-milestone/SKILL.md",
+      "computedHash": "f05d0ae7b253aeec941d4ca7faac94f771138406cb112dbe2b39ea2edc16fb19"
+    },
+    "gsd-config": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-config/SKILL.md",
+      "computedHash": "cde8461087c203e6f1433a2636b5c37fb7e611d4e549028aad9aa2aaad4393ed"
+    },
+    "gsd-debug": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-debug/SKILL.md",
+      "computedHash": "ab30fa37e1bd6a11c373645031920f1a60f234f2829b373163ce8ce7a00c26a2"
+    },
+    "gsd-discuss-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-discuss-phase/SKILL.md",
+      "computedHash": "f30af2765ed4a29b5e4a3cf9ecf0b9c6320adcae85ece47855c31cbefc0f598d"
+    },
+    "gsd-docs-update": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-docs-update/SKILL.md",
+      "computedHash": "4d67e8979edb50287f1ff4203a7a02caf79fd60e21a4a6fe4279dba8985321e6"
+    },
+    "gsd-eval-review": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-eval-review/SKILL.md",
+      "computedHash": "4030b95fb437cc97549dfb11588af84553d11ffb35765b72fcfd1441d1d7e05f"
+    },
+    "gsd-execute-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-execute-phase/SKILL.md",
+      "computedHash": "371a2243dd32554c44d95c413b8964152c6ec6e8c449f692a6b7bedbb21f0365"
+    },
+    "gsd-explore": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-explore/SKILL.md",
+      "computedHash": "deab70ce3f5734d080ee4ec4dfa6b14f360f968ab51cabe406fb4eb189ecb135"
+    },
+    "gsd-extract-learnings": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-extract-learnings/SKILL.md",
+      "computedHash": "1944876fe289a7195e10f243c30cdecf0bbf99ab6df9805bf7a7c3046cfd21ec"
+    },
+    "gsd-fast": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-fast/SKILL.md",
+      "computedHash": "b55de59a99c81d986f787edf331c9d077a18ecd7d7fdf79233da1c58c3deaa00"
+    },
+    "gsd-forensics": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-forensics/SKILL.md",
+      "computedHash": "ea8520726157d7e2a414a8cde0ba133c0c589b036aca3ee0841cae00586ab32c"
+    },
+    "gsd-graphify": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-graphify/SKILL.md",
+      "computedHash": "d5d089d4676731c4f58d926eedc92f82ef1cb52514662f96ee7c45ea54930b71"
+    },
+    "gsd-health": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-health/SKILL.md",
+      "computedHash": "ed5ee63ebc9a8c39733e962319e3dba46fd5224fcaa93d0b040716a7de837754"
+    },
+    "gsd-help": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-help/SKILL.md",
+      "computedHash": "47764e2b798908c2f0d0e3c87a8b417d6942169418139da031efa5464561c2e3"
+    },
+    "gsd-import": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-import/SKILL.md",
+      "computedHash": "31bfa96cf61346d330763854e12c4f712d58e0789cf958b3a9c0c8cea611a329"
+    },
+    "gsd-inbox": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-inbox/SKILL.md",
+      "computedHash": "008c6f142638511c31a2e4d0a5f8ee691b2e082a7ec076ac7f020136d7b72280"
+    },
+    "gsd-ingest-docs": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ingest-docs/SKILL.md",
+      "computedHash": "21f89bf6157326afe9826758063919a2cdd4b4450b8090f9a5b017292c592967"
+    },
+    "gsd-manager": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-manager/SKILL.md",
+      "computedHash": "a3c5eccd213f8ed15657d90fb51746e78f5122e45a235e4ec8fc144be67a9843"
+    },
+    "gsd-map-codebase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-map-codebase/SKILL.md",
+      "computedHash": "607275896a460d804bfc32df232b141153bfd3772e25909d02a87b61d1ff2888"
+    },
+    "gsd-mempalace-capture": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-mempalace-capture/SKILL.md",
+      "computedHash": "87fc2ce66728e368a8682e4183dcd72c861fdb9ac2a4ddbbdfe00706cb332976"
+    },
+    "gsd-mempalace-recall": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-mempalace-recall/SKILL.md",
+      "computedHash": "9c1ee194e5178d4c7010d0961bcdc86762808a78f749bcecfd7c23fc3bc3d74d"
+    },
+    "gsd-milestone-summary": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-milestone-summary/SKILL.md",
+      "computedHash": "b43e9fb553d8a8b1dbb384d96d398fd7dc3ffecea8c1c7e07b7e361215f81bc0"
+    },
+    "gsd-mvp-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-mvp-phase/SKILL.md",
+      "computedHash": "a22e370d9f340e3336197546ed83187d777b7bdefb8d719ad79b4d3cf84a6bc7"
+    },
+    "gsd-new-milestone": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-new-milestone/SKILL.md",
+      "computedHash": "82a7b0edc78421f85e51b05b2f1486847900aef475a1590b8168d8c2f2983c86"
+    },
+    "gsd-new-project": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-new-project/SKILL.md",
+      "computedHash": "660a85ebb691d4f9c496d670acea1c870ed74325284329413b89642401e99ef5"
+    },
+    "gsd-next": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-next/SKILL.md",
+      "computedHash": "88a7499a64ba697e1c96c442b948cf189df95f023079080769e9940fca88df68"
+    },
+    "gsd-ns-context": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ns-context/SKILL.md",
+      "computedHash": "f2165eb220b79802d70a3024d10516b848b07f3a7d432f2c7751f41615681bfd"
+    },
+    "gsd-ns-ideate": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ns-ideate/SKILL.md",
+      "computedHash": "ee646aab60099088e504ec6b2c527f88a9a6ad89f44cdf5b1b3f6ec8a98032c8"
+    },
+    "gsd-ns-manage": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ns-manage/SKILL.md",
+      "computedHash": "7700814c18183eafc140e59932896a0b2ad2ef3e9e63ec3f9624b045a4f54822"
+    },
+    "gsd-ns-project": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ns-project/SKILL.md",
+      "computedHash": "93a977b414074b61c30a9cbc43f0cbc2ab0478c75f0ebe92277b0a73721316c2"
+    },
+    "gsd-ns-review": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ns-review/SKILL.md",
+      "computedHash": "9bbe75b9835e0b4605fcbc2569931f9187de541b23ecc3e197f7f08b31695e8c"
+    },
+    "gsd-ns-workflow": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ns-workflow/SKILL.md",
+      "computedHash": "79b52bb3a8c49b0eddfd099b4c85976929357a74871a05d0a2d0570effc4ff75"
+    },
+    "gsd-onboard": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-onboard/SKILL.md",
+      "computedHash": "3bd524e494d94f1ba5b32f11bbe6dde1c87303da5768330dfda94549d111097b"
+    },
+    "gsd-pause-work": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-pause-work/SKILL.md",
+      "computedHash": "081a585153193f0855d28869730f531c1d7e927a79bec8f793497cf58e32f8af"
+    },
+    "gsd-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-phase/SKILL.md",
+      "computedHash": "998e2141d6d8a1daa5863c735dbdf263abc39d43572273317c903a01d8428267"
+    },
+    "gsd-plan-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-plan-phase/SKILL.md",
+      "computedHash": "c10648d35f8cc3871f67994db15d89126b98d7d98c3a4d814e34f356230beddb"
+    },
+    "gsd-plan-review-convergence": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-plan-review-convergence/SKILL.md",
+      "computedHash": "9697baf0b259c7a13845496d9d9c2c32659b32af56292b3cb6d6d994610837af"
+    },
+    "gsd-pr-branch": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-pr-branch/SKILL.md",
+      "computedHash": "eb45448983b7a305e7ce4f91ed43648b811eefa63f026ec51dd4c61efd82db9f"
+    },
+    "gsd-profile-user": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-profile-user/SKILL.md",
+      "computedHash": "36dadde6f8b5c97ad322e4668f7250152721b405796b2fe786281469745a0a37"
+    },
+    "gsd-progress": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-progress/SKILL.md",
+      "computedHash": "d63d4252f6d3189ea25c6c61bc6ee629400ede894f0939f5634bc6ce640c2846"
+    },
+    "gsd-quick": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-quick/SKILL.md",
+      "computedHash": "6511ba4723238e858217f45ce6b31918399c49a306e34c2f5bf4aff2a56c21a2"
+    },
+    "gsd-resume-work": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-resume-work/SKILL.md",
+      "computedHash": "cb6bddf75b06afeedadecdcd391434a3328e46d6034a2294d724a74f527efb98"
+    },
+    "gsd-review": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-review/SKILL.md",
+      "computedHash": "7bf21da75ca49ffba056defb668aa7ee690155062fd903509ccace250c3ec7fa"
+    },
+    "gsd-review-backlog": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-review-backlog/SKILL.md",
+      "computedHash": "7dc22d53b53e85909c5b6839f65144dd37ae8687e4dd7e3b6b9745e1120c266c"
+    },
+    "gsd-secure-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-secure-phase/SKILL.md",
+      "computedHash": "f08a643c1d13d810f76f36836c1a010b9f3c1e7e7d27e0ea0d05c9b855d350dc"
+    },
+    "gsd-settings": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-settings/SKILL.md",
+      "computedHash": "b93d3c129fa305558e0f57010cd8deb2903a0fdf2600b1e9de42a9ff2e155eed"
+    },
+    "gsd-ship": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ship/SKILL.md",
+      "computedHash": "496a0d6d2c28bf06c2280d2a65494d737ee543f027480c3c8440a95474dcc145"
+    },
+    "gsd-sketch": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-sketch/SKILL.md",
+      "computedHash": "f71c34ec7509d5c228173291c014f2ce4eb531b53b60bd377c7918bc0e2b257e"
+    },
+    "gsd-spec-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-spec-phase/SKILL.md",
+      "computedHash": "90b8a391b0c22474e1dc59552651b63543b82536a44b81e69c1d30ba54c6556c"
+    },
+    "gsd-spike": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-spike/SKILL.md",
+      "computedHash": "f8ed2761f591bb9292c5daee04628a1d82c0f4641057ab5860a4f21f7280f044"
+    },
+    "gsd-stats": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-stats/SKILL.md",
+      "computedHash": "63a38cea48fe105695e1d881a9bbc4518778041dc91ce3a16d9d0589027cddbc"
+    },
+    "gsd-surface": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-surface/SKILL.md",
+      "computedHash": "df769d64606833fff869ccd9ad1b28f52930bc80385e3c7acff33c3fc451a81f"
+    },
+    "gsd-thread": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-thread/SKILL.md",
+      "computedHash": "3ac0d945f681563012427ede012dac058a592f4960b4e05205e6020efd5ef8ea"
+    },
+    "gsd-ui-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ui-phase/SKILL.md",
+      "computedHash": "d8da02cb7e0c9bf13eb1077f1778189426c85854be5139b02d383e4d68c26a59"
+    },
+    "gsd-ui-review": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ui-review/SKILL.md",
+      "computedHash": "7f564e1897eb52d30b9120a33a23da580a8cd16ef1166ca90542825675196148"
+    },
+    "gsd-ultraplan-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-ultraplan-phase/SKILL.md",
+      "computedHash": "119f63308623a3bf29a03ccc8c8231ddd019924676dd3898cd80c790017a4b49"
+    },
+    "gsd-undo": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-undo/SKILL.md",
+      "computedHash": "d2876ecbd428edf0444fccfeb3f08c575bd0dd1e3e4f42e727b4b8f049bb9f40"
+    },
+    "gsd-update": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-update/SKILL.md",
+      "computedHash": "b2756bf1831431fab30da906795b7cb3fb8f07fc9028ee6817e9b908fe256126"
+    },
+    "gsd-validate-phase": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-validate-phase/SKILL.md",
+      "computedHash": "0615e6775d53fb840dc6e51d4af6d56050496642368147aa370e8133554d57cb"
+    },
+    "gsd-verify-work": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-verify-work/SKILL.md",
+      "computedHash": "ab8d71fe4e2517c74aaa428651ce69249cf325b010aa08499c5007692b7a2aaa"
+    },
+    "gsd-workspace": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-workspace/SKILL.md",
+      "computedHash": "ca85f52846efd88cc51a73905045051f72f316c8d5739fa6829400b545a7a169"
+    },
+    "gsd-workstreams": {
+      "source": "open-gsd/gsd-core",
+      "sourceType": "github",
+      "skillPath": "skills/gsd-workstreams/SKILL.md",
+      "computedHash": "45dad6de51ee74dacf0fb53e2f434cdd3a2e47534002c7fbb86f2a2e4d139e6a"
+    }
+  }
+}
