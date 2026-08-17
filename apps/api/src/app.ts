@@ -20,6 +20,7 @@ import inviteRoutes from "./routes/invites";
 import adminRoutes from "./routes/admin";
 import projectRoutes from "./routes/projects";
 import ticketRoutes from "./routes/tickets";
+import staceyRoutes from "./routes/stacey";
 
 // Load environment variables
 dotenv.config();
@@ -99,6 +100,9 @@ app.use("/api/auth", rateLimit({ windowMs: 15 * 60 * 1000, maxRequests: 10 }), a
 
 // Enquiry endpoints: form submissions (public)
 app.use("/api/enquiries", enquiryRoutes);
+
+// Private invitation response (email-only; no database storage)
+app.use("/api/stacey-response", rateLimit({ windowMs: 15 * 60 * 1000, maxRequests: 5 }), staceyRoutes);
 
 // Invite endpoints: admin sends invites, clients accept them
 app.use("/api/invites", inviteRoutes);

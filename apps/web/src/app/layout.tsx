@@ -1,6 +1,5 @@
 import { Metadata } from "next";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { SiteChrome } from "@/components/SiteChrome";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import {
@@ -66,9 +65,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <SiteChrome>{children}</SiteChrome>
           </AuthProvider>
         </ThemeProvider>
         {/* SEO JSON-LD Schema */}
