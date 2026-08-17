@@ -31,6 +31,8 @@ const movies = [
 
 const foodChoices = ["Sushi", "Pizza", "Pasta", "Burgers", "Nyama choma", "Coffee & cake"];
 const snackChoices = ["Salted popcorn", "Sweet popcorn", "Nachos", "Chocolate", "Soda", "Something else"];
+const noPrompts = ["No, thank you", "Are you sure?", "Are you sure sure?", "You really don't want to?", "Are you for real?"];
+const noPositions = ["translate(0, 0)", "translate(30px, -18px)", "translate(-38px, 14px)", "translate(42px, 22px)", "translate(-24px, -22px)"];
 
 export function StaceyExperience() {
   const [step, setStep] = useState<Step>("reveal");
@@ -43,7 +45,7 @@ export function StaceyExperience() {
   const [foodNote, setFoodNote] = useState("");
   const [snacks, setSnacks] = useState<string[]>([]);
   const [perfectNote, setPerfectNote] = useState("");
-  const [noDodged, setNoDodged] = useState(false);
+  const [declineAttempts, setDeclineAttempts] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -72,6 +74,14 @@ export function StaceyExperience() {
 
   const toggleSnack = (snack: string) => {
     setSnacks((current) => current.includes(snack) ? current.filter((item) => item !== snack) : [...current, snack]);
+  };
+
+  const tryDecline = () => {
+    if (declineAttempts >= noPrompts.length - 1) {
+      setStep("declined");
+      return;
+    }
+    setDeclineAttempts((attempts) => attempts + 1);
   };
 
   const submitPlan = async () => {
@@ -114,7 +124,7 @@ export function StaceyExperience() {
       <div className={styles.sparkles} aria-hidden="true"><i>✦</i><i>♡</i><i>✧</i><i>✦</i><i>♡</i></div>
       <section className={styles.card} aria-live="polite">
         {step === "reveal" && <div className={styles.reveal}><p className={styles.eyebrow}>For Stacey, with a little courage</p><div className={styles.photoFrame}><Image src={photos[0]} alt="Stacey smiling" width={600} height={492} priority /></div><h1>A little something<br />made just for you.</h1><button className={styles.primaryButton} onClick={() => setStep("question")}>Open it <span>→</span></button><p className={styles.tiny}>P.S. I hope this makes you smile.</p></div>}
-        {step === "question" && <div className={styles.question}><p className={styles.eyebrow}>A small confession</p><h1>You&apos;ve been on<br /><em>my mind.</em></h1><p className={styles.note}>I think you&apos;re genuinely gorgeous, and I&apos;ve been a little too shy to say it out loud. So I made this instead: would you let me take you out and make a lovely memory together?</p><div className={styles.answerRow}><button className={styles.primaryButton} onClick={() => setStep("activity")}>Yes, I&apos;d love to! <span>♡</span></button><div className={noDodged ? styles.noAreaDodged : styles.noArea}><button className={styles.noButton} onMouseEnter={() => setNoDodged(true)} onFocus={() => setNoDodged(true)} onClick={() => setStep("declined")}>No, thank you</button></div></div>{noDodged && <p className={styles.dodgeHint}>That little heart was hoping you&apos;d choose yes — but your answer matters.</p>}</div>}
+        {step === "question" && <div className={styles.question}><p className={styles.eyebrow}>A small confession</p><h1>You&apos;ve been on<br /><em>my mind.</em></h1><p className={styles.note}>I think you&apos;re genuinely gorgeous, and I&apos;ve been a little too shy to say it out loud. So I made this instead: would you let me take you out and make a lovely memory together?</p><div className={styles.answerRow}><button className={styles.primaryButton} onClick={() => setStep("activity")}>Yes, I&apos;d love to! <span>♡</span></button><div className={styles.noArea}><span className={styles.courageCharacter} aria-hidden="true">♡</span><button className={styles.noButton} style={{ transform: noPositions[declineAttempts] }} onClick={tryDecline}>{noPrompts[declineAttempts]}</button></div></div><p className={styles.dodgeHint}>{declineAttempts ? "My little courage is taking that very seriously…" : "A tiny brave-heart is keeping the No button company."}</p></div>}
         {step === "activity" && stage(<>What kind of<br /><em>lovely?</em></>, "First, pick the adventure", <div className={styles.activityGrid}>{activities.map((option) => <button className={activity === option.value ? styles.activitySelected : styles.activity} key={option.value} onClick={() => setActivity(option.value)}><span className={styles.activityIcon}>{option.icon}</span><strong>{option.label}</strong><small>{option.detail}</small></button>)}</div>, Boolean(activity), nextAfterActivity, "This one")}
         {step === "movie" && stage(<>Pick the<br /><em>movie moment.</em></>, "A cinema date, coming right up", <div className={styles.movieGrid}>{movies.map((movie) => <button className={movieTitle === movie.title ? styles.movieSelected : styles.movie} key={movie.title} onClick={() => { setMovieTitle(movie.title); setMovieShowtime(""); }}><strong>{movie.title}</strong><small>{movie.times.join(" · ")}</small></button>)}{activeMovie && <div className={styles.timeChoices}>{activeMovie.times.map((time) => <button className={movieShowtime === time ? styles.timeSelected : styles.time} key={time} onClick={() => setMovieShowtime(time)}>{time}</button>)}</div>}</div>, Boolean(movieTitle && movieShowtime), nextAfterMovie, "That showing")}
         {step === "schedule" && stage(<>When shall we<br /><em>make it happen?</em></>, "Your calendar, your call", <div className={styles.formGrid}><label>What day feels good?<input type="date" min={new Date().toISOString().slice(0, 10)} value={preferredDate} onClick={(event) => event.currentTarget.showPicker?.()} onChange={(event) => setPreferredDate(event.target.value)} /></label><label>Best time<select value={timeOfDay} onChange={(event) => setTimeOfDay(event.target.value)}><option value="">Select a time</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option><option value="night">Night</option></select></label></div>, Boolean(preferredDate && timeOfDay), nextAfterSchedule, "Save the date")}
@@ -123,7 +133,7 @@ export function StaceyExperience() {
         {step === "note" && stage(<>One last<br /><em>little clue.</em></>, "Help me make it feel just right", <label className={styles.noteLabel}>Anything that would make it extra perfect?<textarea value={perfectNote} maxLength={1200} rows={4} onChange={(event) => setPerfectNote(event.target.value)} placeholder="A little hint for me goes a long way." /></label>, true, submitPlan, submitting ? "Sending your hints…" : "Send my little hints ♡")}
         {error && <p className={styles.error} role="alert">{error}</p>}
         {step === "celebration" && <div className={styles.celebration}><div className={styles.confetti} aria-hidden="true">✦ ♡ ✧ ♥ ✦ ♡</div><p className={styles.eyebrow}>Message received</p><h1>You just made<br /><em>my day.</em></h1><p className={styles.note}>I&apos;ve got your clues. Now I get to plan something worth looking forward to.</p><p className={styles.signature}>— with a very happy smile</p></div>}
-        {step === "declined" && <div className={styles.declined}><p className={styles.eyebrow}>Thank you for being honest</p><h1>All good,<br /><em>truly.</em></h1><p className={styles.note}>No hard feelings at all. I hope this little page still gave you a smile, and I&apos;m wishing you the loveliest days ahead.</p><span className={styles.bigHeart}>♡</span></div>}
+        {step === "declined" && <div className={styles.declined}><p className={styles.eyebrow}>Thank you for being honest</p><h1>Okay, I hear<br /><em>you.</em></h1><p className={styles.note}>No hard feelings at all. I hope this little page still gave you a smile, and I&apos;m wishing you the loveliest days ahead.</p><span className={styles.bigHeart}>♡</span></div>}
       </section>
     </main>
   );
