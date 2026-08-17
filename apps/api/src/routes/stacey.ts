@@ -15,7 +15,9 @@ const staceyResponseSchema = z.object({
   preferredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Please choose a valid date").refine(validIsoDate, "Please choose a valid date"),
   timeOfDay: z.enum(["afternoon", "evening", "night"]),
   foodDrink: z.string().max(300).optional().or(z.literal("")),
-  movieTaste: z.string().max(300).optional().or(z.literal("")),
+  movieTitle: z.string().max(100).optional().or(z.literal("")),
+  movieShowtime: z.string().max(80).optional().or(z.literal("")),
+  snacks: z.array(z.string().max(80)).max(6).optional().default([]),
   perfectNote: z.string().max(1200).optional().or(z.literal("")),
 });
 

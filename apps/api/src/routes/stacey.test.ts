@@ -14,7 +14,9 @@ const validResponse = {
   preferredDate: "2026-08-28",
   timeOfDay: "evening",
   foodDrink: "Sushi",
-  movieTaste: "Rom-coms",
+  movieTitle: "Zootopia 2",
+  movieShowtime: "6:00 pm",
+  snacks: ["Sweet popcorn", "Chocolate"],
   perfectNote: "Somewhere cosy, please.",
 };
 

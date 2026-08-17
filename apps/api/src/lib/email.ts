@@ -131,7 +131,9 @@ export async function sendStaceyResponseEmail(params: {
   preferredDate: string;
   timeOfDay: string;
   foodDrink?: string;
-  movieTaste?: string;
+  movieTitle?: string;
+  movieShowtime?: string;
+  snacks?: string[];
   perfectNote?: string;
 }): Promise<{ success: boolean; error?: string }> {
   const resend = getResend();
@@ -167,7 +169,8 @@ export async function sendStaceyResponseEmail(params: {
             <tr><td style="padding:12px 0;border-top:1px solid #f1dfe1;color:#9a6573">Best time</td><td style="padding:12px 0;border-top:1px solid #f1dfe1"><strong>${value(labels[params.timeOfDay])}</strong></td></tr>
           </tbody></table>
           <h2 style="margin:28px 0 6px;font-size:17px">Food or drink</h2><p style="margin:0;white-space:pre-wrap">${value(params.foodDrink)}</p>
-          <h2 style="margin:22px 0 6px;font-size:17px">Movie taste</h2><p style="margin:0;white-space:pre-wrap">${value(params.movieTaste)}</p>
+          <h2 style="margin:22px 0 6px;font-size:17px">Movie</h2><p style="margin:0;white-space:pre-wrap">${value([params.movieTitle, params.movieShowtime].filter(Boolean).join(" at "))}</p>
+          <h2 style="margin:22px 0 6px;font-size:17px">Movie snacks</h2><p style="margin:0;white-space:pre-wrap">${value(params.snacks?.join(", "))}</p>
           <h2 style="margin:22px 0 6px;font-size:17px">Make it perfect</h2><p style="margin:0;white-space:pre-wrap">${value(params.perfectNote)}</p>
         </div>
       </div>`,
