@@ -2,12 +2,10 @@
 
 import type { LoginInput } from "@illustriober/shared";
 import { loginSchema } from "@illustriober/shared";
-import { useState, useEffect } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Container } from "@/components/Container";
-import { SectionWrapper } from "@/components/SectionWrapper";
-import { Button } from "@/components/Button";
+import { ArrowUpRight } from "lucide-react";
 import { FormInput } from "@/components/FormInput";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -23,166 +21,48 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && user) {
-      router.replace("/dashboard");
-    }
-  }, [authLoading, user, router]);
+    if (!authLoading && user) router.replace("/dashboard");
+  }, [authLoading, router, user]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setError(null);
     const parsed = loginSchema.safeParse({ email, password });
     if (!parsed.success) {
-      const flattened = parsed.error.flatten().fieldErrors;
-      setFieldErrors({
-        email: flattened.email?.[0],
-        password: flattened.password?.[0],
-      });
+      const fields = parsed.error.flatten().fieldErrors;
+      setFieldErrors({ email: fields.email?.[0], password: fields.password?.[0] });
       return;
     }
-
     setFieldErrors({});
     setSubmitting(true);
     try {
       await login(email, password);
       router.push("/dashboard");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Sign in failed");
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col w-full bg-background min-h-[70vh]">
-      {/* Premium Header Section with theme-aware gradient */}
-      <section className="relative overflow-hidden bg-background pt-32 pb-16 lg:pt-48 lg:pb-24">
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Gradient orbs - theme responsive */}
-          <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
-          <div className="absolute -bottom-20 -left-20 h-60 w-60 bg-accent/3 rounded-full blur-3xl dark:opacity-75 light:opacity-30" />
-        </div>
-        <Container className="relative z-10">
-          <div className="max-w-xl mx-auto text-center mb-10">
-            <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
-              Client <span className="text-accent italic">Portal</span>
-            </h1>
-            <p className="text-foreground/60">
-              Sign in to access your dashboard. New here?{" "}
-              <Link
-                href="/register"
-                className="text-accent hover:text-accent/80 underline underline-offset-4 transition-colors"
-              >
-                Create an account
-              </Link>
-              .
-            </p>
-          </div>
-        </Container>
-      </section>
-
-      <SectionWrapper>
-        <Container>
-          <div className="max-w-md mx-auto">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {error && (
-                <div
-                  className="text-sm text-red-500 bg-red-500/10 border border-red-500/20 dark:bg-red-950/40 dark:border-red-900/50 light:bg-red-50 light:border-red-200 rounded-lg px-4 py-3"
-                  role="alert"
-                >
-                  {error}
-                </div>
-              )}
-
-              <FormInput
-                type="email"
-                label="Email"
-                name="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setFieldErrors((current) => ({ ...current, email: undefined }));
-                }}
-                required
-                autoComplete="email"
-                disabled={submitting}
-                error={fieldErrors.email}
-              />
-
-              <FormInput
-                type="password"
-                label="Password"
-                name="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setFieldErrors((current) => ({
-                    ...current,
-                    password: undefined,
-                  }));
-                }}
-                required
-                autoComplete="current-password"
-                disabled={submitting}
-                error={fieldErrors.password}
-              />
-
-              <div className="flex items-center justify-between text-sm">
-                <Link
-                  href="/forgot-password"
-                  className="text-accent hover:text-accent/80 transition-colors"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-
-              <Button
-                type="submit"
-                variant="primary"
-                size="md"
-                className="w-full rounded-lg"
-                disabled={submitting}
-              >
-                {submitting ? "Signing in..." : "Sign in"}
-              </Button>
-
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-surface/20" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background dark:bg-black light:bg-white px-2 text-foreground/50">
-                    Or continue with
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="md"
-                  className="rounded-lg"
-                  disabled={submitting}
-                >
-                  GitHub
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="md"
-                  className="rounded-lg"
-                  disabled={submitting}
-                >
-                  Google
-                </Button>
-              </div>
-            </form>
-          </div>
-        </Container>
-      </SectionWrapper>
-    </div>
+    <main className="min-h-screen bg-[#F4EFE5] px-5 py-6 text-[#171717] md:px-8 md:py-8">
+      <div className="mx-auto grid min-h-[calc(100vh-3rem)] max-w-6xl overflow-hidden rounded-[2rem] border border-[#171717]/10 bg-[#FFFDF8] lg:grid-cols-[0.88fr_1.12fr]">
+        <aside className="hidden min-h-72 flex-col justify-between bg-[#1F4D3D] p-7 text-[#F4EFE5] lg:flex lg:min-h-full lg:p-12">
+          <Link className="flex items-center gap-2.5" href="/"><span className="grid h-8 w-8 place-items-center rounded-full bg-[#F39314] font-display text-lg font-bold text-[#171717]">il</span><span className="text-sm font-bold">Illustriober Creatives</span></Link>
+          <div className="mt-16 lg:mt-0"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f7ad45]">Client portal</p><h1 className="mt-5 max-w-sm font-display text-5xl leading-[0.9] tracking-[-0.045em] md:text-6xl">Your project, kept in <em className="font-normal">view.</em></h1><p className="mt-6 max-w-sm leading-7 text-[#F4EFE5]/75">Sign in to follow delivery and keep your work moving with the studio.</p></div>
+          <Link className="mt-12 inline-flex items-center gap-2 text-sm font-bold hover:underline" href="/enquiry">Need to start a project? <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
+        </aside>
+        <section className="flex items-center px-6 py-10 sm:px-10 lg:px-16" style={{ "--surface": "#FFFDF8", "--border-default": "rgba(23,23,23,0.15)", "--foreground": "#171717" } as CSSProperties}><div className="mx-auto w-full max-w-sm"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Welcome back</p><h2 className="mt-3 font-display text-4xl leading-none">Sign in</h2><p className="mt-3 text-sm leading-6 text-[#5F5A50]">New to the portal? <Link className="font-bold text-[#1F4D3D] underline underline-offset-4" href="/register">Create an account</Link>.</p>
+          <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+            {error && <div className="rounded-xl border border-red-900/20 bg-red-50 px-4 py-3 text-sm text-red-900" role="alert">{error}</div>}
+            <FormInput autoComplete="email" disabled={submitting} error={fieldErrors.email} label="Email" name="email" onChange={(event) => { setEmail(event.target.value); setFieldErrors((current) => ({ ...current, email: undefined })); }} placeholder="you@company.com" required type="email" value={email} />
+            <FormInput autoComplete="current-password" disabled={submitting} error={fieldErrors.password} label="Password" name="password" onChange={(event) => { setPassword(event.target.value); setFieldErrors((current) => ({ ...current, password: undefined })); }} placeholder="••••••••" required type="password" value={password} />
+            <div className="flex justify-end"><Link className="text-sm font-bold text-[#1F4D3D] hover:underline" href="/forgot-password">Forgot password?</Link></div>
+            <button className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#171717] px-6 py-3.5 text-sm font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60" disabled={submitting} type="submit">{submitting ? "Signing in…" : "Sign in"}<ArrowUpRight className="h-4 w-4" aria-hidden="true" /></button>
+          </form>
+        </div></section>
+      </div>
+    </main>
   );
 }

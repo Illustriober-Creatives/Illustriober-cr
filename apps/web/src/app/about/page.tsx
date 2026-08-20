@@ -1,201 +1,46 @@
-/**
- * About Page
- * Company story, mission, values, and team introduction
- * Fully theme-aware with light and dark mode support
- */
-
-import { Button } from "@/components/Button";
-import { Container } from "@/components/Container";
-import { SectionHeader } from "@/components/SectionHeader";
-import { SectionWrapper } from "@/components/SectionWrapper";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { createMetadata } from "@/lib/seo";
-import { ArrowRight } from "lucide-react";
 
 export const metadata = createMetadata({
   title: "About",
-  description:
-    "Learn about Illustriober Creatives - a premium tech studio specializing in full-stack web development, mobile apps, and design.",
+  description: "Illustriober Creatives is a design and development studio for clear, useful digital products.",
   path: "/about",
 });
 
+const principles = [
+  ["Useful first", "Every screen should make a decision, task, or next step feel easier."],
+  ["Built together", "We keep the work visible, make the trade-offs plain, and stay close to the problem."],
+  ["Ready to grow", "Good foundations give a product room to change without losing its shape."],
+];
+
 export default function AboutPage() {
   return (
-    <main className="flex flex-col w-full bg-background">
-      {/* Hero Section - Theme aware gradient background */}
-      <section className="relative overflow-hidden bg-background py-20 lg:py-32">
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Gradient orbs - theme responsive */}
-          <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-accent/3 rounded-full blur-3xl dark:opacity-75 light:opacity-40" />
+    <main className="min-h-screen bg-[#F4EFE5] pb-20 pt-36 text-[#171717] md:pt-48">
+      <section className="mx-auto max-w-7xl px-5 md:px-8">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">About Illustriober</p>
+        <div className="mt-5 grid items-end gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+          <h1 className="max-w-4xl font-display text-6xl leading-[0.87] tracking-[-0.055em] md:text-8xl">We make the complicated feel <em className="font-normal text-[#F39314]">clear.</em></h1>
+          <p className="max-w-md text-lg leading-8 text-[#5F5A50]">Illustriober is a small, practical studio for digital products that need to look considered and work hard.</p>
         </div>
-
-        <Container className="relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="inline-block mb-6 px-4 py-2 rounded-full bg-accent-soft border border-accent/20 text-accent text-sm font-medium uppercase tracking-wider">
-              About Our Studio
-            </p>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-semibold leading-tight tracking-tight mb-6 text-foreground">
-              Crafting <span className="text-accent italic">exceptional</span> digital experiences
-            </h1>
-            <p className="text-lg md:text-xl text-foreground/60 leading-relaxed">
-              Founded on the belief that great design and technology can transform
-              businesses, we partner with companies to build products that matter.
-            </p>
-          </div>
-        </Container>
       </section>
 
-      {/* Our Story */}
-      <SectionWrapper>
-        <Container>
-          <SectionHeader
-            subtitle="Our Journey"
-            title="How Illustriober Started"
-            description="From a small team of passionate designers and developers to a full-service creative studio"
-          />
-
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-foreground/70 text-lg leading-relaxed mb-6">
-                Illustriober Creatives was born from a simple idea: exceptional
-                digital experiences require both artistic vision and technical
-                excellence. We started as a boutique team of developers and designers
-                who believed that every project deserves thoughtful, custom-crafted
-                solutions.
-              </p>
-              <p className="text-foreground/70 text-lg leading-relaxed mb-6">
-                Over the years, we&apos;ve grown into a full-service creative studio,
-                working with startups, scale-ups, and enterprises to design and
-                build digital products that create real impact. Today, we&apos;re proud
-                to have delivered over 500 projects while maintaining our commitment
-                to quality and innovation.
-              </p>
-              <p className="text-foreground/70 text-lg leading-relaxed">
-                What drives us is the opportunity to solve complex problems through
-                elegant design and robust technology. We&apos;re not just building
-                websites and apps—we&apos;re creating experiences that connect businesses
-                with their customers.
-              </p>
-            </div>
-
-            <div className="relative h-96 bg-accent-soft border border-accent/20 rounded-xl overflow-hidden glass-card">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-6xl font-display font-semibold text-accent mb-2">10+</p>
-                  <p className="text-foreground/60">Years of Excellence</p>
-                </div>
-              </div>
-            </div>
+      <section className="mx-auto mt-14 max-w-7xl px-5 md:mt-20 md:px-8">
+        <div className="grid overflow-hidden rounded-[2rem] bg-[#1F4D3D] lg:grid-cols-2">
+          <div className="p-8 text-[#F4EFE5] md:p-12 lg:p-16">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f7ad45]">Our point of view</p>
+            <p className="mt-7 max-w-xl font-display text-4xl leading-[1.02] tracking-[-0.035em] md:text-5xl">Strong digital work needs a sharp idea, a calm interface, and the engineering to hold it together.</p>
           </div>
-        </Container>
-      </SectionWrapper>
+          <div className="relative min-h-[340px]"><Image alt="A considered product interface concept" className="object-cover" fill sizes="(max-width: 1024px) 100vw, 50vw" src="/projects/concept-project-gallery.png" /></div>
+        </div>
+      </section>
 
-      {/* Values */}
-      <SectionWrapper>
-        <Container>
-          <SectionHeader
-            subtitle="Our Core Values"
-            title="What We Believe In"
-            description="The principles that guide every project and decision we make"
-          />
+      <section className="mx-auto mt-16 max-w-7xl px-5 md:mt-24 md:px-8">
+        <div className="grid gap-5 md:grid-cols-3">{principles.map(([title, copy], index) => <article className="rounded-[1.5rem] border border-[#171717]/10 bg-[#FFFDF8] p-7 md:p-8" key={title}><p className="text-xs font-bold text-[#F39314]">0{index + 1}</p><h2 className="mt-10 font-display text-3xl">{title}</h2><p className="mt-4 leading-7 text-[#5F5A50]">{copy}</p></article>)}</div>
+      </section>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Excellence",
-                description:
-                  "We never compromise on quality. Every pixel, every line of code matters.",
-              },
-              {
-                title: "Innovation",
-                description:
-                  "We stay at the forefront of technology and design to deliver cutting-edge solutions.",
-              },
-              {
-                title: "Partnership",
-                description:
-                  "We treat our clients as partners, investing in their success as our own.",
-              },
-              {
-                title: "Transparency",
-                description:
-                  "Clear communication and honest feedback keep projects on track and aligned.",
-              },
-              {
-                title: "Impact",
-                description:
-                  "We measure success by the real results we create for our clients' businesses.",
-              },
-              {
-                title: "Growth",
-                description:
-                  "We continuously learn, evolve, and challenge ourselves to do better.",
-              },
-            ].map((value) => (
-              <div
-                key={value.title}
-                className="p-8 rounded-xl glass-card border-glass-border hover:border-accent/40 hover:bg-glass-bg-hover transition-all"
-              >
-                <h3 className="text-xl font-semibold text-foreground mb-3">
-                  {value.title}
-                </h3>
-                <p className="text-foreground/60">{value.description}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </SectionWrapper>
-
-      {/* Team Preview */}
-      <SectionWrapper>
-        <Container>
-          <SectionHeader
-            subtitle="Our Team"
-            title="Talented Minds Behind Your Project"
-            description="A diverse team of designers, developers, and strategists"
-          />
-
-          <div className="grid md:grid-cols-4 gap-6">
-            {[
-              { name: "Sarah Chen", role: "Creative Director" },
-              { name: "Alex Rodriguez", role: "Lead Developer" },
-              { name: "Emma Thompson", role: "UX Designer" },
-              { name: "James Wilson", role: "Product Manager" },
-            ].map((member) => (
-              <div
-                key={member.name}
-                className="text-center p-6 rounded-xl glass-card border-glass-border hover:border-accent/40 transition-all"
-              >
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-accent-soft border border-accent/20" />
-                <h3 className="text-lg font-semibold text-foreground mb-1">
-                  {member.name}
-                </h3>
-                <p className="text-accent text-sm font-medium">{member.role}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </SectionWrapper>
-
-      {/* CTA Section - Theme aware */}
-      <SectionWrapper className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-accent-soft/20 border-y border-accent/20" />
-        <Container className="relative z-10">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-display font-semibold text-foreground mb-6">
-              Ready to work together?
-            </h2>
-            <p className="text-foreground/60 text-lg mb-8">
-              Let&apos;s discuss your project and how we can help bring your vision to
-              life.
-            </p>
-            <Button size="lg" variant="primary" className="rounded-full px-12">
-              Start a Conversation
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-          </div>
-        </Container>
-      </SectionWrapper>
+      <section className="mx-auto mt-16 max-w-7xl px-5 md:mt-24 md:px-8"><div className="rounded-[2rem] bg-[#F39314] px-7 py-12 text-center md:px-12"><h2 className="font-display text-4xl leading-none md:text-6xl">Have something worth making?</h2><Link className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#171717] px-6 py-3.5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5" href="/enquiry">Tell us about it <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link></div></section>
     </main>
   );
 }

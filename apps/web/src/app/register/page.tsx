@@ -2,18 +2,14 @@
 
 import type { RegisterInput } from "@illustriober/shared";
 import { registerSchema } from "@illustriober/shared";
-import { useState, useEffect } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Container } from "@/components/Container";
-import { SectionWrapper } from "@/components/SectionWrapper";
-import { Button } from "@/components/Button";
+import { ArrowUpRight } from "lucide-react";
 import { FormInput } from "@/components/FormInput";
 import { useAuth } from "@/contexts/AuthContext";
 
-type RegisterFieldErrors = Partial<Record<keyof RegisterInput, string>> & {
-  confirmPassword?: string;
-};
+type RegisterFieldErrors = Partial<Record<keyof RegisterInput, string>> & { confirmPassword?: string };
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -27,242 +23,26 @@ export default function RegisterPage() {
   const [fieldErrors, setFieldErrors] = useState<RegisterFieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (!authLoading && user) {
-      router.replace("/dashboard");
-    }
-  }, [authLoading, user, router]);
+  useEffect(() => { if (!authLoading && user) router.replace("/dashboard"); }, [authLoading, router, user]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setError(null);
-    const parsed = registerSchema.safeParse({
-      email,
-      password,
-      firstName,
-      lastName,
-    });
-    const nextFieldErrors: RegisterFieldErrors = parsed.success
-      ? {}
-      : {
-          email: parsed.error.flatten().fieldErrors.email?.[0],
-          password: parsed.error.flatten().fieldErrors.password?.[0],
-          firstName: parsed.error.flatten().fieldErrors.firstName?.[0],
-          lastName: parsed.error.flatten().fieldErrors.lastName?.[0],
-        };
-
-    if (confirmPassword !== password) {
-      nextFieldErrors.confirmPassword = "Passwords do not match";
-    }
-
-    if (Object.values(nextFieldErrors).some(Boolean)) {
-      setFieldErrors(nextFieldErrors);
-      return;
-    }
-
+    const parsed = registerSchema.safeParse({ email, password, firstName, lastName });
+    const nextErrors: RegisterFieldErrors = parsed.success ? {} : { email: parsed.error.flatten().fieldErrors.email?.[0], password: parsed.error.flatten().fieldErrors.password?.[0], firstName: parsed.error.flatten().fieldErrors.firstName?.[0], lastName: parsed.error.flatten().fieldErrors.lastName?.[0] };
+    if (confirmPassword !== password) nextErrors.confirmPassword = "Passwords do not match";
+    if (Object.values(nextErrors).some(Boolean)) { setFieldErrors(nextErrors); return; }
     setFieldErrors({});
     setSubmitting(true);
-    try {
-      await register({ email, password, firstName, lastName });
-      router.push("/dashboard");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
-    } finally {
-      setSubmitting(false);
-    }
+    try { await register({ email, password, firstName, lastName }); router.push("/dashboard"); } catch (caught) { setError(caught instanceof Error ? caught.message : "Registration failed"); } finally { setSubmitting(false); }
   };
 
   return (
-    <div className="flex flex-col w-full bg-background min-h-[70vh]">
-      {/* Premium Header Section with theme-aware gradient */}
-      <section className="relative overflow-hidden bg-background pt-32 pb-16 lg:pt-48 lg:pb-24">
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Gradient orbs - theme responsive */}
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
-          <div className="absolute -top-20 -right-20 h-60 w-60 bg-accent/3 rounded-full blur-3xl dark:opacity-75 light:opacity-30" />
-        </div>
-        <Container className="relative z-10">
-          <div className="max-w-xl mx-auto text-center mb-10">
-            <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
-              Create <span className="text-accent italic">Account</span>
-            </h1>
-            <p className="text-foreground/60">
-              Already registered?{" "}
-              <Link
-                href="/login"
-                className="text-accent hover:text-accent/80 underline underline-offset-4 transition-colors"
-              >
-                Sign in
-              </Link>
-            </p>
-          </div>
-        </Container>
-      </section>
-
-      <SectionWrapper>
-        <Container>
-          <div className="max-w-md mx-auto">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {error && (
-                <div
-                  className="text-sm text-red-500 bg-red-500/10 border border-red-500/20 dark:bg-red-950/40 dark:border-red-900/50 light:bg-red-50 light:border-red-200 rounded-lg px-4 py-3"
-                  role="alert"
-                >
-                  {error}
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-4">
-                <FormInput
-                  type="text"
-                  label="First name"
-                  name="firstName"
-                  placeholder="John"
-                  value={firstName}
-                  onChange={(e) => {
-                    setFirstName(e.target.value);
-                    setFieldErrors((current) => ({
-                      ...current,
-                      firstName: undefined,
-                    }));
-                  }}
-                  required
-                  autoComplete="given-name"
-                  disabled={submitting}
-                  error={fieldErrors.firstName}
-                />
-                <FormInput
-                  type="text"
-                  label="Last name"
-                  name="lastName"
-                  placeholder="Doe"
-                  value={lastName}
-                  onChange={(e) => {
-                    setLastName(e.target.value);
-                    setFieldErrors((current) => ({
-                      ...current,
-                      lastName: undefined,
-                    }));
-                  }}
-                  required
-                  autoComplete="family-name"
-                  disabled={submitting}
-                  error={fieldErrors.lastName}
-                />
-              </div>
-
-              <FormInput
-                type="email"
-                label="Email"
-                name="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setFieldErrors((current) => ({ ...current, email: undefined }));
-                }}
-                required
-                autoComplete="email"
-                disabled={submitting}
-                error={fieldErrors.email}
-              />
-
-              <FormInput
-                type="password"
-                label="Password"
-                name="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setFieldErrors((current) => ({
-                    ...current,
-                    password: undefined,
-                    confirmPassword: undefined,
-                  }));
-                }}
-                required
-                autoComplete="new-password"
-                helperText="At least 8 characters"
-                disabled={submitting}
-                error={fieldErrors.password}
-              />
-
-              <FormInput
-                type="password"
-                label="Confirm password"
-                name="confirmPassword"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                  setFieldErrors((current) => ({
-                    ...current,
-                    confirmPassword: undefined,
-                  }));
-                }}
-                required
-                autoComplete="new-password"
-                disabled={submitting}
-                error={fieldErrors.confirmPassword}
-              />
-
-              <div className="text-xs text-foreground/50">
-                By creating an account, you agree to our{" "}
-                <Link href="/terms" className="text-accent hover:text-accent/80">
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link href="/privacy" className="text-accent hover:text-accent/80">
-                  Privacy Policy
-                </Link>
-              </div>
-
-              <Button
-                type="submit"
-                variant="primary"
-                size="md"
-                className="w-full rounded-lg"
-                disabled={submitting}
-              >
-                {submitting ? "Creating account..." : "Create account"}
-              </Button>
-
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-surface/20" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background dark:bg-black light:bg-white px-2 text-foreground/50">
-                    Or sign up with
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="md"
-                  className="rounded-lg"
-                  disabled={submitting}
-                >
-                  GitHub
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="md"
-                  className="rounded-lg"
-                  disabled={submitting}
-                >
-                  Google
-                </Button>
-              </div>
-            </form>
-          </div>
-        </Container>
-      </SectionWrapper>
-    </div>
+    <main className="min-h-screen bg-[#F4EFE5] px-5 py-6 text-[#171717] md:px-8 md:py-8"><div className="mx-auto grid min-h-[calc(100vh-3rem)] max-w-6xl overflow-hidden rounded-[2rem] border border-[#171717]/10 bg-[#FFFDF8] lg:grid-cols-[0.88fr_1.12fr]">
+      <aside className="hidden min-h-72 flex-col justify-between bg-[#F39314] p-7 text-[#171717] lg:flex lg:min-h-full lg:p-12"><Link className="flex items-center gap-2.5" href="/"><span className="grid h-8 w-8 place-items-center rounded-full bg-[#171717] font-display text-lg font-bold text-[#F4EFE5]">il</span><span className="text-sm font-bold">Illustriober Creatives</span></Link><div className="mt-16 lg:mt-0"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#171717]/65">Client portal</p><h1 className="mt-5 max-w-sm font-display text-5xl leading-[0.9] tracking-[-0.045em] md:text-6xl">A better place to keep work <em className="font-normal">moving.</em></h1><p className="mt-6 max-w-sm leading-7 text-[#171717]/75">Create your account to see project updates and stay close to the decisions that matter.</p></div><Link className="mt-12 inline-flex items-center gap-2 text-sm font-bold hover:underline" href="/login">Already have an account? <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link></aside>
+      <section className="flex items-center px-6 py-10 sm:px-10 lg:px-16" style={{ "--surface": "#FFFDF8", "--border-default": "rgba(23,23,23,0.15)", "--foreground": "#171717" } as CSSProperties}><div className="mx-auto w-full max-w-md"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Client portal</p><h2 className="mt-3 font-display text-4xl leading-none">Create account</h2><p className="mt-3 text-sm leading-6 text-[#5F5A50]">Already registered? <Link className="font-bold text-[#1F4D3D] underline underline-offset-4" href="/login">Sign in</Link>.</p>
+        <form className="mt-8 space-y-4" onSubmit={handleSubmit}>{error && <div className="rounded-xl border border-red-900/20 bg-red-50 px-4 py-3 text-sm text-red-900" role="alert">{error}</div>}<div className="grid gap-4 sm:grid-cols-2"><FormInput autoComplete="given-name" disabled={submitting} error={fieldErrors.firstName} label="First name" name="firstName" onChange={(event) => { setFirstName(event.target.value); setFieldErrors((current) => ({ ...current, firstName: undefined })); }} required value={firstName} /><FormInput autoComplete="family-name" disabled={submitting} error={fieldErrors.lastName} label="Last name" name="lastName" onChange={(event) => { setLastName(event.target.value); setFieldErrors((current) => ({ ...current, lastName: undefined })); }} required value={lastName} /></div><FormInput autoComplete="email" disabled={submitting} error={fieldErrors.email} label="Email" name="email" onChange={(event) => { setEmail(event.target.value); setFieldErrors((current) => ({ ...current, email: undefined })); }} required type="email" value={email} /><FormInput autoComplete="new-password" disabled={submitting} error={fieldErrors.password} helperText="At least 8 characters" label="Password" name="password" onChange={(event) => { setPassword(event.target.value); setFieldErrors((current) => ({ ...current, password: undefined, confirmPassword: undefined })); }} required type="password" value={password} /><FormInput autoComplete="new-password" disabled={submitting} error={fieldErrors.confirmPassword} label="Confirm password" name="confirmPassword" onChange={(event) => { setConfirmPassword(event.target.value); setFieldErrors((current) => ({ ...current, confirmPassword: undefined })); }} required type="password" value={confirmPassword} /><p className="text-xs leading-5 text-[#5F5A50]">By creating an account, you agree to our <Link className="font-bold text-[#1F4D3D] underline underline-offset-2" href="/terms">Terms</Link> and <Link className="font-bold text-[#1F4D3D] underline underline-offset-2" href="/privacy">Privacy Policy</Link>.</p><button className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#171717] px-6 py-3.5 text-sm font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60" disabled={submitting} type="submit">{submitting ? "Creating account…" : "Create account"}<ArrowUpRight className="h-4 w-4" aria-hidden="true" /></button></form>
+      </div></section>
+    </div></main>
   );
 }

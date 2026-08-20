@@ -11,7 +11,6 @@ export function ThankYouContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
-  const [isCountingDown, setIsCountingDown] = useState(false);
   const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
@@ -20,7 +19,6 @@ export function ThankYouContent() {
       return;
     }
 
-    setIsCountingDown(true);
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
