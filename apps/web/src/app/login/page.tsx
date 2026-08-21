@@ -54,17 +54,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col w-full bg-background min-h-[70vh]">
-      {/* Premium Header Section with theme-aware gradient */}
-      <section className="relative overflow-hidden bg-background pt-32 pb-16 lg:pt-48 lg:pb-24">
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Gradient orbs - theme responsive */}
-          <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
-          <div className="absolute -bottom-20 -left-20 h-60 w-60 bg-accent/3 rounded-full blur-3xl dark:opacity-75 light:opacity-30" />
-        </div>
+    <div className="page-small">
+      {/* Header Section */}
+      <section className="section-sm">
         <Container className="relative z-10">
-          <div className="max-w-xl mx-auto text-center mb-10">
-            <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
+          <div className="content-normal mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-3">
               Client <span className="text-accent italic">Portal</span>
             </h1>
             <p className="text-foreground/60">
@@ -81,9 +76,9 @@ export default function LoginPage() {
         </Container>
       </section>
 
-      <SectionWrapper>
+      <SectionWrapper spacing="sm">
         <Container>
-          <div className="max-w-md mx-auto">
+          <div className="content-narrow mx-auto">
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
                 <div

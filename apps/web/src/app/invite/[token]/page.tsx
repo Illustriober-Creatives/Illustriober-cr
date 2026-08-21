@@ -84,7 +84,7 @@ export default function InvitePage() {
   // ── Loading ────────────────────────────────────────────────────────────────
   if (state === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-[70vh] bg-background">
+      <div className="flex items-center justify-center page-small">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-foreground/60 text-sm">Validating your invitation…</p>
@@ -96,8 +96,8 @@ export default function InvitePage() {
   // ── Invalid ────────────────────────────────────────────────────────────────
   if (state === "invalid" || state === "expired") {
     return (
-      <div className="flex flex-col w-full bg-background min-h-[70vh]">
-        <section className="relative overflow-hidden bg-background pt-32 pb-16 lg:pt-48 lg:pb-24">
+      <div className="page-small">
+        <section className="relative overflow-hidden section-lg">
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl" />
           </div>
@@ -129,8 +129,8 @@ export default function InvitePage() {
 
   // ── Form ───────────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col w-full bg-background min-h-[70vh]">
-      <section className="relative overflow-hidden bg-background pt-32 pb-16 lg:pt-48 lg:pb-24">
+    <div className="page-small">
+      <section className="relative overflow-hidden section-lg">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
           <div className="absolute -bottom-20 -left-20 h-60 w-60 bg-accent/3 rounded-full blur-3xl dark:opacity-75 light:opacity-30" />

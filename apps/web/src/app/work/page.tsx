@@ -77,8 +77,8 @@ const categories = ["All", "Web Platform", "Mobile Product", "Analytics", "Desig
 
 export default function WorkPage() {
   return (
-    <main className="flex flex-col w-full bg-background">
-      <section className="relative overflow-hidden pt-36 pb-24 lg:pt-44 lg:pb-32">
+    <div className="flex flex-col w-full">
+      <section className="relative overflow-hidden section-xl">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/45 to-transparent" />
           <div className="absolute -top-24 right-0 h-80 w-80 rounded-full bg-accent-soft blur-3xl" />
@@ -208,6 +208,6 @@ export default function WorkPage() {
           </div>
         </Container>
       </SectionWrapper>
-    </main>
+    </div>
   );
 }

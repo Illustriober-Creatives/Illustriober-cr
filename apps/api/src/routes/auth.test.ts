@@ -1,7 +1,11 @@
 import bcrypt from "bcryptjs";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { REFRESH_COOKIE_NAME } from "../lib/cookies";
+import {
+  CSRF_COOKIE_NAME,
+  REFRESH_COOKIE_NAME,
+  createCsrfToken,
+} from "../lib/cookies";
 import { signAccessToken } from "../lib/jwt";
 
 const prismaMock = vi.hoisted(() => ({
@@ -34,6 +38,16 @@ const userFixture = {
   isActive: true,
 };
 
+const REQUESTED_WITH_HEADER = ["X-Requested-With", "Illustriober-Web"] as const;
+
+function csrfSession(refreshToken: string) {
+  const csrfToken = createCsrfToken(refreshToken);
+  return {
+    cookie: `${REFRESH_COOKIE_NAME}=${refreshToken}; ${CSRF_COOKIE_NAME}=${csrfToken}`,
+    csrfToken,
+  };
+}
+
 describe("auth routes", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -48,12 +62,15 @@ describe("auth routes", () => {
       passwordHash: "hashed",
     });
 
-    const response = await request(app).post("/api/auth/register").send({
-      email: userFixture.email,
-      password: "super-secret-password",
-      firstName: userFixture.firstName,
-      lastName: userFixture.lastName,
-    });
+    const response = await request(app)
+      .post("/api/auth/register")
+      .set(...REQUESTED_WITH_HEADER)
+      .send({
+        email: userFixture.email,
+        password: "super-secret-password",
+        firstName: userFixture.firstName,
+        lastName: userFixture.lastName,
+      });
 
     expect(response.status).toBe(201);
     expect(response.body.success).toBe(true);
@@ -67,6 +84,7 @@ describe("auth routes", () => {
     expect(response.headers["set-cookie"]).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`${REFRESH_COOKIE_NAME}=`),
+        expect.stringContaining(`${CSRF_COOKIE_NAME}=`),
       ])
     );
   });
@@ -84,10 +102,13 @@ describe("auth routes", () => {
       lastLoginAt: new Date(),
     });
 
-    const response = await request(app).post("/api/auth/login").send({
-      email: userFixture.email,
-      password,
-    });
+    const response = await request(app)
+      .post("/api/auth/login")
+      .set(...REQUESTED_WITH_HEADER)
+      .send({
+        email: userFixture.email,
+        password,
+      });
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
@@ -99,6 +120,7 @@ describe("auth routes", () => {
     expect(response.headers["set-cookie"]).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`${REFRESH_COOKIE_NAME}=`),
+        expect.stringContaining(`${CSRF_COOKIE_NAME}=`),
       ])
     );
   });
@@ -132,6 +154,7 @@ describe("auth routes", () => {
   });
 
   it("refreshes a session when a valid refresh cookie is present", async () => {
+    const session = csrfSession("refresh-token");
     prismaMock.refreshToken.findUnique.mockResolvedValueOnce({
       token: "refresh-token",
       revokedAt: null,
@@ -141,7 +164,9 @@ describe("auth routes", () => {
 
     const response = await request(app)
       .post("/api/auth/refresh")
-      .set("Cookie", `${REFRESH_COOKIE_NAME}=refresh-token`);
+      .set(...REQUESTED_WITH_HEADER)
+      .set("X-CSRF-Token", session.csrfToken)
+      .set("Cookie", session.cookie);
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
@@ -153,16 +178,21 @@ describe("auth routes", () => {
   });
 
   it("rejects refresh when the session cookie is missing", async () => {
-    const response = await request(app).post("/api/auth/refresh");
+    const response = await request(app)
+      .post("/api/auth/refresh")
+      .set(...REQUESTED_WITH_HEADER);
 
     expect(response.status).toBe(401);
     expect(response.body.error).toBe("Missing refresh session");
   });
 
   it("logs out by revoking the session and clearing the refresh cookie", async () => {
+    const session = csrfSession("refresh-token");
     const response = await request(app)
       .post("/api/auth/logout")
-      .set("Cookie", `${REFRESH_COOKIE_NAME}=refresh-token`);
+      .set(...REQUESTED_WITH_HEADER)
+      .set("X-CSRF-Token", session.csrfToken)
+      .set("Cookie", session.cookie);
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
@@ -173,11 +203,13 @@ describe("auth routes", () => {
     expect(response.headers["set-cookie"]).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`${REFRESH_COOKIE_NAME}=;`),
+        expect.stringContaining(`${CSRF_COOKIE_NAME}=;`),
       ])
     );
   });
 
   it("rotates the refresh token on a successful refresh", async () => {
+    const session = csrfSession("old-refresh-token");
     prismaMock.refreshToken.findUnique.mockResolvedValueOnce({
       token: "old-refresh-token",
       revokedAt: null,
@@ -187,7 +219,9 @@ describe("auth routes", () => {
 
     const response = await request(app)
       .post("/api/auth/refresh")
-      .set("Cookie", `${REFRESH_COOKIE_NAME}=old-refresh-token`);
+      .set(...REQUESTED_WITH_HEADER)
+      .set("X-CSRF-Token", session.csrfToken)
+      .set("Cookie", session.cookie);
 
     expect(response.status).toBe(200);
     expect(prismaMock.refreshToken.updateMany).toHaveBeenCalledWith(
@@ -203,6 +237,7 @@ describe("auth routes", () => {
   });
 
   it("revokes all user sessions when a replayed (stolen) token is detected", async () => {
+    const session = csrfSession("stolen-old-token");
     prismaMock.refreshToken.findUnique.mockResolvedValueOnce({
       token: "stolen-old-token",
       revokedAt: new Date(Date.now() - 60_000),
@@ -212,7 +247,9 @@ describe("auth routes", () => {
 
     const response = await request(app)
       .post("/api/auth/refresh")
-      .set("Cookie", `${REFRESH_COOKIE_NAME}=stolen-old-token`);
+      .set(...REQUESTED_WITH_HEADER)
+      .set("X-CSRF-Token", session.csrfToken)
+      .set("Cookie", session.cookie);
 
     expect(response.status).toBe(401);
     expect(prismaMock.refreshToken.updateMany).toHaveBeenCalledWith(
@@ -224,6 +261,7 @@ describe("auth routes", () => {
   });
 
   it("rejects refresh after logout revokes the session", async () => {
+    const session = csrfSession("refresh-token");
     prismaMock.refreshToken.updateMany.mockResolvedValueOnce({ count: 1 });
     prismaMock.refreshToken.findUnique.mockResolvedValueOnce({
       token: "refresh-token",
@@ -234,13 +272,60 @@ describe("auth routes", () => {
 
     await request(app)
       .post("/api/auth/logout")
-      .set("Cookie", `${REFRESH_COOKIE_NAME}=refresh-token`);
+      .set(...REQUESTED_WITH_HEADER)
+      .set("X-CSRF-Token", session.csrfToken)
+      .set("Cookie", session.cookie);
 
     const refreshResponse = await request(app)
       .post("/api/auth/refresh")
-      .set("Cookie", `${REFRESH_COOKIE_NAME}=refresh-token`);
+      .set(...REQUESTED_WITH_HEADER)
+      .set("X-CSRF-Token", session.csrfToken)
+      .set("Cookie", session.cookie);
 
     expect(refreshResponse.status).toBe(401);
     expect(refreshResponse.body.error).toBe("Invalid or expired session");
+  });
+
+  it("rejects a cookie-authenticated mutation without a valid CSRF token", async () => {
+    const session = csrfSession("refresh-token");
+    const response = await request(app)
+      .post("/api/auth/refresh")
+      .set(...REQUESTED_WITH_HEADER)
+      .set("Cookie", session.cookie);
+
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe("Invalid CSRF token");
+    expect(prismaMock.refreshToken.findUnique).not.toHaveBeenCalled();
+  });
+
+  it("upgrades a legacy refresh session that predates CSRF cookies", async () => {
+    prismaMock.refreshToken.findUnique.mockResolvedValueOnce({
+      token: "legacy-refresh-token",
+      revokedAt: null,
+      expiresAt: new Date(Date.now() + 60_000),
+      user: userFixture,
+    });
+
+    const response = await request(app)
+      .post("/api/auth/refresh")
+      .set(...REQUESTED_WITH_HEADER)
+      .set("Cookie", `${REFRESH_COOKIE_NAME}=legacy-refresh-token`);
+
+    expect(response.status).toBe(200);
+    expect(response.headers["set-cookie"]).toEqual(
+      expect.arrayContaining([expect.stringContaining(`${CSRF_COOKIE_NAME}=`)])
+    );
+  });
+
+  it("rejects auth mutations from an untrusted origin", async () => {
+    const response = await request(app)
+      .post("/api/auth/login")
+      .set(...REQUESTED_WITH_HEADER)
+      .set("Origin", "https://attacker.example")
+      .send({ email: userFixture.email, password: "super-secret-password" });
+
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe("Request origin is not allowed");
+    expect(prismaMock.user.findUnique).not.toHaveBeenCalled();
   });
 });

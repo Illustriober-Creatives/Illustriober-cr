@@ -1,8 +1,8 @@
 # Homepage UI Review — 6-Pillar Audit
 
-**Target:** `apps/web/src/app/page.tsx` + all homepage components  
-**Focus:** Text density · Visual hierarchy · Missing product visualizations  
-**Date:** 2026-07-09  
+**Target:** `apps/web/src/app/page.tsx` + all homepage components
+**Focus:** Text density · Visual hierarchy · Missing product visualizations
+**Date:** 2026-07-09
 **Reviewer:** GSD UI Review (executed manually — gsd-core workflow ref not resolved)
 
 ---
@@ -98,7 +98,7 @@ This is the primary problem area. The homepage reads like a brochure, not a prem
 
 **Word count audit (approximate):**
 - HeroSection: ~35 words body copy
-- AboutSnippet: ~80 words (2 full paragraphs)  
+- AboutSnippet: ~80 words (2 full paragraphs)
 - StatsBar: labels only — fine
 - ServicesSection: ~240 words (8 × 30-word descriptions)
 - WhyUsSection: ~180 words (6 × 30-word descriptions)
@@ -111,7 +111,7 @@ This is the primary problem area. The homepage reads like a brochure, not a prem
 
 **Missing visuals that should replace text:**
 1. **Product mockup in hero** — shows the client portal / dashboard instead of describing it
-2. **Process flow diagram** — shows Discovery → Design → Build → Deploy visually instead of the AboutSnippet paragraphs  
+2. **Process flow diagram** — shows Discovery → Design → Build → Deploy visually instead of the AboutSnippet paragraphs
 3. **Service glyphs** — large icon + title only for services, no description text
 4. **Workflow simulator** in the "Why Us" section — an interactive or animated card showing how work happens
 5. **Real portfolio screenshots** — project cards should be image-first, not text-first
@@ -150,7 +150,7 @@ This is the primary problem area. The homepage reads like a brochure, not a prem
 
 ### Phase B — Replace with visuals
 - [ ] Add `WorkflowVisual` component (5-step animated flow: Idea → Spec → Build → Ship → Support)
-- [ ] Add `DashboardMockup` SVG component for hero right-column  
+- [ ] Add `DashboardMockup` SVG component for hero right-column
 - [ ] Restyle `ServicesSection` as icon+title grid with hover reveal (no description by default)
 - [ ] Replace `WhyUsSection` text cards with `ProcessSimulator` (animated tab showing work stages)
 

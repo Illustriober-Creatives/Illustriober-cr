@@ -1,56 +1,73 @@
 import { Router, Request, Response } from "express";
-import { z } from "zod";
 import prisma from "../lib/prisma";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
-import { createTicketSchema, updateTicketStatusSchema } from "@illustriober/shared";
+import { createTicketSchema, updateTicketSchema } from "@illustriober/shared";
 
-const router = Router({ mergeParams: true });
+const router = Router();
 
-async function resolveProject(slug: string, userId: string, role: string) {
-  const project = await prisma.project.findUnique({ where: { slug } });
-  if (!project) throw new AppError(404, "Project not found");
-  if (role !== "ADMIN" && project.clientId !== userId) throw new AppError(403, "Access denied");
-  return project;
-}
-
-// GET /api/projects/:slug/tickets
+// GET /api/tickets
+// List tickets with isolation
 router.get(
   "/",
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
-    const project = await resolveProject(req.params.slug, req.user!.id, req.user!.role);
+    const userId = (req as any).user.id;
+    const role = (req as any).user.role;
+    const { projectId } = req.query;
+
+    const where: any = {};
+    
+    if (role !== "ADMIN") {
+      where.project = { clientId: userId };
+    }
+
+    if (projectId && typeof projectId === "string") {
+      where.projectId = projectId;
+    }
+
     const tickets = await prisma.ticket.findMany({
-      where: { projectId: project.id },
-      include: { submittedBy: { select: { firstName: true, lastName: true } } },
+      where,
+      include: {
+        project: { select: { name: true, slug: true } },
+        submittedBy: { select: { firstName: true, lastName: true } },
+      },
       orderBy: { createdAt: "desc" },
     });
+
     res.json({ success: true, tickets });
   })
 );
 
-// POST /api/projects/:slug/tickets
+// POST /api/tickets
+// Create a new ticket
 router.post(
   "/",
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
-    const project = await resolveProject(req.params.slug, req.user!.id, req.user!.role);
+    const userId = (req as any).user.id;
+    const role = (req as any).user.role;
+    const data = createTicketSchema.parse(req.body);
+    if (!data.projectId) throw new AppError(400, "Project ID is required");
 
-    let data: z.infer<typeof createTicketSchema>;
-    try {
-      data = createTicketSchema.parse(req.body);
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        throw new AppError(400, e.issues.map((i) => i.message).join(", "));
-      }
-      throw e;
+    // Verify project exists and user has access
+    const project = await prisma.project.findUnique({
+      where: { id: data.projectId },
+    });
+
+    if (!project) throw new AppError(404, "Project not found");
+    if (role !== "ADMIN" && project.clientId !== userId) {
+      throw new AppError(403, "You do not have access to this project");
     }
 
     const ticket = await prisma.ticket.create({
       data: {
-        ...data,
-        projectId: project.id,
-        submittedById: req.user!.id,
+        title: data.title,
+        description: data.description,
+        type: data.type,
+        priority: data.priority || "MEDIUM",
+        projectId: data.projectId,
+        submittedById: userId,
       },
     });
 
@@ -58,63 +75,73 @@ router.post(
   })
 );
 
-// GET /api/projects/:slug/tickets/:id
+// GET /api/tickets/:id
 router.get(
   "/:id",
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
-    const project = await resolveProject(req.params.slug, req.user!.id, req.user!.role);
+    const userId = (req as any).user.id;
+    const role = (req as any).user.role;
 
-    const ticket = await prisma.ticket.findFirst({
-      where: { id: req.params.id, projectId: project.id },
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: req.params.id },
       include: {
-        submittedBy: { select: { firstName: true, lastName: true } },
+        project: true,
+        submittedBy: { select: { firstName: true, lastName: true, email: true } },
         comments: {
-          where: req.user!.role === "ADMIN" ? {} : { isInternal: false },
-          include: { author: { select: { firstName: true, lastName: true, role: true } } },
+          include: {
+            author: { select: { firstName: true, lastName: true, role: true } },
+          },
           orderBy: { createdAt: "asc" },
         },
       },
     });
 
     if (!ticket) throw new AppError(404, "Ticket not found");
+
+    if (role !== "ADMIN" && ticket.project.clientId !== userId) {
+      throw new AppError(403, "Access denied");
+    }
+
     res.json({ success: true, ticket });
   })
 );
 
-// PATCH /api/projects/:slug/tickets/:id/status
+// PATCH /api/tickets/:id
 router.patch(
-  "/:id/status",
+  "/:id",
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
-    const project = await resolveProject(req.params.slug, req.user!.id, req.user!.role);
+    const userId = (req as any).user.id;
+    const role = (req as any).user.role;
+    const data = updateTicketSchema.parse(req.body);
 
-    let body: z.infer<typeof updateTicketStatusSchema>;
-    try {
-      body = updateTicketStatusSchema.parse(req.body);
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        throw new AppError(400, e.issues.map((i) => i.message).join(", "));
-      }
-      throw e;
-    }
-
-    const ticket = await prisma.ticket.findFirst({
-      where: { id: req.params.id, projectId: project.id },
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: req.params.id },
+      include: { project: true },
     });
+
     if (!ticket) throw new AppError(404, "Ticket not found");
 
-    // Clients may only close their own tickets
-    if (req.user!.role !== "ADMIN") {
-      if (body.status !== "CLOSED") throw new AppError(403, "Clients may only close tickets");
-      if (ticket.submittedById !== req.user!.id) throw new AppError(403, "Cannot close another user's ticket");
+    if (role !== "ADMIN") {
+      if (ticket.project.clientId !== userId) {
+        throw new AppError(403, "Access denied");
+      }
+      
+      // Clients can only update certain fields
+      // and cannot change status to things like REJECTED or IN_REVIEW directly?
+      // Actually, let's just restrict status changes for clients to CLOSED/REOPENED if we had those
+      // For now, let's say clients can only update title, description, type, priority
+      if (data.status || data.assignedToId) {
+        throw new AppError(403, "Only admins can update status or assignment");
+      }
     }
 
     const updated = await prisma.ticket.update({
-      where: { id: ticket.id },
+      where: { id: req.params.id },
       data: {
-        status: body.status,
-        resolvedAt: ["RESOLVED", "CLOSED"].includes(body.status) ? new Date() : null,
+        ...data,
+        resolvedAt: data.status === "RESOLVED" ? new Date() : undefined,
       },
     });
 

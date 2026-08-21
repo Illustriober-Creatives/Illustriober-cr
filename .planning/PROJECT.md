@@ -1,8 +1,8 @@
 # PROJECT: Homepage Visual Redesign
 
-**Studio:** Illustriober Creatives  
-**Repo:** illustriober-cr  
-**Started:** 2026-07-09  
+**Studio:** Illustriober Creatives
+**Repo:** illustriober-cr
+**Started:** 2026-07-09
 **Goal:** Reduce homepage text density by ~70%, replace text blocks with product visualizations and interactive workflow diagrams. Align with premium studio benchmarks (mattmurphy.ai, bridgemind.ai).
 
 ---
@@ -13,7 +13,7 @@ The homepage has ~680 words across 9 sections. Premium tech studio benchmarks av
 
 ## Design Direction
 
-**From:** Brochure-style — describe what we do in paragraphs  
+**From:** Brochure-style — describe what we do in paragraphs
 **To:** Visual-first — show the product, the workflow, and the outcome
 
 **References:**
@@ -26,7 +26,7 @@ The homepage has ~680 words across 9 sections. Premium tech studio benchmarks av
 
 ## Key Decisions
 - Existing design system (Tailwind, glass-card, font-display, accent) is KEPT — no brand change
-- Remove redundant stat repetitions (stats appear 3× currently)  
+- Remove redundant stat repetitions (stats appear 3× currently)
 - Hero gets a 2-column layout with an SVG dashboard mockup on the right
 - AboutSnippet paragraphs replaced by a 5-step animated workflow component
 - ServicesSection: icon + title only, description revealed on hover only

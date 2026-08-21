@@ -1,6 +1,5 @@
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { resetRateLimitStore } from "./rateLimit";
 
 const prismaMock = vi.hoisted(() => ({
   user: { findUnique: vi.fn(), create: vi.fn(), update: vi.fn() },
@@ -9,11 +8,13 @@ const prismaMock = vi.hoisted(() => ({
 
 vi.mock("../lib/prisma", () => ({ default: prismaMock, prisma: prismaMock }));
 
-import app from "../app";
+import app, { authRateLimitStore } from "../app";
 
-beforeEach(() => {
+const REQUESTED_WITH_HEADER = ["X-Requested-With", "Illustriober-Web"] as const;
+
+beforeEach(async () => {
   vi.clearAllMocks();
-  resetRateLimitStore();
+  await authRateLimitStore.resetAll();
   prismaMock.refreshToken.updateMany.mockResolvedValue({ count: 0 });
   prismaMock.refreshToken.create.mockResolvedValue({ id: "r1" });
 });
@@ -24,6 +25,7 @@ describe("rate limiting — auth endpoints", () => {
 
     const res = await request(app)
       .post("/api/auth/login")
+      .set(...REQUESTED_WITH_HEADER)
       .send({ email: "a@b.com", password: "pass" });
 
     expect(res.status).not.toBe(429);
@@ -34,9 +36,9 @@ describe("rate limiting — auth endpoints", () => {
 
     const body = { email: "a@b.com", password: "pass" };
     for (let i = 0; i < 10; i++) {
-      await request(app).post("/api/auth/login").send(body);
+      await request(app).post("/api/auth/login").set(...REQUESTED_WITH_HEADER).send(body);
     }
-    const res = await request(app).post("/api/auth/login").send(body);
+    const res = await request(app).post("/api/auth/login").set(...REQUESTED_WITH_HEADER).send(body);
 
     expect(res.status).toBe(429);
     expect(res.body.error).toMatch(/too many requests/i);
@@ -48,9 +50,9 @@ describe("rate limiting — auth endpoints", () => {
 
     const body = { email: "a@b.com", password: "P@ssword1!", firstName: "A", lastName: "B" };
     for (let i = 0; i < 10; i++) {
-      await request(app).post("/api/auth/register").send(body);
+      await request(app).post("/api/auth/register").set(...REQUESTED_WITH_HEADER).send(body);
     }
-    const res = await request(app).post("/api/auth/register").send(body);
+    const res = await request(app).post("/api/auth/register").set(...REQUESTED_WITH_HEADER).send(body);
 
     expect(res.status).toBe(429);
   });
@@ -60,9 +62,9 @@ describe("rate limiting — auth endpoints", () => {
 
     const body = { email: "a@b.com", password: "pass" };
     for (let i = 0; i < 10; i++) {
-      await request(app).post("/api/auth/login").send(body);
+      await request(app).post("/api/auth/login").set(...REQUESTED_WITH_HEADER).send(body);
     }
-    const res = await request(app).post("/api/auth/login").send(body);
+    const res = await request(app).post("/api/auth/login").set(...REQUESTED_WITH_HEADER).send(body);
 
     expect(res.status).toBe(429);
     expect(res.headers["retry-after"]).toBeDefined();
