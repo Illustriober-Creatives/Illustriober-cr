@@ -11,19 +11,19 @@ const heroPurposePhrases = [
   "a website.",
   "a SaaS product.",
   "a dashboard.",
-  "a mobile app.",
+  "an app.",
   "a workflow.",
   "a client portal.",
-  "a stubborn bug.",
+  "a bug.",
   "useful software.",
 ];
 
 export default function Home() {
   return (
     <div className="overflow-hidden bg-[#F4EFE5] text-[#171717]">
-      <section className="mx-auto max-w-[1454px] px-5 pb-16 pt-12 md:px-8 md:pb-20 md:pt-20 lg:min-h-[calc(100svh-var(--navbar-height)-2rem)] lg:pb-16 lg:pt-[6.25rem]">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-start lg:gap-16">
-          <div>
+      <section className="mx-auto max-w-7xl px-5 pb-16 pt-12 md:px-8 md:pb-20 md:pt-20 lg:min-h-[calc(100svh-var(--navbar-height)-2rem)] lg:pb-16 lg:pt-[6.25rem]">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-start lg:gap-16">
+          <div className="min-w-0">
             <h1 className="max-w-4xl font-display text-5xl leading-[0.9] tracking-[-0.05em] sm:text-6xl md:text-7xl lg:max-w-none lg:text-[clamp(5rem,6.3vw,7.5rem)] lg:leading-[0.86]">
               <span className="sr-only">It all starts with useful software.</span>
               <span aria-hidden="true">
