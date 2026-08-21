@@ -1,19 +1,33 @@
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import {
+  Atom,
   ArrowDown,
   ArrowUpRight,
   Bot,
   Braces,
+  Cloud,
   CloudCog,
   Code2,
+  Container,
   Database,
+  FileCode2,
+  GitBranch,
   Layers3,
   LayoutTemplate,
+  Network,
+  Palette,
+  PanelsTopLeft,
   RefreshCw,
+  Rocket,
+  Server,
   ServerCog,
   Smartphone,
   Sparkles,
+  Terminal,
+  Triangle,
+  Waypoints,
+  Wind,
   Workflow,
 } from "lucide-react";
 import { createMetadata } from "@/lib/seo";
@@ -102,22 +116,49 @@ const stackGroups = [
   {
     Icon: Braces,
     title: "Languages",
-    items: ["TypeScript", "JavaScript", "Python", "SQL", "Swift", "Kotlin"],
+    items: [
+      { Icon: FileCode2, label: "TypeScript" },
+      { Icon: Braces, label: "JavaScript" },
+      { Icon: Terminal, label: "Python" },
+      { Icon: Database, label: "SQL" },
+      { Icon: Smartphone, label: "Swift" },
+      { Icon: Smartphone, label: "Kotlin" },
+    ],
   },
   {
     Icon: Code2,
     title: "Frontend",
-    items: ["React", "Next.js", "Vue", "Tailwind CSS", "Design systems"],
+    items: [
+      { Icon: Atom, label: "React" },
+      { Icon: PanelsTopLeft, label: "Next.js" },
+      { Icon: Triangle, label: "Vue" },
+      { Icon: Wind, label: "Tailwind CSS" },
+      { Icon: Palette, label: "Design systems" },
+    ],
   },
   {
     Icon: Database,
     title: "Backend and data",
-    items: ["Node.js", "PostgreSQL", "MongoDB", "Redis", "REST", "GraphQL"],
+    items: [
+      { Icon: Server, label: "Node.js" },
+      { Icon: Database, label: "PostgreSQL" },
+      { Icon: Database, label: "MongoDB" },
+      { Icon: Layers3, label: "Redis" },
+      { Icon: Waypoints, label: "REST" },
+      { Icon: Network, label: "GraphQL" },
+    ],
   },
   {
     Icon: Workflow,
     title: "Mobile and delivery",
-    items: ["React Native", "Expo", "AWS", "Vercel", "Docker", "GitHub Actions"],
+    items: [
+      { Icon: Smartphone, label: "React Native" },
+      { Icon: Rocket, label: "Expo" },
+      { Icon: Cloud, label: "AWS" },
+      { Icon: Triangle, label: "Vercel" },
+      { Icon: Container, label: "Docker" },
+      { Icon: GitBranch, label: "GitHub Actions" },
+    ],
   },
 ];
 
@@ -286,12 +327,21 @@ export default function ServicesPage() {
                 className={`p-7 sm:p-8 ${index < stackGroups.length - 1 ? "border-b border-[#F4EFE5]/15 sm:[&:nth-child(odd)]:border-r xl:border-b-0 xl:border-r" : ""} ${index === 1 ? "sm:border-b sm:border-r-0 xl:border-b-0 xl:border-r" : ""}`}
                 key={title}
               >
-                <Icon aria-hidden="true" className="h-5 w-5 text-[#F7AD45]" />
-                <h3 className="mt-5 text-sm font-bold text-white">{title}</h3>
+                <div className="flex items-center gap-2.5">
+                  <Icon aria-hidden="true" className="h-5 w-5 shrink-0 text-[#F7AD45]" />
+                  <h3 className="text-sm font-bold text-white">{title}</h3>
+                </div>
                 <ul className="mt-5 flex flex-wrap gap-2">
-                  {items.map((item) => (
-                    <li className="rounded-full border border-[#F4EFE5]/15 bg-[#F4EFE5]/[0.05] px-3 py-1.5 text-xs text-[#F4EFE5]/80" key={item}>
-                      {item}
+                  {items.map(({ Icon: ItemIcon, label }) => (
+                    <li
+                      className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#F4EFE5]/25 bg-transparent px-3 py-2 text-xs font-medium text-[#F4EFE5]/80 transition-colors duration-200 hover:border-[#F7AD45] hover:bg-[#F7AD45] hover:text-[#171717] motion-reduce:transition-none"
+                      key={label}
+                    >
+                      <ItemIcon
+                        aria-hidden="true"
+                        className="h-3.5 w-3.5 shrink-0 text-[#F7AD45] transition-colors duration-200 group-hover:text-[#171717] motion-reduce:transition-none"
+                      />
+                      <span>{label}</span>
                     </li>
                   ))}
                 </ul>
