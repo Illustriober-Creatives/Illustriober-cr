@@ -10,9 +10,16 @@ import {
   PackageOpen,
   Star,
 } from "lucide-react";
+import {
+  getGitHubContributionSnapshot,
+  type ContributionDay,
+  type ContributionSnapshot,
+} from "@/lib/github-contributions";
 
 const GITHUB_ORG = "Illustriober-Creatives";
 const GITHUB_ORG_URL = `https://github.com/${GITHUB_ORG}`;
+const GITHUB_USER = "Itsriober";
+const GITHUB_USER_URL = `https://github.com/${GITHUB_USER}`;
 
 type GitHubEvent = {
   id: string;
@@ -248,32 +255,237 @@ const dateFormatter = new Intl.DateTimeFormat("en", {
   year: "numeric",
 });
 
+const shortDateFormatter = new Intl.DateTimeFormat("en", {
+  day: "numeric",
+  month: "short",
+});
+
+const numberFormatter = new Intl.NumberFormat("en");
+
+const contributionLevelClasses = [
+  "fill-[#F4EFE5]/10",
+  "fill-[#FBD28F]",
+  "fill-[#F7AD45]",
+  "fill-[#F39314]",
+  "fill-[#D96800]",
+];
+
+function getContributionWeeks(days: ContributionDay[]) {
+  if (days.length === 0) return [];
+
+  const leadingDays = new Date(`${days[0].date}T00:00:00.000Z`).getUTCDay();
+  const cells: Array<ContributionDay | null> = [
+    ...Array.from({ length: leadingDays }, () => null),
+    ...days,
+  ];
+
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  return Array.from({ length: cells.length / 7 }, (_, index) =>
+    cells.slice(index * 7, index * 7 + 7),
+  );
+}
+
+function ContributionCalendar({
+  days,
+  mobile = false,
+}: {
+  days: ContributionDay[];
+  mobile?: boolean;
+}) {
+  const visibleDays = mobile ? days.slice(-126) : days;
+  const weeks = getContributionWeeks(visibleDays);
+  const cellSize = 10;
+  const cellGap = 3;
+  const cellPitch = cellSize + cellGap;
+  const leftGutter = 32;
+  const topGutter = 22;
+  const width = leftGutter + weeks.length * cellPitch;
+  const height = topGutter + 7 * cellPitch;
+  return (
+    <svg
+      aria-label={`${mobile ? "Recent" : "Rolling year"} contribution calendar. Yellow squares indicate days with public GitHub contributions.`}
+      className="h-auto w-full"
+      role="img"
+      viewBox={`0 0 ${width} ${height}`}
+    >
+      <text className="fill-[#F4EFE5]/55 text-[10px]" x="0" y={topGutter + cellPitch * 2 - 2}>
+        Mon
+      </text>
+      <text className="fill-[#F4EFE5]/55 text-[10px]" x="0" y={topGutter + cellPitch * 4 - 2}>
+        Wed
+      </text>
+      <text className="fill-[#F4EFE5]/55 text-[10px]" x="0" y={topGutter + cellPitch * 6 - 2}>
+        Fri
+      </text>
+
+      {weeks.map((week, weekIndex) => {
+        const firstDay = week.find((day): day is ContributionDay => day !== null);
+        const previousFirstDay = weeks[weekIndex - 1]?.find(
+          (day): day is ContributionDay => day !== null,
+        );
+        const month = firstDay
+          ? new Date(`${firstDay.date}T00:00:00.000Z`).getUTCMonth()
+          : -1;
+        const previousMonth = previousFirstDay
+          ? new Date(`${previousFirstDay.date}T00:00:00.000Z`).getUTCMonth()
+          : -1;
+        const showMonth = firstDay && month !== previousMonth;
+
+        return (
+          <g key={firstDay?.date ?? `empty-${weekIndex}`}>
+            {showMonth ? (
+              <text
+                className="fill-[#F4EFE5]/55 text-[10px]"
+                x={leftGutter + weekIndex * cellPitch}
+                y="10"
+              >
+                {shortDateFormatter.format(
+                  new Date(`${firstDay.date}T00:00:00.000Z`),
+                )
+                .replace(/\d+/g, "")
+                .trim()}
+              </text>
+            ) : null}
+            {week.map((day, dayIndex) =>
+              day ? (
+                <rect
+                  className={`${contributionLevelClasses[day.level]} stroke-[#F4EFE5]/10`}
+                  height={cellSize}
+                  key={day.date}
+                  rx="2"
+                  width={cellSize}
+                  x={leftGutter + weekIndex * cellPitch}
+                  y={topGutter + dayIndex * cellPitch}
+                >
+                  <title>
+                    {day.count === 0
+                      ? `No contributions on ${day.date}`
+                      : `${numberFormatter.format(day.count)} contribution${day.count === 1 ? "" : "s"} on ${day.date}`}
+                  </title>
+                </rect>
+              ) : null,
+            )}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function ContributionPanel({ snapshot }: { snapshot: ContributionSnapshot }) {
+  const busiestDay = snapshot.busiestDay;
+  const metrics = [
+    {
+      label: "Contributions",
+      note: "Last 365 days",
+      value: numberFormatter.format(snapshot.total),
+    },
+    {
+      label: "Last 30 days",
+      note: "Recent output",
+      value: numberFormatter.format(snapshot.last30Days),
+    },
+    {
+      label: "Active days",
+      note: "Days with activity",
+      value: numberFormatter.format(snapshot.activeDays),
+    },
+    {
+      label: "Longest streak",
+      note: snapshot.currentStreak
+        ? `${snapshot.currentStreak}-day current streak`
+        : "Consecutive active days",
+      value: `${numberFormatter.format(snapshot.longestStreak)} days`,
+    },
+  ];
+
+  return (
+    <>
+      <dl className="grid grid-cols-2 overflow-hidden rounded-[1.5rem] border border-[#F4EFE5]/15 bg-[#F4EFE5]/[0.05]">
+        {metrics.map((metric, index) => (
+          <div
+            className={`min-w-0 p-5 sm:p-6 ${index % 2 === 0 ? "border-r border-[#F4EFE5]/15" : ""} ${index < 2 ? "border-b border-[#F4EFE5]/15" : ""}`}
+            key={metric.label}
+          >
+            <dd className="font-display text-3xl leading-none tabular-nums text-[#FFFDF8] sm:text-4xl">
+              {metric.value}
+            </dd>
+            <dt className="mt-3 text-sm font-bold text-[#FFFDF8]">{metric.label}</dt>
+            <p className="mt-1 text-xs leading-5 text-[#F4EFE5]/55">{metric.note}</p>
+          </div>
+        ))}
+      </dl>
+
+      <div className="mt-6 rounded-[1.5rem] border border-[#F4EFE5]/15 bg-[#173D31] p-4 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-sm font-bold text-[#FFFDF8]">Daily contribution rhythm</p>
+            <p className="mt-1 text-xs leading-5 text-[#F4EFE5]/55">
+              Rolling 365 days from the public @{GITHUB_USER} profile.
+            </p>
+          </div>
+          {busiestDay ? (
+            <p className="text-xs leading-5 text-[#F4EFE5]/65">
+              Busiest day · {shortDateFormatter.format(new Date(`${busiestDay.date}T00:00:00.000Z`))} · {numberFormatter.format(busiestDay.count)} contributions
+            </p>
+          ) : null}
+        </div>
+
+        <div className="mt-5 sm:hidden">
+          <ContributionCalendar days={snapshot.days} mobile />
+        </div>
+        <div className="mt-5 hidden sm:block">
+          <ContributionCalendar days={snapshot.days} />
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#F4EFE5]/10 pt-4 text-xs text-[#F4EFE5]/55">
+          <span className="sm:hidden">Latest 18 weeks</span>
+          <span className="hidden sm:inline">Last 365 days</span>
+          <div aria-label="Contribution intensity from less to more" className="flex items-center gap-2">
+            <span>Less</span>
+            {contributionLevelClasses.map((levelClass) => (
+              <svg aria-hidden="true" className="h-3 w-3" key={levelClass} viewBox="0 0 12 12">
+                <rect className={levelClass} height="12" rx="2" width="12" />
+              </svg>
+            ))}
+            <span>More</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export async function GitHubActivity() {
-  const activity = await getPublicActivity();
+  const [activity, contributionSnapshot] = await Promise.all([
+    getPublicActivity(),
+    getGitHubContributionSnapshot(),
+  ]);
 
   return (
     <section
       aria-labelledby="github-activity-title"
       className="mt-20 overflow-hidden rounded-[2rem] bg-[#1F4D3D] text-[#F4EFE5] md:mt-24"
     >
-      <div className="grid lg:grid-cols-[0.72fr_1.28fr]">
-        <div className="flex flex-col justify-between border-b border-[#F4EFE5]/15 p-7 md:p-10 lg:min-h-[34rem] lg:border-b-0 lg:border-r lg:p-12">
+      <div className="grid border-b border-[#F4EFE5]/15 lg:grid-cols-[0.82fr_1.18fr]">
+        <div className="flex flex-col justify-between border-b border-[#F4EFE5]/15 p-7 md:p-10 lg:border-b-0 lg:border-r lg:p-12">
           <div>
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F39314] text-[#171717]">
               <Github aria-hidden="true" className="h-6 w-6" />
             </div>
             <p className="mt-10 text-xs font-bold uppercase tracking-[0.18em] text-[#F7AD45]">
-              Public build log
+              Proof of practice
             </p>
             <h2
               className="mt-5 max-w-md font-display text-5xl leading-[0.92] tracking-[-0.04em] md:text-6xl"
               id="github-activity-title"
             >
-              See the work moving.
+              A year of work, in the open.
             </h2>
             <p className="mt-6 max-w-md leading-7 text-[#F4EFE5]/75">
-              A live view of the public commits, reviews, and releases behind the
-              studio—not a polished highlight reel.
+              Real contribution history from the person building the studio,
+              paired with the organisation&apos;s latest public work.
             </p>
           </div>
           <a
@@ -287,50 +499,79 @@ export async function GitHubActivity() {
           </a>
         </div>
 
-        <div className="p-4 sm:p-6 lg:p-8">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-1">
-            <p className="text-sm font-bold">Latest public activity</p>
-            <p className="text-xs text-[#F4EFE5]/60">Refreshes every 30 minutes</p>
+        <div className="p-5 sm:p-7 lg:p-10">
+          {contributionSnapshot ? (
+            <ContributionPanel snapshot={contributionSnapshot} />
+          ) : (
+            <div className="flex min-h-72 flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-[#F4EFE5]/20 p-8 text-center">
+              <GitBranch aria-hidden="true" className="h-8 w-8 text-[#F7AD45]" />
+              <h3 className="mt-5 font-display text-3xl">The contribution map is catching up.</h3>
+              <p className="mt-3 max-w-sm text-sm leading-6 text-[#F4EFE5]/65">
+                GitHub&apos;s public history is temporarily unavailable here. The profile still has the complete record.
+              </p>
+              <a
+                className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-bold underline decoration-[#F39314] decoration-2 underline-offset-4"
+                href={GITHUB_USER_URL}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Open @{GITHUB_USER}
+                <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="p-5 sm:p-7 lg:p-10">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-sm font-bold">Latest public work</p>
+            <p className="mt-1 text-xs text-[#F4EFE5]/55">
+              Commits, reviews, releases, and repository updates.
+            </p>
           </div>
+          <p className="text-xs text-[#F4EFE5]/55">Refreshes every 30 minutes</p>
+        </div>
 
-          {activity.length > 0 ? (
-            <ol className="grid gap-3 sm:grid-cols-2">
-              {activity.map((item) => {
-                const repository = item.repository.split("/").at(-1) ?? item.repository;
+        {activity.length > 0 ? (
+          <ol className="grid gap-3 md:grid-cols-2">
+            {activity.slice(0, 4).map((item) => {
+              const repository = item.repository.split("/").at(-1) ?? item.repository;
 
-                return (
-                  <li key={item.id}>
-                    <a
-                      aria-label={`${item.label} in ${item.repository} on GitHub`}
-                      className="group flex min-h-44 flex-col justify-between rounded-[1.25rem] border border-[#F4EFE5]/15 bg-[#F4EFE5]/[0.06] p-5 transition-colors hover:bg-[#F4EFE5]/[0.11]"
-                      href={item.url}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F4EFE5]/10 text-[#F7AD45]">
-                          <item.Icon aria-hidden="true" className="h-5 w-5" />
-                        </span>
-                        <span className="text-xs text-[#F4EFE5]/55">
-                          {dateFormatter.format(new Date(item.createdAt))}
-                        </span>
-                      </div>
-                      <div className="mt-8 min-w-0">
+              return (
+                <li key={item.id}>
+                  <a
+                    aria-label={`${item.label} in ${item.repository} on GitHub`}
+                    className="group flex min-h-32 items-start gap-4 rounded-[1.25rem] border border-[#F4EFE5]/15 bg-[#F4EFE5]/[0.05] p-4 transition-colors hover:bg-[#F4EFE5]/[0.1] sm:p-5"
+                    href={item.url}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F4EFE5]/10 text-[#F7AD45]">
+                      <item.Icon aria-hidden="true" className="h-5 w-5" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
                         <p className="font-bold leading-6 text-[#FFFDF8]">
                           {item.label}
                         </p>
-                        <div className="mt-2 flex items-center justify-between gap-3 text-xs text-[#F4EFE5]/60">
-                          <span className="truncate">{repository}</span>
-                          <span className="shrink-0">@{item.actor}</span>
-                        </div>
+                        <span className="shrink-0 text-xs text-[#F4EFE5]/55">
+                          {dateFormatter.format(new Date(item.createdAt))}
+                        </span>
                       </div>
-                    </a>
-                  </li>
-                );
-              })}
-            </ol>
-          ) : (
-            <div className="flex min-h-[28rem] flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-[#F4EFE5]/20 p-8 text-center">
+                      <div className="mt-2 flex items-center justify-between gap-3 text-xs text-[#F4EFE5]/60">
+                        <span className="truncate">{repository}</span>
+                        <span className="shrink-0">@{item.actor}</span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        ) : (
+          <div className="flex min-h-64 flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-[#F4EFE5]/20 p-8 text-center">
               <GitBranch aria-hidden="true" className="h-8 w-8 text-[#F7AD45]" />
               <h3 className="mt-5 font-display text-3xl">The feed is catching up.</h3>
               <p className="mt-3 max-w-sm text-sm leading-6 text-[#F4EFE5]/65">
@@ -346,9 +587,8 @@ export async function GitHubActivity() {
                 Open GitHub
                 <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
               </a>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
