@@ -9,13 +9,12 @@ export const metadata = createMetadata({ path: "/" });
 
 const heroPurposePhrases = [
   "a website.",
-  "a SaaS product.",
+  "a CRM.",
   "a dashboard.",
-  "an app.",
+  "a mobile app.",
   "a workflow.",
   "a client portal.",
   "a bug.",
-  "useful software.",
 ];
 
 export default function Home() {
