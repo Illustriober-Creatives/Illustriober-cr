@@ -5,13 +5,14 @@
 
 import express, { Request, Response } from "express";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import { ipKeyGenerator, MemoryStore, rateLimit } from "express-rate-limit";
 
 // Middleware imports
 import { errorHandler } from "./middleware/errorHandler";
 import { requestLogger } from "./middleware/requestLogger";
-import { rateLimit } from "./middleware/rateLimit";
+import { csrfProtection } from "./middleware/csrfProtection";
+import { isAllowedOrigin } from "./lib/origins";
 
 // Route imports
 import authRoutes from "./routes/auth";
@@ -20,6 +21,7 @@ import inviteRoutes from "./routes/invites";
 import adminRoutes from "./routes/admin";
 import projectRoutes from "./routes/projects";
 import ticketRoutes from "./routes/tickets";
+import projectTicketRoutes from "./routes/projectTickets";
 
 // Load environment variables
 dotenv.config();
@@ -28,6 +30,7 @@ dotenv.config();
  * Initialize Express application
  */
 const app = express();
+export const authRateLimitStore = new MemoryStore();
 
 // ─────────────────────────────────────────
 // MIDDLEWARE STACK
@@ -35,22 +38,6 @@ const app = express();
 
 // Request logging (logs all incoming requests)
 app.use(requestLogger);
-
-const LOCAL_ORIGIN_REGEX = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i;
-const VERCEL_PREVIEW_REGEX = /^https:\/\/[\w-]+\.vercel\.app$/i;
-const allowNullOrigin = process.env.NODE_ENV !== "production";
-const configuredOrigins = (process.env.CORS_ORIGIN || "")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
-const allowedOrigins = new Set<string>([
-  "http://localhost:3000",
-  "http://localhost:3001",
-  "https://illustriober.com",
-  "https://www.illustriober.com",
-  ...configuredOrigins,
-]);
 
 // CORS configuration (allow cross-origin requests)
 app.use(
@@ -61,16 +48,7 @@ app.use(
         return;
       }
 
-      if (origin === "null" && allowNullOrigin) {
-        callback(null, true);
-        return;
-      }
-
-      if (
-        allowedOrigins.has(origin) ||
-        LOCAL_ORIGIN_REGEX.test(origin) ||
-        VERCEL_PREVIEW_REGEX.test(origin)
-      ) {
+      if (isAllowedOrigin(origin)) {
         callback(null, true);
         return;
       }
@@ -82,9 +60,6 @@ app.use(
   })
 );
 
-// Cookies (refresh token)
-app.use(cookieParser());
-
 // Body parsing (parse JSON and URL-encoded bodies)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -95,7 +70,20 @@ app.use(express.urlencoded({ extended: true }));
 
 // Authentication endpoints: login, signup, logout
 // 10 requests per 15 minutes per IP — covers brute-force on login/register/refresh
-app.use("/api/auth", rateLimit({ windowMs: 15 * 60 * 1000, maxRequests: 10 }), authRoutes);
+app.use(
+  "/api/auth",
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    store: authRateLimitStore,
+    keyGenerator: (req) => `${ipKeyGenerator(req.ip ?? "unknown")}:${req.path}`,
+    message: { success: false, error: "Too many requests. Please try again later." },
+  }),
+  csrfProtection,
+  authRoutes
+);
 
 // Enquiry endpoints: form submissions (public)
 app.use("/api/enquiries", enquiryRoutes);
@@ -109,8 +97,9 @@ app.use("/api/admin", adminRoutes);
 // Project endpoints: client and admin project tracking
 app.use("/api/projects", projectRoutes);
 
-// Ticket endpoints: nested under projects
-app.use("/api/projects/:slug/tickets", ticketRoutes);
+// Ticket endpoints: bug reports, feature requests
+app.use("/api/tickets", ticketRoutes);
+app.use("/api/projects/:slug/tickets", projectTicketRoutes);
 
 // Root endpoint for quick API reachability checks
 app.get("/", (_req: Request, res: Response) => {

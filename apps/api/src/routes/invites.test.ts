@@ -1,6 +1,7 @@
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { signAccessToken } from "../lib/jwt";
+import { CSRF_COOKIE_NAME, REFRESH_COOKIE_NAME } from "../lib/cookies";
 
 const prismaMock = vi.hoisted(() => ({
   user: { findUnique: vi.fn(), create: vi.fn() },
@@ -141,6 +142,12 @@ describe("invite routes", () => {
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
       expect(res.body.accessToken).toEqual(expect.any(String));
+      expect(res.headers["set-cookie"]).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining(`${REFRESH_COOKIE_NAME}=`),
+          expect.stringContaining(`${CSRF_COOKIE_NAME}=`),
+        ])
+      );
       expect(prismaMock.user.create).toHaveBeenCalledOnce();
       expect(prismaMock.inviteToken.update).toHaveBeenCalledWith(
         expect.objectContaining({ data: expect.objectContaining({ usedAt: expect.any(Date) }) })

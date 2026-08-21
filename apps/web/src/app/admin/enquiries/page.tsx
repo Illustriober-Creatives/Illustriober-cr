@@ -27,11 +27,11 @@ const STATUS_LABELS: Record<EnquiryStatus, string> = {
 };
 
 const STATUS_COLOURS: Record<EnquiryStatus, string> = {
-  NEW: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  REVIEWED: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  RESPONDED: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-  CONVERTED: "bg-green-500/10 text-green-400 border-green-500/20",
-  ARCHIVED: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20",
+  NEW: "bg-blue-500/10 text-blue-500 border-blue-500/30",
+  REVIEWED: "bg-amber-500/10 text-amber-600 border-amber-500/30",
+  RESPONDED: "bg-purple-500/10 text-purple-500 border-purple-500/30",
+  CONVERTED: "bg-green-500/10 text-green-600 border-green-500/30",
+  ARCHIVED: "bg-foreground/5 text-foreground/50 border-foreground/10",
 };
 
 const ALL_STATUSES: EnquiryStatus[] = ["NEW", "REVIEWED", "RESPONDED", "CONVERTED", "ARCHIVED"];
@@ -89,7 +89,7 @@ export default function EnquiriesPage() {
           placeholder="Search by name, email, company…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-foreground placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-accent w-64"
+          className="rounded-lg border border-glass-border bg-surface px-4 py-2 text-sm text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-1 focus:ring-accent w-64"
         />
 
         <div className="flex gap-2">
@@ -98,7 +98,7 @@ export default function EnquiriesPage() {
             className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
               status === ""
                 ? "border-accent bg-accent/10 text-accent"
-                : "border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300"
+                : "border-glass-border text-foreground/50 hover:border-accent/30 hover:text-foreground"
             }`}
           >
             All
@@ -127,12 +127,12 @@ export default function EnquiriesPage() {
           No enquiries found.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-zinc-800">
+        <div className="overflow-hidden rounded-xl border border-glass-border">
           <table className="w-full text-sm">
-            <thead className="border-b border-zinc-800 bg-zinc-900/50">
+            <thead className="border-b border-glass-border bg-surface">
               <tr>
                 {["Name", "Email", "Project type", "Budget", "Status", "Date"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground/40">
                     {h}
                   </th>
                 ))}
@@ -142,23 +142,23 @@ export default function EnquiriesPage() {
               {enquiries.map((enq) => (
                 <tr
                   key={enq.id}
-                  className="border-b border-zinc-800/60 transition-colors hover:bg-zinc-900/40"
+                  className="border-b border-glass-border transition-colors hover:bg-glass-bg"
                 >
                   <td className="px-4 py-3">
                     <Link href={`/admin/enquiries/${enq.id}`} className="font-medium text-foreground hover:text-accent transition-colors">
                       {enq.firstName} {enq.lastName}
                     </Link>
-                    {enq.company && <p className="text-xs text-zinc-500">{enq.company}</p>}
+                    {enq.company && <p className="text-xs text-foreground/40">{enq.company}</p>}
                   </td>
-                  <td className="px-4 py-3 text-zinc-400">{enq.email}</td>
-                  <td className="px-4 py-3 text-zinc-400">{enq.projectType}</td>
-                  <td className="px-4 py-3 text-zinc-400">{enq.budgetRange ?? "—"}</td>
+                  <td className="px-4 py-3 text-foreground/60">{enq.email}</td>
+                  <td className="px-4 py-3 text-foreground/60">{enq.projectType}</td>
+                  <td className="px-4 py-3 text-foreground/60">{enq.budgetRange ?? "—"}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${STATUS_COLOURS[enq.status]}`}>
                       {STATUS_LABELS[enq.status]}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-zinc-500 tabular-nums text-xs">
+                  <td className="px-4 py-3 text-foreground/40 tabular-nums text-xs">
                     {new Date(enq.createdAt).toLocaleDateString()}
                   </td>
                 </tr>

@@ -6,14 +6,8 @@ import Link from "next/link";
 import { Button } from "@/components/Button";
 import { 
   User, 
-  Mail, 
-  Phone, 
-  Building, 
   Briefcase, 
-  Coins, 
-  Calendar, 
   Info, 
-  Clock, 
   ArrowLeft,
   CheckCircle2
 } from "lucide-react";
@@ -52,6 +46,7 @@ export default function EnquiryDetailPage() {
   const [converting, setConverting] = useState(false);
   const [convertResult, setConvertResult] = useState<ConvertResult>(null);
   const [convertError, setConvertError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -92,6 +87,14 @@ export default function EnquiryDetailPage() {
     } finally {
       setConverting(false);
     }
+  };
+
+  const handleCopy = () => {
+    if (!convertResult) return;
+    const url = `${baseUrl}/invite/${convertResult.inviteToken}`;
+    void navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   if (loading) {
@@ -163,13 +166,11 @@ export default function EnquiryDetailPage() {
                 type="button"
                 variant="secondary" 
                 size="sm" 
-                className="rounded-lg text-xs"
-                onClick={() => {
-                  void navigator.clipboard.writeText(`${baseUrl}/invite/${convertResult.inviteToken}`);
-                  // Optional: alert or toast
-                }}
+                className="rounded-lg text-xs min-w-[80px]"
+                aria-label="Copy invitation link to clipboard"
+                onClick={handleCopy}
               >
-                Copy Link
+                {copied ? "Copied!" : "Copy Link"}
               </Button>
             </div>
           </div>

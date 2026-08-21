@@ -309,13 +309,13 @@ function ContributionCalendar({
       role="img"
       viewBox={`0 0 ${width} ${height}`}
     >
-      <text className="fill-[#F4EFE5]/55 text-[10px]" x="0" y={topGutter + cellPitch * 2 - 2}>
+      <text className="fill-[#F4EFE5]/75 text-[10px]" x="0" y={topGutter + cellPitch * 2 - 2}>
         Mon
       </text>
-      <text className="fill-[#F4EFE5]/55 text-[10px]" x="0" y={topGutter + cellPitch * 4 - 2}>
+      <text className="fill-[#F4EFE5]/75 text-[10px]" x="0" y={topGutter + cellPitch * 4 - 2}>
         Wed
       </text>
-      <text className="fill-[#F4EFE5]/55 text-[10px]" x="0" y={topGutter + cellPitch * 6 - 2}>
+      <text className="fill-[#F4EFE5]/75 text-[10px]" x="0" y={topGutter + cellPitch * 6 - 2}>
         Fri
       </text>
 
@@ -336,7 +336,7 @@ function ContributionCalendar({
           <g key={firstDay?.date ?? `empty-${weekIndex}`}>
             {showMonth ? (
               <text
-                className="fill-[#F4EFE5]/55 text-[10px]"
+                className="fill-[#F4EFE5]/75 text-[10px]"
                 x={leftGutter + weekIndex * cellPitch}
                 y="10"
               >
@@ -405,14 +405,14 @@ function ContributionPanel({ snapshot }: { snapshot: ContributionSnapshot }) {
       <dl className="grid grid-cols-2 overflow-hidden rounded-[1.5rem] border border-[#F4EFE5]/15 bg-[#F4EFE5]/[0.05]">
         {metrics.map((metric, index) => (
           <div
-            className={`min-w-0 p-5 sm:p-6 ${index % 2 === 0 ? "border-r border-[#F4EFE5]/15" : ""} ${index < 2 ? "border-b border-[#F4EFE5]/15" : ""}`}
+            className={`flex min-w-0 flex-col p-5 sm:p-6 ${index % 2 === 0 ? "border-r border-[#F4EFE5]/15" : ""} ${index < 2 ? "border-b border-[#F4EFE5]/15" : ""}`}
             key={metric.label}
           >
-            <dd className="font-display text-3xl leading-none tabular-nums text-[#FFFDF8] sm:text-4xl">
+            <dd className="order-1 font-display text-3xl leading-none tabular-nums text-[#FFFDF8] sm:text-4xl">
               {metric.value}
             </dd>
-            <dt className="mt-3 text-sm font-bold text-[#FFFDF8]">{metric.label}</dt>
-            <p className="mt-1 text-xs leading-5 text-[#F4EFE5]/55">{metric.note}</p>
+            <dt className="order-2 mt-3 text-sm font-bold text-[#FFFDF8]">{metric.label}</dt>
+            <dd className="order-3 mt-1 text-xs leading-5 text-[#F4EFE5]/75">{metric.note}</dd>
           </div>
         ))}
       </dl>
@@ -421,7 +421,7 @@ function ContributionPanel({ snapshot }: { snapshot: ContributionSnapshot }) {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-sm font-bold text-[#FFFDF8]">Daily contribution rhythm</p>
-            <p className="mt-1 text-xs leading-5 text-[#F4EFE5]/55">
+            <p className="mt-1 text-xs leading-5 text-[#F4EFE5]/75">
               Rolling 365 days from the public @{GITHUB_USER} profile.
             </p>
           </div>
@@ -439,10 +439,10 @@ function ContributionPanel({ snapshot }: { snapshot: ContributionSnapshot }) {
           <ContributionCalendar days={snapshot.days} />
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#F4EFE5]/10 pt-4 text-xs text-[#F4EFE5]/55">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#F4EFE5]/10 pt-4 text-xs text-[#F4EFE5]/75">
           <span className="sm:hidden">Latest 18 weeks</span>
           <span className="hidden sm:inline">Last 365 days</span>
-          <div aria-label="Contribution intensity from less to more" className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <span>Less</span>
             {contributionLevelClasses.map((levelClass) => (
               <svg aria-hidden="true" className="h-3 w-3" key={levelClass} viewBox="0 0 12 12">
@@ -527,11 +527,11 @@ export async function GitHubActivity() {
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-sm font-bold">Latest public work</p>
-            <p className="mt-1 text-xs text-[#F4EFE5]/55">
+            <p className="mt-1 text-xs text-[#F4EFE5]/75">
               Commits, reviews, releases, and repository updates.
             </p>
           </div>
-          <p className="text-xs text-[#F4EFE5]/55">Refreshes every 30 minutes</p>
+          <p className="text-xs text-[#F4EFE5]/75">Refreshes every 30 minutes</p>
         </div>
 
         {activity.length > 0 ? (
@@ -556,11 +556,11 @@ export async function GitHubActivity() {
                         <p className="font-bold leading-6 text-[#FFFDF8]">
                           {item.label}
                         </p>
-                        <span className="shrink-0 text-xs text-[#F4EFE5]/55">
+                        <span className="shrink-0 text-xs text-[#F4EFE5]/75">
                           {dateFormatter.format(new Date(item.createdAt))}
                         </span>
                       </div>
-                      <div className="mt-2 flex items-center justify-between gap-3 text-xs text-[#F4EFE5]/60">
+                      <div className="mt-2 flex items-center justify-between gap-3 text-xs text-[#F4EFE5]/75">
                         <span className="truncate">{repository}</span>
                         <span className="shrink-0">@{item.actor}</span>
                       </div>

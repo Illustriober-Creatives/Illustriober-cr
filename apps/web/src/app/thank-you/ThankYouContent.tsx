@@ -34,9 +34,9 @@ export function ThankYouContent() {
   }, [email, router]);
 
   return (
-    <main className="flex flex-col w-full bg-background min-h-screen">
+    <div className="flex flex-col w-full min-h-[calc(100vh-var(--navbar-height))]">
       {/* Thank You Section */}
-      <section className="relative overflow-hidden bg-background py-20 lg:py-32 flex-1 flex items-center">
+      <section className="relative overflow-hidden section-xl flex-1 flex items-center">
         {/* Gradient orbs */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 h-80 w-80 bg-accent/5 rounded-full blur-3xl dark:opacity-100 light:opacity-50" />
@@ -146,6 +146,6 @@ export function ThankYouContent() {
           </div>
         </Container>
       </section>
-    </main>
+    </div>
   );
 }
