@@ -1,6 +1,5 @@
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { resetRateLimitStore } from "./rateLimit";
 
 const prismaMock = vi.hoisted(() => ({
   user: { findUnique: vi.fn(), create: vi.fn(), update: vi.fn() },
@@ -9,13 +8,13 @@ const prismaMock = vi.hoisted(() => ({
 
 vi.mock("../lib/prisma", () => ({ default: prismaMock, prisma: prismaMock }));
 
-import app from "../app";
+import app, { authRateLimitStore } from "../app";
 
 const REQUESTED_WITH_HEADER = ["X-Requested-With", "Illustriober-Web"] as const;
 
-beforeEach(() => {
+beforeEach(async () => {
   vi.clearAllMocks();
-  resetRateLimitStore();
+  await authRateLimitStore.resetAll();
   prismaMock.refreshToken.updateMany.mockResolvedValue({ count: 0 });
   prismaMock.refreshToken.create.mockResolvedValue({ id: "r1" });
 });

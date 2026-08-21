@@ -6,11 +6,11 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { ipKeyGenerator, MemoryStore, rateLimit } from "express-rate-limit";
 
 // Middleware imports
 import { errorHandler } from "./middleware/errorHandler";
 import { requestLogger } from "./middleware/requestLogger";
-import { rateLimit } from "./middleware/rateLimit";
 import { csrfProtection } from "./middleware/csrfProtection";
 import { isAllowedOrigin } from "./lib/origins";
 
@@ -30,6 +30,7 @@ dotenv.config();
  * Initialize Express application
  */
 const app = express();
+export const authRateLimitStore = new MemoryStore();
 
 // ─────────────────────────────────────────
 // MIDDLEWARE STACK
@@ -71,8 +72,16 @@ app.use(express.urlencoded({ extended: true }));
 // 10 requests per 15 minutes per IP — covers brute-force on login/register/refresh
 app.use(
   "/api/auth",
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    store: authRateLimitStore,
+    keyGenerator: (req) => `${ipKeyGenerator(req.ip ?? "unknown")}:${req.path}`,
+    message: { success: false, error: "Too many requests. Please try again later." },
+  }),
   csrfProtection,
-  rateLimit({ windowMs: 15 * 60 * 1000, maxRequests: 10 }),
   authRoutes
 );
 
