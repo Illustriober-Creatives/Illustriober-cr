@@ -8,8 +8,8 @@ export const metadata = createMetadata({ path: "/" });
 
 export default function Home() {
   return (
-    <main className="overflow-hidden bg-[#F4EFE5] text-[#171717]">
-      <section className="mx-auto max-w-7xl px-5 pb-16 pt-40 md:px-8 md:pb-24 md:pt-48">
+    <div className="overflow-hidden bg-[#F4EFE5] text-[#171717]">
+      <section className="mx-auto max-w-7xl px-5 pb-16 pt-12 md:px-8 md:pb-24 md:pt-20">
         <p className="mb-7 text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Digital product studio · Nairobi</p>
         <div className="grid items-end gap-12 lg:grid-cols-[1fr_0.68fr]">
           <div>
@@ -63,6 +63,6 @@ export default function Home() {
       <section className="bg-[#1F4D3D] px-5 py-20 text-[#F4EFE5] md:px-8 md:py-28"><div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-center"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F7AD45]">Built with you, not around you</p><h2 className="mt-5 max-w-3xl font-display text-5xl leading-[0.92] tracking-[-0.045em] md:text-7xl">A practical partner for the work after the idea.</h2></div><ul className="space-y-4 text-base text-[#F4EFE5]/85">{["A clear scope before the build starts", "Visible progress instead of mystery", "A product your team can own after launch"].map((item) => <li className="flex gap-3" key={item}><Check className="mt-0.5 h-5 w-5 shrink-0 text-[#F7AD45]" aria-hidden="true" />{item}</li>)}</ul></div></section>
 
       <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28"><div className="rounded-[2rem] bg-[#F39314] px-7 py-14 text-center md:px-12 md:py-20"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#171717]/70">Start here</p><h2 className="mx-auto mt-5 max-w-3xl font-display text-5xl leading-[0.9] tracking-[-0.045em] md:text-7xl">Got a thing that needs building?</h2><p className="mx-auto mt-6 max-w-xl text-lg leading-7 text-[#171717]/75">Tell us what needs to work better. We’ll help map the next sensible move.</p><Link className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-[#171717] px-7 text-sm font-bold text-white transition-transform hover:-translate-y-0.5" href="/enquiry">Start a conversation <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link></div></section>
-    </main>
+    </div>
   );
 }
