@@ -14,7 +14,15 @@ export default function WorkPage() {
         <div className="mt-5 flex flex-wrap items-end justify-between gap-7"><h1 className="max-w-4xl font-display text-5xl leading-[0.9] tracking-[-0.05em] md:text-7xl">Ideas made <em className="font-normal text-[#F39314]">useful.</em></h1><p className="max-w-sm text-base leading-7 text-[#5F5A50]">Product directions that show how a clearer interface can make everyday work easier.</p></div>
         <div className="mt-14"><ProjectGallery /></div>
         <GitHubActivity />
-        <div className="mt-16 rounded-[2rem] bg-[#F39314] px-7 py-12 text-center md:px-12"><h2 className="font-display text-4xl leading-none md:text-6xl">Have a real story to put here?</h2><Link className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#171717] px-6 py-3.5 text-sm font-bold text-white" href="/enquiry">Start a project <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link></div>
+        <div className="mt-12 flex flex-col gap-5 rounded-[2rem] bg-[#F39314] px-6 py-7 sm:px-8 md:flex-row md:items-center md:justify-between md:py-8">
+          <h2 className="whitespace-nowrap font-display text-[clamp(1.7rem,4vw,3.5rem)] leading-none">
+            Let&apos;s put your story here.
+          </h2>
+          <Link className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-[#171717] px-6 py-3.5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5" href="/enquiry">
+            Start a project
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     </main>
   );

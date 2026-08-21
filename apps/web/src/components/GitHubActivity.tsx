@@ -76,64 +76,68 @@ function eventUrl(event: GitHubEvent) {
 
 function describeEvent(event: GitHubEvent): ActivityDetails {
   const url = eventUrl(event);
-  const issueNumber = event.payload.issue?.number;
-  const pullRequestNumber = event.payload.pull_request?.number;
 
   switch (event.type) {
     case "PushEvent": {
       const branch = event.payload.ref?.replace("refs/heads/", "");
       return {
         Icon: GitCommitHorizontal,
-        label: branch ? `Pushed changes to ${branch}` : "Pushed new changes",
+        label:
+          branch === "main"
+            ? "Pushed changes to main"
+            : "Pushed changes to a project branch",
         url,
       };
     }
     case "PullRequestEvent":
       return {
         Icon: GitPullRequest,
-        label: `${capitalize(event.payload.action)} pull request${pullRequestNumber ? ` #${pullRequestNumber}` : ""}`,
+        label: `${capitalize(event.payload.action)} a pull request`,
         url,
       };
     case "PullRequestReviewEvent":
       return {
         Icon: GitPullRequest,
-        label: `Reviewed pull request${pullRequestNumber ? ` #${pullRequestNumber}` : ""}`,
+        label: "Reviewed a pull request",
         url,
       };
     case "PullRequestReviewCommentEvent":
       return {
         Icon: MessageSquareText,
-        label: `Commented on pull request${pullRequestNumber ? ` #${pullRequestNumber}` : ""}`,
+        label: "Updated a pull request",
         url,
       };
     case "IssuesEvent":
       return {
         Icon: CircleDot,
-        label: `${capitalize(event.payload.action)} issue${issueNumber ? ` #${issueNumber}` : ""}`,
+        label: `${capitalize(event.payload.action)} an issue`,
         url,
       };
     case "IssueCommentEvent":
       return {
         Icon: MessageSquareText,
-        label: `Commented on issue${issueNumber ? ` #${issueNumber}` : ""}`,
+        label: "Updated an issue",
         url,
       };
     case "CreateEvent":
       return {
         Icon: GitBranch,
-        label: `Created ${event.payload.ref_type ?? "repository item"}${event.payload.ref ? ` ${event.payload.ref}` : ""}`,
+        label:
+          event.payload.ref_type === "repository"
+            ? "Published a new repository"
+            : "Created a project branch",
         url,
       };
     case "ReleaseEvent":
       return {
         Icon: PackageOpen,
-        label: `${capitalize(event.payload.action)} release ${event.payload.release?.name ?? event.payload.release?.tag_name ?? ""}`.trim(),
+        label: `${capitalize(event.payload.action)} a project release`,
         url,
       };
     case "WatchEvent":
-      return { Icon: Star, label: "Starred the repository", url };
+      return { Icon: Star, label: "Received a public star", url };
     default:
-      return { Icon: GitCommitHorizontal, label: "Updated repository activity", url };
+      return { Icon: GitCommitHorizontal, label: "Updated the project", url };
   }
 }
 
@@ -184,12 +188,11 @@ async function getCommitFeed(): Promise<ActivityItem[]> {
 
     return entries.slice(0, 6).flatMap((entry) => {
       const id = readXmlElement(entry, "id");
-      const label = readXmlElement(entry, "title");
       const createdAt = readXmlElement(entry, "updated");
       const actor = readXmlElement(entry, "name");
       const url = decodeXml(entry.match(/<link[^>]+href="([^"]+)"/)?.[1] ?? "");
 
-      if (!id || !label || !createdAt || !url) return [];
+      if (!id || !createdAt || !url) return [];
 
       return [
         {
@@ -197,7 +200,7 @@ async function getCommitFeed(): Promise<ActivityItem[]> {
           actor: actor || GITHUB_ORG,
           createdAt,
           id,
-          label,
+          label: "Pushed changes to main",
           repository: `${GITHUB_ORG}/Illustriober-cr`,
           url,
         },
@@ -462,6 +465,12 @@ export async function GitHubActivity() {
     getPublicActivity(),
     getGitHubContributionSnapshot(),
   ]);
+  const visibleActivity = activity
+    .filter(
+      (item, index, items) =>
+        items.findIndex((candidate) => candidate.repository === item.repository) === index,
+    )
+    .slice(0, 4);
 
   return (
     <section
@@ -469,7 +478,7 @@ export async function GitHubActivity() {
       className="mt-20 overflow-hidden rounded-[2rem] bg-[#1F4D3D] text-[#F4EFE5] md:mt-24"
     >
       <div className="grid border-b border-[#F4EFE5]/15 lg:grid-cols-[0.82fr_1.18fr]">
-        <div className="flex flex-col justify-between border-b border-[#F4EFE5]/15 p-7 md:p-10 lg:border-b-0 lg:border-r lg:p-12">
+        <div className="border-b border-[#F4EFE5]/15 p-7 md:p-10 lg:border-b-0 lg:border-r lg:p-12">
           <div>
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F39314] text-[#171717]">
               <Github aria-hidden="true" className="h-6 w-6" />
@@ -484,8 +493,7 @@ export async function GitHubActivity() {
               A year of work, in the open.
             </h2>
             <p className="mt-6 max-w-md leading-7 text-[#F4EFE5]/75">
-              Real contribution history from the person building the studio,
-              paired with the organisation&apos;s latest public work.
+              Public contributions and organisation updates.
             </p>
           </div>
           <a
@@ -494,6 +502,7 @@ export async function GitHubActivity() {
             rel="noreferrer"
             target="_blank"
           >
+            <Github aria-hidden="true" className="h-4 w-4" />
             Visit the organisation
             <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
           </a>
@@ -528,15 +537,15 @@ export async function GitHubActivity() {
           <div>
             <p className="text-sm font-bold">Latest public work</p>
             <p className="mt-1 text-xs text-[#F4EFE5]/75">
-              Commits, reviews, releases, and repository updates.
+              Public project names and high-level updates only.
             </p>
           </div>
           <p className="text-xs text-[#F4EFE5]/75">Refreshes every 30 minutes</p>
         </div>
 
-        {activity.length > 0 ? (
-          <ol className="grid gap-3 md:grid-cols-2">
-            {activity.slice(0, 4).map((item) => {
+        {visibleActivity.length > 0 ? (
+          <ol className={visibleActivity.length === 1 ? "grid gap-3" : "grid gap-3 md:grid-cols-2"}>
+            {visibleActivity.map((item) => {
               const repository = item.repository.split("/").at(-1) ?? item.repository;
 
               return (
@@ -553,17 +562,16 @@ export async function GitHubActivity() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
-                        <p className="font-bold leading-6 text-[#FFFDF8]">
-                          {item.label}
+                        <p className="font-display text-xl leading-none text-[#FFFDF8]">
+                          {repository}
                         </p>
                         <span className="shrink-0 text-xs text-[#F4EFE5]/75">
                           {dateFormatter.format(new Date(item.createdAt))}
                         </span>
                       </div>
-                      <div className="mt-2 flex items-center justify-between gap-3 text-xs text-[#F4EFE5]/75">
-                        <span className="truncate">{repository}</span>
-                        <span className="shrink-0">@{item.actor}</span>
-                      </div>
+                      <p className="mt-3 text-sm leading-6 text-[#F4EFE5]/75">
+                        {item.label}
+                      </p>
                     </div>
                   </a>
                 </li>

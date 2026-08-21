@@ -33,7 +33,8 @@ export function ProjectGallery({ limit, compact = false }: ProjectGalleryProps) 
               }
               src={project.image}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/95 via-[#171717]/25 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#171717] via-[#171717]/60 to-[#171717]/10 transition-opacity duration-500 group-hover:opacity-0" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/85 via-[#171717]/25 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
               <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#f7ad45]">{project.category}</p>
               <div className="flex items-end justify-between gap-5">
@@ -48,15 +49,15 @@ export function ProjectGallery({ limit, compact = false }: ProjectGalleryProps) 
         </Link>
       ))}
       {!compact && (
-        <div className="flex min-h-[200px] flex-col justify-between rounded-[1.5rem] bg-[#1F4D3D] p-7 text-[#F4EFE5] md:col-span-2 md:flex-row md:items-end md:p-9">
-          <p className="max-w-lg text-lg leading-7">
-            Concept studies for the kind of product stories we can help bring to life.
+        <div className="flex flex-col justify-between gap-5 rounded-[1.5rem] bg-[#1F4D3D] p-6 text-[#F4EFE5] sm:flex-row sm:items-center md:col-span-2 md:p-7">
+          <p className="whitespace-nowrap text-[clamp(0.78rem,3.7vw,1.125rem)] leading-6">
+            See how we turn ideas into useful software.
           </p>
           <Link
-            className="mt-8 inline-flex min-h-11 items-center gap-2 text-sm font-bold underline decoration-[#F39314] decoration-2 underline-offset-4 md:mt-0"
+            className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-bold underline decoration-[#F39314] decoration-2 underline-offset-4"
             href="/enquiry"
           >
-            Bring us yours
+            Tell us your idea
             <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
