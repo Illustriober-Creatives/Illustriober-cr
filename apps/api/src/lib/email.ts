@@ -126,6 +126,66 @@ export async function sendInviteEmail(params: {
   return { success: true };
 }
 
+export async function sendStaceyResponseEmail(params: {
+  activity: string;
+  preferredDate: string;
+  timeOfDay: string;
+  foodDrink?: string;
+  movieTitle?: string;
+  movieShowtime?: string;
+  snacks?: string[];
+  perfectNote?: string;
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = getResend();
+  const from = process.env.STACEY_EMAIL_FROM || process.env.ENQUIRY_FROM_EMAIL;
+  const to = process.env.STACEY_RESPONSE_EMAIL;
+
+  if (!resend || !from || !to) {
+    console.warn("[stacey] Email skipped — set RESEND_API_KEY, STACEY_EMAIL_FROM, and STACEY_RESPONSE_EMAIL");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  const labels: Record<string, string> = {
+    "date-night": "Date night",
+    "movie-night": "Movie night",
+    "date-and-movie": "Date and movie night",
+    afternoon: "Afternoon",
+    evening: "Evening",
+    night: "Night",
+  };
+  const value = (text?: string) => text ? escapeHtml(text) : "No preference shared";
+  const { data, error } = await resend.emails.send({
+    from,
+    to,
+    subject: `She said yes — ${labels[params.activity] || "a date"} ✦`,
+    html: `
+      <div style="background:#fff7f5;padding:32px;font-family:Georgia,serif;color:#4b1e32">
+        <div style="max-width:600px;margin:auto;background:#fff;padding:32px;border:1px solid #f0d1d5;border-radius:20px">
+          <p style="margin:0;color:#b55368;font:700 11px Arial,sans-serif;letter-spacing:2px;text-transform:uppercase">Stacey&apos;s little hints</p>
+          <h1 style="margin:14px 0 24px;font-size:32px;font-weight:400">You&apos;ve got a date to plan ♡</h1>
+          <table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:15px"><tbody>
+            <tr><td style="padding:12px 0;border-top:1px solid #f1dfe1;color:#9a6573">Adventure</td><td style="padding:12px 0;border-top:1px solid #f1dfe1"><strong>${value(labels[params.activity])}</strong></td></tr>
+            <tr><td style="padding:12px 0;border-top:1px solid #f1dfe1;color:#9a6573">Preferred date</td><td style="padding:12px 0;border-top:1px solid #f1dfe1"><strong>${value(params.preferredDate)}</strong></td></tr>
+            <tr><td style="padding:12px 0;border-top:1px solid #f1dfe1;color:#9a6573">Best time</td><td style="padding:12px 0;border-top:1px solid #f1dfe1"><strong>${value(labels[params.timeOfDay])}</strong></td></tr>
+          </tbody></table>
+          <h2 style="margin:28px 0 6px;font-size:17px">Food or drink</h2><p style="margin:0;white-space:pre-wrap">${value(params.foodDrink)}</p>
+          <h2 style="margin:22px 0 6px;font-size:17px">Movie</h2><p style="margin:0;white-space:pre-wrap">${value([params.movieTitle, params.movieShowtime].filter(Boolean).join(" at "))}</p>
+          <h2 style="margin:22px 0 6px;font-size:17px">Movie snacks</h2><p style="margin:0;white-space:pre-wrap">${value(params.snacks?.join(", "))}</p>
+          <h2 style="margin:22px 0 6px;font-size:17px">Make it perfect</h2><p style="margin:0;white-space:pre-wrap">${value(params.perfectNote)}</p>
+        </div>
+      </div>`,
+    tags: [{ name: "type", value: "stacey-response" }],
+  });
+
+  if (error) {
+    console.error("[stacey] Failed to send response email:", error);
+    return { success: false, error: error.message };
+  }
+
+  console.log(`[stacey] Response email sent (ID: ${data?.id})`);
+  return { success: true };
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
