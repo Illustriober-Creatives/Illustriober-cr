@@ -210,16 +210,14 @@ export default function ServicesPage() {
         </section>
 
         <section className="mt-20 scroll-mt-36 md:mt-24" id="capabilities">
-          <div className="grid gap-6 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">
-                What we can build
-              </p>
-              <h2 className="mt-4 max-w-xl font-display text-4xl leading-[0.95] tracking-[-0.03em] sm:text-5xl">
-                The whole product, or the part holding it back.
-              </h2>
-            </div>
-            <p className="max-w-2xl text-base leading-7 text-[#5F5A50] lg:justify-self-end">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">
+              What we can build
+            </p>
+            <h2 className="mt-4 max-w-6xl text-balance font-display text-4xl leading-[0.95] tracking-[-0.03em] sm:text-5xl">
+              The whole product, or the part holding it back.
+            </h2>
+            <p className="mt-5 max-w-3xl text-base leading-7 text-[#5F5A50]">
               Start with an idea, a defined build, or a live system. We can own the full path or join your team at the layer where focused design and engineering will make the clearest difference.
             </p>
           </div>
