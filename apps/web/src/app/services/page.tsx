@@ -174,7 +174,7 @@ export default function ServicesPage() {
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">
                 Full-stack software studio
               </p>
-              <h1 className="mt-4 max-w-4xl font-display text-[clamp(3.1rem,6vw,6.2rem)] leading-[0.86] tracking-[-0.055em]">
+              <h1 className="mt-4 max-w-4xl text-balance font-display text-[clamp(3.1rem,6vw,6.2rem)] leading-[1.02] tracking-[-0.055em]">
                 We design, <em className="font-normal text-[#F39314]">build,</em> and improve software.
               </h1>
             </div>
@@ -255,7 +255,7 @@ export default function ServicesPage() {
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">
               What we can build
             </p>
-            <h2 className="mt-4 max-w-6xl text-balance font-display text-4xl leading-[0.95] tracking-[-0.03em] sm:text-5xl">
+            <h2 className="mt-4 max-w-6xl text-balance font-display text-4xl leading-[1.02] tracking-[-0.03em] sm:text-5xl">
               The whole product, or the part holding it back.
             </h2>
             <p className="mt-5 max-w-3xl text-base leading-7 text-[#5F5A50]">
