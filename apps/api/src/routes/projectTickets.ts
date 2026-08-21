@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { rateLimit } from "express-rate-limit";
 import { z } from "zod";
 import prisma from "../lib/prisma";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
@@ -6,6 +7,12 @@ import { authenticate } from "../middleware/authenticate";
 import { createTicketSchema, updateTicketStatusSchema } from "@illustriober/shared";
 
 const router = Router({ mergeParams: true });
+const ticketRateLimit = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 60,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
 
 async function resolveProject(slug: string, userId: string, role: string) {
   const project = await prisma.project.findUnique({ where: { slug } });
@@ -16,6 +23,7 @@ async function resolveProject(slug: string, userId: string, role: string) {
 
 router.get(
   "/",
+  ticketRateLimit,
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     const project = await resolveProject(req.params.slug, req.user!.id, req.user!.role);
@@ -30,6 +38,7 @@ router.get(
 
 router.post(
   "/",
+  ticketRateLimit,
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     const project = await resolveProject(req.params.slug, req.user!.id, req.user!.role);
@@ -61,6 +70,7 @@ router.post(
 
 router.get(
   "/:id",
+  ticketRateLimit,
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     const project = await resolveProject(req.params.slug, req.user!.id, req.user!.role);
@@ -83,6 +93,7 @@ router.get(
 
 router.patch(
   "/:id/status",
+  ticketRateLimit,
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     const project = await resolveProject(req.params.slug, req.user!.id, req.user!.role);

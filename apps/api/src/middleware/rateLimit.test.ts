@@ -11,6 +11,8 @@ vi.mock("../lib/prisma", () => ({ default: prismaMock, prisma: prismaMock }));
 
 import app from "../app";
 
+const REQUESTED_WITH_HEADER = ["X-Requested-With", "Illustriober-Web"] as const;
+
 beforeEach(() => {
   vi.clearAllMocks();
   resetRateLimitStore();
@@ -24,6 +26,7 @@ describe("rate limiting — auth endpoints", () => {
 
     const res = await request(app)
       .post("/api/auth/login")
+      .set(...REQUESTED_WITH_HEADER)
       .send({ email: "a@b.com", password: "pass" });
 
     expect(res.status).not.toBe(429);
@@ -34,9 +37,9 @@ describe("rate limiting — auth endpoints", () => {
 
     const body = { email: "a@b.com", password: "pass" };
     for (let i = 0; i < 10; i++) {
-      await request(app).post("/api/auth/login").send(body);
+      await request(app).post("/api/auth/login").set(...REQUESTED_WITH_HEADER).send(body);
     }
-    const res = await request(app).post("/api/auth/login").send(body);
+    const res = await request(app).post("/api/auth/login").set(...REQUESTED_WITH_HEADER).send(body);
 
     expect(res.status).toBe(429);
     expect(res.body.error).toMatch(/too many requests/i);
@@ -48,9 +51,9 @@ describe("rate limiting — auth endpoints", () => {
 
     const body = { email: "a@b.com", password: "P@ssword1!", firstName: "A", lastName: "B" };
     for (let i = 0; i < 10; i++) {
-      await request(app).post("/api/auth/register").send(body);
+      await request(app).post("/api/auth/register").set(...REQUESTED_WITH_HEADER).send(body);
     }
-    const res = await request(app).post("/api/auth/register").send(body);
+    const res = await request(app).post("/api/auth/register").set(...REQUESTED_WITH_HEADER).send(body);
 
     expect(res.status).toBe(429);
   });
@@ -60,9 +63,9 @@ describe("rate limiting — auth endpoints", () => {
 
     const body = { email: "a@b.com", password: "pass" };
     for (let i = 0; i < 10; i++) {
-      await request(app).post("/api/auth/login").send(body);
+      await request(app).post("/api/auth/login").set(...REQUESTED_WITH_HEADER).send(body);
     }
-    const res = await request(app).post("/api/auth/login").send(body);
+    const res = await request(app).post("/api/auth/login").set(...REQUESTED_WITH_HEADER).send(body);
 
     expect(res.status).toBe(429);
     expect(res.headers["retry-after"]).toBeDefined();

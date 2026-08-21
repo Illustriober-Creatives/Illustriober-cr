@@ -12,6 +12,27 @@ import {
 } from "react";
 
 const ACCESS_KEY = "illustriober_access_token";
+const CSRF_COOKIE_NAME = "illustriober_csrf";
+const REQUESTED_WITH_VALUE = "Illustriober-Web";
+
+function authMutationHeaders(includeJson = false): Headers {
+  const headers = new Headers();
+  headers.set("X-Requested-With", REQUESTED_WITH_VALUE);
+  if (includeJson) headers.set("Content-Type", "application/json");
+
+  if (typeof document !== "undefined") {
+    const prefix = `${CSRF_COOKIE_NAME}=`;
+    const csrfToken = document.cookie
+      .split(";")
+      .map((cookie) => cookie.trim())
+      .find((cookie) => cookie.startsWith(prefix))
+      ?.slice(prefix.length);
+
+    if (csrfToken) headers.set("X-CSRF-Token", decodeURIComponent(csrfToken));
+  }
+
+  return headers;
+}
 
 export type AuthUser = {
   id: string;
@@ -107,6 +128,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const refreshRequest = (async () => {
       const res = await fetch("/api/auth/refresh", {
         method: "POST",
+        headers: authMutationHeaders(),
         credentials: "include",
       });
 
@@ -198,7 +220,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (email: string, password: string): Promise<AuthUser> => {
       const res = await fetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: authMutationHeaders(true),
         credentials: "include",
         body: JSON.stringify({ email, password }),
       });
@@ -221,7 +243,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }) => {
       const res = await fetch("/api/auth/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: authMutationHeaders(true),
         credentials: "include",
         body: JSON.stringify(input),
       });
@@ -239,6 +261,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await fetch("/api/auth/logout", {
         method: "POST",
+        headers: authMutationHeaders(),
         credentials: "include",
       });
     } catch {

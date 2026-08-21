@@ -9,7 +9,14 @@ import { z } from "zod";
 import { loginSchema, registerSchema } from "@illustriober/shared";
 import prisma from "../lib/prisma";
 import { signAccessToken } from "../lib/jwt";
-import { REFRESH_COOKIE_NAME, refreshCookieOptions } from "../lib/cookies";
+import {
+  CSRF_COOKIE_NAME,
+  REFRESH_COOKIE_NAME,
+  createCsrfToken,
+  csrfCookieOptions,
+  readRequestCookie,
+  refreshCookieOptions,
+} from "../lib/cookies";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
 
@@ -40,6 +47,12 @@ async function issueRefreshCookie(res: Response, userId: string): Promise<void> 
   });
 
   res.cookie(REFRESH_COOKIE_NAME, raw, refreshCookieOptions());
+  res.cookie(CSRF_COOKIE_NAME, createCsrfToken(raw), csrfCookieOptions());
+}
+
+function clearSessionCookies(res: Response): void {
+  res.clearCookie(REFRESH_COOKIE_NAME, { path: "/" });
+  res.clearCookie(CSRF_COOKIE_NAME, { path: "/" });
 }
 
 router.post(
@@ -152,7 +165,7 @@ router.post(
 router.post(
   "/refresh",
   asyncHandler(async (req: Request, res: Response) => {
-    const raw = req.cookies?.[REFRESH_COOKIE_NAME] as string | undefined;
+    const raw = readRequestCookie(req, REFRESH_COOKIE_NAME);
     if (!raw) {
       throw new AppError(401, "Missing refresh session");
     }
@@ -163,7 +176,7 @@ router.post(
     });
 
     if (!record || record.expiresAt < new Date() || !record.user.isActive) {
-      res.clearCookie(REFRESH_COOKIE_NAME, { path: "/" });
+      clearSessionCookies(res);
       throw new AppError(401, "Invalid or expired session");
     }
 
@@ -173,7 +186,7 @@ router.post(
         where: { userId: record.user.id },
         data: { revokedAt: new Date() },
       });
-      res.clearCookie(REFRESH_COOKIE_NAME, { path: "/" });
+      clearSessionCookies(res);
       throw new AppError(401, "Invalid or expired session");
     }
 
@@ -203,14 +216,14 @@ router.post(
 router.post(
   "/logout",
   asyncHandler(async (req: Request, res: Response) => {
-    const raw = req.cookies?.[REFRESH_COOKIE_NAME] as string | undefined;
+    const raw = readRequestCookie(req, REFRESH_COOKIE_NAME);
     if (raw) {
       await prisma.refreshToken.updateMany({
         where: { token: raw, revokedAt: null },
         data: { revokedAt: new Date() },
       });
     }
-    res.clearCookie(REFRESH_COOKIE_NAME, { path: "/" });
+    clearSessionCookies(res);
     res.json({ success: true, message: "Logged out" });
   })
 );

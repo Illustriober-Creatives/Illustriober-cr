@@ -4,7 +4,13 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import prisma from "../lib/prisma";
 import { signAccessToken } from "../lib/jwt";
-import { REFRESH_COOKIE_NAME, refreshCookieOptions } from "../lib/cookies";
+import {
+  CSRF_COOKIE_NAME,
+  REFRESH_COOKIE_NAME,
+  createCsrfToken,
+  csrfCookieOptions,
+  refreshCookieOptions,
+} from "../lib/cookies";
 import { sendInviteEmail } from "../lib/email";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
@@ -108,6 +114,7 @@ router.post(
       data: { token: refreshRaw, userId: user.id, expiresAt: refreshExpiresAt },
     });
     res.cookie(REFRESH_COOKIE_NAME, refreshRaw, refreshCookieOptions());
+    res.cookie(CSRF_COOKIE_NAME, createCsrfToken(refreshRaw), csrfCookieOptions());
 
     const accessToken = signAccessToken({ sub: user.id, role: user.role, email: user.email });
 
