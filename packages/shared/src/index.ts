@@ -47,8 +47,8 @@ export const createTicketSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   type: z.enum(["BUG", "FEATURE", "IDEA", "QUESTION", "SUPPORT"]),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).optional(),
-  projectId: z.string().min(1, "Project ID is required"),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).default("MEDIUM"),
+  projectId: z.string().min(1, "Project ID is required").optional(),
 });
 
 export const updateTicketSchema = z.object({
@@ -62,3 +62,9 @@ export const updateTicketSchema = z.object({
 
 export type CreateTicketInput = z.infer<typeof createTicketSchema>;
 export type UpdateTicketInput = z.infer<typeof updateTicketSchema>;
+
+export const updateTicketStatusSchema = z.object({
+  status: z.enum(["OPEN", "IN_REVIEW", "IN_PROGRESS", "RESOLVED", "CLOSED", "REJECTED"]),
+});
+
+export type UpdateTicketStatusInput = z.infer<typeof updateTicketStatusSchema>;

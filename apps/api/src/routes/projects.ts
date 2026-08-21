@@ -11,8 +11,8 @@ router.get(
   "/",
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user.id;
-    const role = (req as any).user.role;
+    const userId = req.user!.id;
+    const role = req.user!.role;
 
     // Admins see all, clients see only theirs
     const where = role === "ADMIN" ? {} : { clientId: userId };
@@ -31,8 +31,8 @@ router.get(
   "/:slug",
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user.id;
-    const role = (req as any).user.role;
+    const userId = req.user!.id;
+    const role = req.user!.role;
     const { slug } = req.params;
 
     const project = await prisma.project.findUnique({

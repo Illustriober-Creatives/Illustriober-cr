@@ -48,6 +48,7 @@ router.post(
     const userId = (req as any).user.id;
     const role = (req as any).user.role;
     const data = createTicketSchema.parse(req.body);
+    if (!data.projectId) throw new AppError(400, "Project ID is required");
 
     // Verify project exists and user has access
     const project = await prisma.project.findUnique({

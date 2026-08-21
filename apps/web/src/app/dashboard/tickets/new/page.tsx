@@ -119,7 +119,7 @@ export default function NewTicketPage() {
                 <select
                   required
                   value={formData.type}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value as any }))}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value as CreateTicketInput["type"] }))}
                   className="w-full rounded-xl border border-zinc-800 bg-black/40 px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-colors"
                 >
                   <option value="BUG">Bug Report</option>
@@ -134,7 +134,7 @@ export default function NewTicketPage() {
                 <select
                   required
                   value={formData.priority}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, priority: e.target.value as any }))}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, priority: e.target.value as CreateTicketInput["priority"] }))}
                   className="w-full rounded-xl border border-zinc-800 bg-black/40 px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-colors"
                 >
                   <option value="LOW">Low</option>

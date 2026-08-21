@@ -41,7 +41,6 @@ export function PortfolioTeaser() {
         <SectionHeader
           subtitle="Recent Work"
           title="Featured Projects"
-          description="A selection of recent projects we're proud of"
           align="center"
         />
 
@@ -56,7 +55,7 @@ export function PortfolioTeaser() {
         <div className="text-center">
           <Link
             href="/work"
-            className="inline-flex items-center gap-2 text-lg font-semibold text-brand-500 hover:text-brand-400 transition-colors group"
+            className="inline-flex items-center gap-2 text-lg font-semibold text-accent hover:text-accent/80 transition-colors group"
           >
             View All Work
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
