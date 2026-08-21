@@ -141,12 +141,19 @@ function toActivityItem(event: GitHubEvent): ActivityItem {
 }
 
 function decodeXml(value: string) {
-  return value
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;/g, "'")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">");
+  const entities: Record<string, string> = {
+    "&#39;": "'",
+    "&amp;": "&",
+    "&apos;": "'",
+    "&gt;": ">",
+    "&lt;": "<",
+    "&quot;": '"',
+  };
+
+  return value.replace(
+    /&(amp|apos|gt|lt|quot|#39);/g,
+    (entity) => entities[entity] ?? entity,
+  );
 }
 
 function readXmlElement(entry: string, element: string) {
