@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { TicketComment } from "@illustriober/shared";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { Container } from "@/components/Container";
 import { SectionWrapper } from "@/components/SectionWrapper";
-import { Button } from "@/components/Button";
+import { CommentThread } from "@/components/tickets/CommentThread";
 import { ArrowLeft, Clock, Info, Briefcase } from "lucide-react";
 
 interface Ticket {
@@ -18,6 +19,7 @@ interface Ticket {
   type: string;
   project: { name: string };
   createdAt: string;
+  comments: TicketComment[];
 }
 
 export default function ClientTicketDetailPage() {
@@ -115,10 +117,11 @@ export default function ClientTicketDetailPage() {
                   </div>
                 </div>
 
-                <div className="mt-8 rounded-2xl border border-zinc-800 bg-zinc-900/10 p-8 text-center">
-                  <p className="text-zinc-500 text-sm italic">
-                    Discussion threads and file attachments for tickets are coming soon.
-                  </p>
+                <div className="mt-8">
+                  <CommentThread
+                    ticketId={ticket.id}
+                    initialComments={ticket.comments}
+                  />
                 </div>
              </div>
           </div>

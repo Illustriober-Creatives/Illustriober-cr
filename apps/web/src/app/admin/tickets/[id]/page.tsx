@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { TicketComment } from "@illustriober/shared";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/Button";
+import { CommentThread } from "@/components/tickets/CommentThread";
 import { ArrowLeft, Clock, User, Briefcase, Info } from "lucide-react";
 
 interface Ticket {
@@ -17,6 +18,7 @@ interface Ticket {
   project: { name: string; slug: string };
   submittedBy: { firstName: string; lastName: string; email: string };
   createdAt: string;
+  comments: TicketComment[];
 }
 
 export default function AdminTicketDetailPage() {
@@ -56,8 +58,8 @@ export default function AdminTicketDetailPage() {
         body: JSON.stringify({ status: newStatus }),
       });
       if (res.ok) {
-        const data = await res.json();
-        setTicket(data.ticket);
+        const data = (await res.json()) as { ticket: Partial<Ticket> };
+        setTicket((current) => (current ? { ...current, ...data.ticket } : current));
       }
     } catch (err) {
       console.error("Failed to update ticket", err);
@@ -138,8 +140,8 @@ export default function AdminTicketDetailPage() {
           </div>
         </div>
 
-        <div className="lg:col-span-2">
-          <div className="glass-card h-full rounded-2xl bg-surface/30 p-8">
+        <div className="space-y-6 lg:col-span-2">
+          <div className="glass-card rounded-2xl bg-surface/30 p-8">
             <div className="mb-6 flex items-center gap-2 border-b border-zinc-800/50 pb-4">
               <Info className="h-5 w-5 text-accent" />
               <h2 className="text-lg font-bold text-foreground">Issue Description</h2>
@@ -155,6 +157,10 @@ export default function AdminTicketDetailPage() {
               </p>
             </div>
           </div>
+          <CommentThread
+            ticketId={ticket.id}
+            initialComments={ticket.comments}
+          />
         </div>
       </div>
     </div>
