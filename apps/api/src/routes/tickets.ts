@@ -17,7 +17,7 @@ router.get(
     const { projectId } = req.query;
 
     const where: any = {};
-    
+
     if (role !== "ADMIN") {
       where.project = { clientId: userId };
     }
@@ -127,7 +127,7 @@ router.patch(
       if (ticket.project.clientId !== userId) {
         throw new AppError(403, "Access denied");
       }
-      
+
       // Clients can only update certain fields
       // and cannot change status to things like REJECTED or IN_REVIEW directly?
       // Actually, let's just restrict status changes for clients to CLOSED/REOPENED if we had those

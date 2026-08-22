@@ -1,182 +1,46 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
-import { Button } from './Button';
-import { ModeToggle } from './ModeToggle';
-import { useAuth } from '@/contexts/AuthContext';
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
-/**
- * Navbar component - Responsive header with navigation links and CTA
- * Features: Mobile hamburger menu, active link highlighting, sticky positioning
- */
+const navLinks = [
+  { href: "/work", label: "Work" },
+  { href: "/services", label: "Services" },
+  { href: "/about", label: "About" },
+];
+
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const { user, logout } = useAuth();
-
-  // Navigation links for the site
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/services', label: 'Services' },
-    { href: '/work', label: 'Work' },
-    { href: '/tech-stack', label: 'Tech Stack' },
-  ];
-
-  /**
-   * Close menu when a link is clicked.
-   * This improves UX on mobile - user doesn't have to manually close menu.
-   */
-  const handleLinkClick = () => {
-    setIsMenuOpen(false);
-  };
-
+  const closeMenu = () => setIsMenuOpen(false);
   const handleLogout = async () => {
-    setIsMenuOpen(false);
+    closeMenu();
     await logout();
-    router.replace('/login');
+    router.replace("/login");
   };
 
   return (
-    <nav className="fixed top-10 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-3rem)] max-w-7xl">
-      <div className="glass-card rounded-[2.5rem] px-10 py-5">
-        <div className="flex items-center justify-between">
-          {/* Logo / Brand */}
-          <Link href="/" className="flex items-center gap-4 group">
-            <div className="w-12 h-12 bg-accent shadow-[0_0_25px_var(--accent-glow)] rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:rotate-[10deg]">
-              <span className="text-white font-display font-bold text-xl">S</span>
-            </div>
-            <span className="hidden sm:inline font-display font-bold text-2xl text-foreground tracking-tighter">
-              Illustriober <span className="text-accent italic selection:bg-accent/30 tracking-tight">Creatives</span>
-            </span>
+    <nav className="fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-7xl -translate-x-1/2">
+      <div className="border border-black/10 bg-[#FFFDF8]/95 px-4 py-3 shadow-[0_8px_24px_rgba(23,23,23,0.08)] backdrop-blur md:rounded-full md:px-6">
+        <div className="flex items-center justify-between gap-4">
+          <Link className="flex items-center gap-2.5" href="/" onClick={closeMenu}>
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-[#F39314] font-display text-lg font-bold text-[#171717]">il</span>
+            <span className="text-sm font-bold tracking-tight text-[#171717] sm:text-base">Illustriober Creatives</span>
           </Link>
-
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-10">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-foreground/70 hover:text-accent hover:text-glow transition-all duration-300"
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="hidden items-center gap-6 md:flex">
+            {navLinks.map((link) => <Link className="text-sm font-semibold text-[#5F5A50] transition-colors hover:text-[#171717]" href={link.href} key={link.href}>{link.label}</Link>)}
           </div>
-
-          {/* Desktop CTA + account */}
-          <div className="hidden md:flex items-center gap-4">
-            <ModeToggle />
-            <div className="w-[1px] h-6 bg-foreground/10 mx-2" />
-            {user ? (
-
-              <>
-                <Link
-                  href="/dashboard"
-                  className="text-sm font-medium text-foreground/70 hover:text-accent transition-colors"
-                >
-                  Dashboard
-                </Link>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  className="rounded-xl"
-                  onClick={() => void handleLogout()}
-                >
-                  Sign out
-                </Button>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                className="text-sm font-medium text-foreground/70 hover:text-accent transition-colors"
-              >
-                Sign in
-              </Link>
-            )}
-            <Link href="/enquiry">
-              <Button
-                variant="primary"
-                size="sm"
-                className="rounded-xl"
-              >
-                Let&apos;s Talk
-              </Button>
-            </Link>
+          <div className="hidden items-center gap-4 md:flex">
+            {user ? <><Link className="text-sm font-semibold text-[#5F5A50] hover:text-[#171717]" href="/dashboard">Dashboard</Link><button className="text-sm font-semibold text-[#5F5A50] hover:text-[#171717]" onClick={() => void handleLogout()} type="button">Sign out</button></> : <Link className="text-sm font-semibold text-[#5F5A50] hover:text-[#171717]" href="/login">Sign in</Link>}
+            <Link className="rounded-full bg-[#171717] px-4 py-2.5 text-sm font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5" href="/enquiry">Start a project</Link>
           </div>
-
-          {/* Mobile Menu Actions */}
-          <div className="md:hidden flex items-center gap-2">
-            <ModeToggle />
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 hover:bg-white/5 rounded-xl transition-colors"
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? (
-                <X className="w-5 h-5 text-foreground" />
-              ) : (
-                <Menu className="w-5 h-5 text-foreground" />
-              )}
-            </button>
-          </div>
+          <div className="flex items-center gap-2 md:hidden"><button aria-expanded={isMenuOpen} aria-label="Toggle navigation" className="grid h-11 w-11 place-items-center rounded-full bg-[#171717] text-[#F4EFE5]" onClick={() => setIsMenuOpen((open) => !open)} type="button">{isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button></div>
         </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 space-y-1 animate-in fade-in slide-in-from-top-4 duration-300">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={handleLinkClick}
-                className="block px-4 py-3 text-sm font-medium text-foreground/70 hover:bg-white/5 hover:text-accent rounded-xl transition-all"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="pt-4 space-y-2">
-              {user ? (
-                <>
-                  <Link
-                    href="/dashboard"
-                    onClick={handleLinkClick}
-                    className="block px-4 py-3 text-sm font-medium text-foreground/70 hover:bg-white/5 hover:text-accent rounded-xl transition-all"
-                  >
-                    Dashboard
-                  </Link>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="md"
-                    className="w-full rounded-xl"
-                    onClick={() => void handleLogout()}
-                  >
-                    Sign out
-                  </Button>
-                </>
-              ) : (
-                <Link
-                  href="/login"
-                  onClick={handleLinkClick}
-                  className="block px-4 py-3 text-sm font-medium text-foreground/70 hover:bg-white/5 hover:text-accent rounded-xl transition-all"
-                >
-                  Sign in
-                </Link>
-              )}
-              <Link href="/enquiry" onClick={handleLinkClick} className="block">
-                <Button variant="primary" size="md" className="w-full rounded-xl">
-                  Start a Project
-                </Button>
-              </Link>
-            </div>
-          </div>
-        )}
+        {isMenuOpen && <div className="mt-4 grid gap-1 border-t border-black/10 pt-3 md:hidden">{navLinks.map((link) => <Link className="rounded-lg px-3 py-3 text-sm font-semibold text-[#5F5A50] hover:bg-[#F4EFE5] hover:text-[#171717]" href={link.href} key={link.href} onClick={closeMenu}>{link.label}</Link>)}{user ? <><Link className="rounded-lg px-3 py-3 text-sm font-semibold text-[#5F5A50] hover:bg-[#F4EFE5]" href="/dashboard" onClick={closeMenu}>Dashboard</Link><button className="rounded-lg px-3 py-3 text-left text-sm font-semibold text-[#5F5A50] hover:bg-[#F4EFE5]" onClick={() => void handleLogout()} type="button">Sign out</button></> : <Link className="rounded-lg px-3 py-3 text-sm font-semibold text-[#5F5A50] hover:bg-[#F4EFE5]" href="/login" onClick={closeMenu}>Sign in</Link>}<Link className="mt-2 rounded-full bg-[#171717] px-4 py-3 text-center text-sm font-bold text-[#F4EFE5]" href="/enquiry" onClick={closeMenu}>Start a project</Link></div>}
       </div>
     </nav>
   );

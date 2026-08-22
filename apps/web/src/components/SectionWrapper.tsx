@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
  * SectionWrapper - Consistent section padding and styling
  * Theme-aware component that provides visual rhythm between page sections
  * Automatically adapts to light and dark modes
- * 
+ *
  * Usage:
  * - variant='default' for normal sections
  * - variant='tight' for close spacing (xs/sm)
@@ -43,7 +43,7 @@ export function SectionWrapper({
   spacing,
 }: SectionWrapperProps) {
   const spacingClass = spacing ? spacingMap[spacing] : '';
-  
+
   return (
     <section className={cn(
       sectionVariants[variant],

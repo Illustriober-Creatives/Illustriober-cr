@@ -18,7 +18,7 @@ interface Project {
 export default function NewTicketPage() {
   const router = useRouter();
   const { fetchWithAuth } = useAuth();
-  
+
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);

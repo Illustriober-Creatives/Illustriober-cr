@@ -23,7 +23,7 @@ export default function AdminTicketDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { fetchWithAuth } = useAuth();
-  
+
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -147,7 +147,7 @@ export default function AdminTicketDetailPage() {
             <p className="whitespace-pre-wrap text-lg leading-relaxed text-foreground/80">
               {ticket.description}
             </p>
-            
+
             <div className="mt-12 pt-8 border-t border-zinc-800/50">
               <p className="text-xs text-muted-foreground flex items-center gap-2">
                 <Clock className="h-3 w-3" />

@@ -30,7 +30,7 @@ describe("ticket routes isolation", () => {
   describe("GET /api/tickets", () => {
     it("filters tickets by client ID for non-admins", async () => {
       prismaMock.ticket.findMany.mockResolvedValue([]);
-      
+
       await request(app)
         .get("/api/tickets")
         .set("Authorization", `Bearer ${clientToken("c123")}`);
@@ -46,7 +46,7 @@ describe("ticket routes isolation", () => {
 
     it("does not filter by client ID for admins", async () => {
       prismaMock.ticket.findMany.mockResolvedValue([]);
-      
+
       await request(app)
         .get("/api/tickets")
         .set("Authorization", `Bearer ${adminToken()}`);

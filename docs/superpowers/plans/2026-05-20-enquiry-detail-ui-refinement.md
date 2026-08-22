@@ -18,16 +18,16 @@
 - [ ] **Step 1: Add Lucide icons to imports**
 
 ```tsx
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Building, 
-  Briefcase, 
-  Coins, 
-  Calendar, 
-  Info, 
-  Clock, 
+import {
+  User,
+  Mail,
+  Phone,
+  Building,
+  Briefcase,
+  Coins,
+  Calendar,
+  Info,
+  Clock,
   ArrowLeft,
   CheckCircle2
 } from "lucide-react";
@@ -145,7 +145,7 @@ Structure the content into two columns (Desktop).
         <Info className="h-5 w-5 text-accent" />
         <h2 className="text-lg font-bold text-white">Project Description</h2>
       </div>
-      
+
       <div className="prose prose-invert max-w-none">
         <p className="whitespace-pre-wrap text-lg leading-relaxed text-zinc-300">
           {enquiry.description}
@@ -203,9 +203,9 @@ Make the invite link banner look like a premium result card.
         <code className="flex-1 text-sm text-zinc-300 break-all truncate">
           {baseUrl}/invite/{convertResult.inviteToken}
         </code>
-        <Button 
-          variant="secondary" 
-          size="sm" 
+        <Button
+          variant="secondary"
+          size="sm"
           className="rounded-lg text-xs"
           onClick={() => navigator.clipboard.writeText(`${baseUrl}/invite/${convertResult.inviteToken}`)}
         >

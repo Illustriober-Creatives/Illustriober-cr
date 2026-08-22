@@ -24,7 +24,7 @@ We will reorganize the fields into three main cards:
 - **Icons**: Use `lucide-react` icons (User, Mail, Phone, Building, Briefcase, Coins, Calendar, Info, Clock).
 
 ### 3.3 Layout
-- **Desktop**: A two-column layout. 
+- **Desktop**: A two-column layout.
   - Left column (narrower): Identity and Specs cards.
   - Right column (wider): Core Request card.
 - **Mobile**: Single column stacked view.

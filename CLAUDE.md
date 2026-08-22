@@ -258,7 +258,7 @@ GET  /api/auth/me          # Requires Bearer access token
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **illustriober-cr** (3878 symbols, 4374 relationships, 25 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **Illustriober-cr** (4486 symbols, 5331 relationships, 40 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -274,7 +274,7 @@ This project is indexed by GitNexus as **illustriober-cr** (3878 symbols, 4374 r
 
 1. `gitnexus_query({query: "<error or symptom>"})` — find execution flows related to the issue
 2. `gitnexus_context({name: "<suspect function>"})` — see all callers, callees, and process participation
-3. `READ gitnexus://repo/illustriober-cr/process/{processName}` — trace the full execution flow step by step
+3. `READ gitnexus://repo/Illustriober-cr/process/{processName}` — trace the full execution flow step by step
 4. For regressions: `gitnexus_detect_changes({scope: "compare", base_ref: "main"})` — see what your branch changed
 
 ## When Refactoring
@@ -313,10 +313,10 @@ This project is indexed by GitNexus as **illustriober-cr** (3878 symbols, 4374 r
 
 | Resource | Use for |
 |----------|---------|
-| `gitnexus://repo/illustriober-cr/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/illustriober-cr/clusters` | All functional areas |
-| `gitnexus://repo/illustriober-cr/processes` | All execution flows |
-| `gitnexus://repo/illustriober-cr/process/{name}` | Step-by-step execution trace |
+| `gitnexus://repo/Illustriober-cr/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/Illustriober-cr/clusters` | All functional areas |
+| `gitnexus://repo/Illustriober-cr/processes` | All execution flows |
+| `gitnexus://repo/Illustriober-cr/process/{name}` | Step-by-step execution trace |
 
 ## Self-Check Before Finishing
 

@@ -88,8 +88,8 @@ export default function ClientTicketsPage() {
                   <div>
                     <div className="flex items-center gap-3 mb-1">
                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
-                         ticket.status === "OPEN" ? "bg-blue-500/10 text-blue-400 border-blue-500/20" : 
-                         ticket.status === "RESOLVED" ? "bg-green-500/10 text-green-400 border-green-500/20" : 
+                         ticket.status === "OPEN" ? "bg-blue-500/10 text-blue-400 border-blue-500/20" :
+                         ticket.status === "RESOLVED" ? "bg-green-500/10 text-green-400 border-green-500/20" :
                          "bg-zinc-500/10 text-zinc-400 border-zinc-500/20"
                        }`}>
                          {ticket.status}

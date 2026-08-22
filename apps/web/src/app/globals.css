@@ -2,36 +2,34 @@
 @import "tailwindcss";
 
 /* 
- * LIQUID GLASS DESIGN SYSTEM
- * A premium, high-impact aesthetic for Illustriober Creatives
- * with comprehensive theme support for light and dark modes
+ * ILLUSTRIOBER STUDIO SYSTEM
+ * Warm editorial surfaces, high-contrast calls to action, and restrained motion.
  */
 
 :root {
-  /* Core Palette - Dark Mode (Default) */
-  --background: #080808;
-  --foreground: #F8FAFC;
-  --surface: #111111;
-  --accent: #F97316; /* Radiant Orange */
+  --background: #F4EFE5;
+  --foreground: #171717;
+  --surface: #FFFDF8;
+  --accent: #D96800;
   --accent-soft: rgba(249, 115, 22, 0.1);
   --accent-glow: rgba(249, 115, 22, 0.4);
   
   /* Glass Tokens */
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-bg-hover: rgba(255, 255, 255, 0.06);
+  --glass-bg: rgba(255, 253, 248, 0.88);
+  --glass-border: rgba(23, 23, 23, 0.1);
+  --glass-bg-hover: rgba(255, 253, 248, 0.98);
   --glass-blur: blur(12px);
   
   /* Additional surface variants for form inputs and cards */
   --surface-50: rgba(255, 255, 255, 0.05);
   --surface-100: rgba(255, 255, 255, 0.1);
-  --surface-rgb: 17, 17, 17;
-  --foreground-rgb: 248, 250, 252;
-  --accent-rgb: 249, 115, 22;
+  --surface-rgb: 255, 253, 248;
+  --foreground-rgb: 23, 23, 23;
+  --accent-rgb: 217, 104, 0;
   
   /* Border colors */
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-default: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(23, 23, 23, 0.06);
+  --border-default: rgba(23, 23, 23, 0.12);
 
   /* Build-safe font stacks that do not depend on remote fetches */
   --font-bodoni: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
@@ -48,14 +46,13 @@
   --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.light {
-  /* Luxury White Palette - Subtle and eye-friendly */
-  --background: #F9FAFB; 
-  --foreground: #111827;
-  --surface: #FFFFFF;
-  --accent: #EA580C; /* Slightly deeper orange for contrast on white */
-  --accent-soft: rgba(234, 88, 12, 0.08);
-  --accent-glow: rgba(234, 88, 12, 0.2);
+.light, .dark {
+  --background: #F4EFE5;
+  --foreground: #171717;
+  --surface: #FFFDF8;
+  --accent: #D96800;
+  --accent-soft: rgba(217, 104, 0, 0.08);
+  --accent-glow: rgba(217, 104, 0, 0.2);
   
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-bg-hover: rgba(255, 255, 255, 0.9);
@@ -64,9 +61,9 @@
   
   --surface-50: rgba(0, 0, 0, 0.02);
   --surface-100: rgba(0, 0, 0, 0.05);
-  --surface-rgb: 255, 255, 255;
-  --foreground-rgb: 17, 24, 39;
-  --accent-rgb: 234, 88, 12;
+  --surface-rgb: 255, 253, 248;
+  --foreground-rgb: 23, 23, 23;
+  --accent-rgb: 217, 104, 0;
   
   --border-subtle: rgba(0, 0, 0, 0.03);
   --border-default: rgba(0, 0, 0, 0.06);
@@ -99,6 +96,25 @@ h1, h2, h3, h4, .font-display {
   transition-property: background-color, border-color, color, box-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: var(--transition-fast);
+}
+
+:focus-visible {
+  outline: 3px solid #1F4D3D;
+  outline-offset: 3px;
+}
+
+::selection {
+  background: #F39314;
+  color: #171717;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Disable transitions on page load to avoid flash */

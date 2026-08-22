@@ -24,7 +24,7 @@ export default function ClientTicketDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { fetchWithAuth } = useAuth();
-  
+
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -65,8 +65,8 @@ export default function ClientTicketDetailPage() {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full border ${
-                  ticket.status === "OPEN" ? "bg-blue-500/10 text-blue-400 border-blue-500/20" : 
-                  ticket.status === "RESOLVED" ? "bg-green-500/10 text-green-400 border-green-500/20" : 
+                  ticket.status === "OPEN" ? "bg-blue-500/10 text-blue-400 border-blue-500/20" :
+                  ticket.status === "RESOLVED" ? "bg-green-500/10 text-green-400 border-green-500/20" :
                   "bg-zinc-500/10 text-zinc-400 border-zinc-500/20"
                 }`}>
                   {ticket.status}
@@ -106,7 +106,7 @@ export default function ClientTicketDetailPage() {
                   <p className="whitespace-pre-wrap text-lg leading-relaxed text-zinc-300">
                     {ticket.description}
                   </p>
-                  
+
                   <div className="mt-12 pt-8 border-t border-zinc-800/50">
                     <p className="text-xs text-zinc-500 flex items-center gap-2">
                       <Clock className="h-3 w-3" />
