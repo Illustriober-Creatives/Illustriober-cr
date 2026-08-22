@@ -3,6 +3,8 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
+import { SmoothScrollProvider } from "@/components/motion/SmoothScrollProvider";
 import {
   getDefaultKeywords,
   getOrganizationSchema,
@@ -10,6 +12,7 @@ import {
   getWebsiteSchema,
   siteConfig,
 } from "@/lib/seo";
+import "lenis/dist/lenis.css";
 import "./globals.css";
 
 /**
@@ -66,9 +69,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <SmoothScrollProvider>
+              <ScrollProgress />
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </SmoothScrollProvider>
           </AuthProvider>
         </ThemeProvider>
         {/* SEO JSON-LD Schema */}
