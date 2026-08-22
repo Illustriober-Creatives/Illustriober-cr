@@ -31,8 +31,8 @@ export function HomeHeroGlide({ copy, media }: HomeHeroGlideProps) {
   const shouldReduceMotion = hydrated && reduceMotion;
 
   return (
-    <section ref={sectionRef} className="relative mx-auto max-w-7xl px-5 pb-16 pt-12 md:px-8 md:pb-20 md:pt-20 lg:min-h-[calc(100svh-var(--navbar-height)-2rem)] lg:pb-16 lg:pt-[6.25rem]">
-      <div className="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-start lg:gap-10">
+    <section ref={sectionRef} className="relative mx-auto max-w-[90rem] px-5 pb-16 pt-12 md:px-8 md:pb-20 md:pt-20 lg:pb-14 lg:pt-[7.25rem]">
+      <div className="grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-start lg:gap-10">
         <motion.div
           className="min-w-0"
           style={shouldReduceMotion ? undefined : { y: copyY, opacity: copyOpacity }}
@@ -40,7 +40,7 @@ export function HomeHeroGlide({ copy, media }: HomeHeroGlideProps) {
           {copy}
         </motion.div>
         <motion.div
-          className="relative mx-auto w-full max-w-2xl rounded-[1.8rem] bg-white p-3 shadow-[18px_22px_0_#1F4D3D] lg:mt-6 lg:w-[118%] lg:max-w-none"
+          className="relative mx-auto w-full max-w-2xl rounded-[1.8rem] bg-white p-3 shadow-[18px_22px_0_#1F4D3D] lg:-top-[10px] lg:left-[5px] lg:mt-4 lg:max-w-none"
           style={shouldReduceMotion ? undefined : { y: mediaY, rotate: mediaRotate, scale: mediaScale }}
         >
           {media}

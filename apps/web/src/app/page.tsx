@@ -3,20 +3,16 @@ import Link from "next/link";
 import { ArrowDown, ArrowUpRight, Check, Code2, Compass, Layers3 } from "lucide-react";
 import { ProjectGallery } from "@/components/ProjectGallery";
 import { HomeHeroGlide } from "@/components/motion/HomeHeroGlide";
+import { HeroTypewriter } from "@/components/motion/HeroTypewriter";
 import { ScrollReveal, ScrollRevealListItem } from "@/components/motion/ScrollReveal";
 import { createMetadata } from "@/lib/seo";
-import styles from "./home.module.css";
 
 export const metadata = createMetadata({ path: "/" });
 
 const heroPurposePhrases = [
   "a website.",
-  "a CRM.",
-  "a dashboard.",
-  "a mobile app.",
-  "a workflow.",
-  "a client portal.",
-  "a bug.",
+  "an app.",
+  "a software.",
 ];
 
 export default function Home() {
@@ -25,30 +21,11 @@ export default function Home() {
       <HomeHeroGlide
         copy={
           <>
-            <h1 className="max-w-4xl font-display text-5xl leading-[0.9] tracking-[-0.05em] sm:text-6xl md:text-7xl lg:max-w-none lg:text-[clamp(5rem,6.3vw,7.5rem)] lg:leading-[0.86]">
-              <span className="sr-only">It all starts with useful software.</span>
-              <span aria-hidden="true">
-                <span className="block">It all starts</span>
-                <span className={`${styles.purposeLine} block`}>
-                  with{" "}
-                  <span className={styles.purposeRotator}>
-                    {heroPurposePhrases.map((phrase, index) => (
-                      <em
-                        className={`${styles.purposeWord} font-normal`}
-                        key={phrase}
-                        style={{ animationDelay: `${index * 3 - 0.5}s` }}
-                      >
-                        {phrase}
-                      </em>
-                    ))}
-                  </span>
-                </span>
-              </span>
-            </h1>
-            <p className="mt-7 max-w-xl text-base leading-7 text-[#5F5A50] md:text-lg">Illustriober helps growing teams turn messy operations and promising ideas into clear, dependable digital products.</p>
-            <div className="mt-9 flex flex-wrap items-center gap-5">
-              <Link className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#171717] px-6 text-sm font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5" href="/enquiry">Start a project <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
-              <a className="inline-flex min-h-12 items-center gap-2 text-sm font-bold underline decoration-[#F39314] decoration-2 underline-offset-4" href="#work">See the work <ArrowDown className="h-4 w-4" aria-hidden="true" /></a>
+            <HeroTypewriter phrases={heroPurposePhrases} />
+            <p className="mt-9 max-w-2xl text-base leading-7 text-[#5F5A50] md:text-lg lg:text-xl lg:leading-8">Illustriober helps growing teams turn messy operations and promising ideas into clear, dependable digital products.</p>
+            <div className="mt-10 flex flex-wrap items-center gap-6">
+              <Link className="inline-flex min-h-14 items-center gap-2 rounded-full bg-[#171717] px-7 text-base font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5" href="/enquiry">Start a project <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
+              <a className="inline-flex min-h-14 items-center gap-2 text-base font-bold underline decoration-[#F39314] decoration-2 underline-offset-4" href="#work">See the work <ArrowDown className="h-4 w-4" aria-hidden="true" /></a>
             </div>
           </>
         }
