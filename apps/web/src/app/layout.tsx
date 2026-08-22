@@ -1,6 +1,5 @@
 import { Metadata } from "next";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { SiteChrome } from "@/components/SiteChrome";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
@@ -71,9 +70,7 @@ export default function RootLayout({
           <AuthProvider>
             <SmoothScrollProvider>
               <ScrollProgress />
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
+              <SiteChrome>{children}</SiteChrome>
             </SmoothScrollProvider>
           </AuthProvider>
         </ThemeProvider>
