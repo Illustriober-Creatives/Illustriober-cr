@@ -32,3 +32,6 @@ Inspirations/
 # Agent Skills
 #my-skills/my-skills/
 .gitnexus
+
+# Git worktrees (superpowers subagent-driven-development)
+.worktrees/

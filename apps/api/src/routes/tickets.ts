@@ -5,12 +5,13 @@ import prisma from "../lib/prisma";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
 import {
+  adminTicketQuerySchema,
   createCommentSchema,
   createTicketSchema,
   updateTicketSchema,
   type TicketComment,
 } from "@illustriober/shared";
-import { emitTicketComment } from "../lib/realtime";
+import { emitTicketComment, emitTicketCreated, emitTicketStatusChanged } from "../lib/realtime";
 
 const router = Router();
 const commentRateLimit = rateLimit({
@@ -37,6 +38,7 @@ router.get(
     const userId = (req as any).user.id;
     const role = (req as any).user.role;
     const { projectId } = req.query;
+    const query = adminTicketQuerySchema.parse(req.query);
 
     const where: any = {};
 
@@ -48,12 +50,55 @@ router.get(
       where.projectId = projectId;
     }
 
+    if (query.status) where.status = query.status;
+    if (query.priority) where.priority = query.priority;
+    if (query.search) {
+      where.OR = [
+        { title: { contains: query.search, mode: "insensitive" } },
+        { project: { name: { contains: query.search, mode: "insensitive" } } },
+        { submittedBy: { firstName: { contains: query.search, mode: "insensitive" } } },
+        { submittedBy: { lastName: { contains: query.search, mode: "insensitive" } } },
+      ];
+    }
+
+    const baseInclude = {
+      project: { select: { name: true, slug: true } },
+      submittedBy: { select: { firstName: true, lastName: true } },
+    };
+
+    if (query.page || query.limit) {
+      const page = query.page ?? 1;
+      const limit = query.limit ?? 20;
+      const [tickets, total] = await Promise.all([
+        prisma.ticket.findMany({
+          where,
+          include: {
+            ...baseInclude,
+            comments: {
+              where: role === "ADMIN" ? {} : { isInternal: false },
+              orderBy: { createdAt: "desc" as const },
+              take: 1,
+              select: { createdAt: true },
+            },
+          },
+          orderBy: { createdAt: "desc" },
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+        prisma.ticket.count({ where }),
+      ]);
+
+      res.json({
+        success: true,
+        tickets,
+        pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
+      });
+      return;
+    }
+
     const tickets = await prisma.ticket.findMany({
       where,
-      include: {
-        project: { select: { name: true, slug: true } },
-        submittedBy: { select: { firstName: true, lastName: true } },
-      },
+      include: baseInclude,
       orderBy: { createdAt: "desc" },
     });
 
@@ -91,7 +136,25 @@ router.post(
         projectId: data.projectId,
         submittedById: userId,
       },
+      include: {
+        submittedBy: { select: { firstName: true, lastName: true } },
+      },
     });
+
+    try {
+      emitTicketCreated({
+        id: ticket.id,
+        title: ticket.title,
+        type: ticket.type,
+        priority: ticket.priority,
+        status: ticket.status,
+        projectName: project.name,
+        submitterName: `${ticket.submittedBy.firstName} ${ticket.submittedBy.lastName}`,
+        createdAt: ticket.createdAt.toISOString(),
+      });
+    } catch (err) {
+      console.error("Failed to emit ticket:created", err);
+    }
 
     res.status(201).json({ success: true, ticket });
   })
@@ -215,6 +278,21 @@ router.patch(
         resolvedAt: data.status === "RESOLVED" ? new Date() : undefined,
       },
     });
+
+    if (data.status && data.status !== ticket.status) {
+      try {
+        emitTicketStatusChanged({
+          id: updated.id,
+          title: updated.title,
+          projectName: ticket.project.name,
+          previousStatus: ticket.status,
+          status: updated.status,
+          updatedAt: updated.updatedAt.toISOString(),
+        });
+      } catch (err) {
+        console.error("Failed to emit ticket:status-changed", err);
+      }
+    }
 
     res.json({ success: true, ticket: updated });
   })

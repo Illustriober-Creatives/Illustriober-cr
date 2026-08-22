@@ -1,6 +1,10 @@
 import { createServer, type Server as HttpServer } from "node:http";
 import type { AddressInfo } from "node:net";
-import type { TicketComment } from "@illustriober/shared";
+import type {
+  AdminTicketCreatedEvent,
+  AdminTicketStatusChangedEvent,
+  TicketComment,
+} from "@illustriober/shared";
 import { io as createClient, type Socket as ClientSocket } from "socket.io-client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { signAccessToken } from "./jwt";
@@ -11,7 +15,13 @@ const prismaMock = vi.hoisted(() => ({
 
 vi.mock("./prisma", () => ({ default: prismaMock, prisma: prismaMock }));
 
-import { emitTicketComment, initializeRealtime, type RealtimeServer } from "./realtime";
+import {
+  emitTicketComment,
+  emitTicketCreated,
+  emitTicketStatusChanged,
+  initializeRealtime,
+  type RealtimeServer,
+} from "./realtime";
 
 let httpServer: HttpServer | null = null;
 let ioServer: RealtimeServer | null = null;
@@ -118,5 +128,73 @@ describe("ticket realtime rooms", () => {
     await expect(adminReceived).resolves.toEqual(internalComment);
     await new Promise((resolve) => setTimeout(resolve, 50));
     expect(clientReceived).not.toHaveBeenCalled();
+  });
+
+  it("auto-joins admin sockets to the admin:tickets room without an explicit join call", async () => {
+    const url = await startServer();
+    const admin = await connect(url, accessToken("admin_1", "ADMIN"));
+    const client = await connect(url, accessToken("client_1", "CLIENT"));
+
+    const createdEvent: AdminTicketCreatedEvent = {
+      id: "ticket_9",
+      title: "New feature request",
+      type: "FEATURE",
+      priority: "MEDIUM",
+      status: "OPEN",
+      projectName: "Studio Site",
+      submitterName: "Jane Doe",
+      createdAt: "2026-08-22T09:00:00.000Z",
+    };
+
+    const adminReceived = new Promise<AdminTicketCreatedEvent>((resolve) => {
+      admin.once("ticket:created", resolve);
+    });
+    const clientReceived = vi.fn();
+    client.once("ticket:created", clientReceived);
+
+    emitTicketCreated(createdEvent);
+
+    await expect(adminReceived).resolves.toEqual(createdEvent);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(clientReceived).not.toHaveBeenCalled();
+  });
+
+  it("broadcasts ticket:status-changed only to the admin room", async () => {
+    const url = await startServer();
+    const admin = await connect(url, accessToken("admin_1", "ADMIN"));
+
+    const statusEvent: AdminTicketStatusChangedEvent = {
+      id: "ticket_9",
+      title: "New feature request",
+      projectName: "Studio Site",
+      previousStatus: "OPEN",
+      status: "IN_PROGRESS",
+      updatedAt: "2026-08-22T09:05:00.000Z",
+    };
+
+    const adminReceived = new Promise<AdminTicketStatusChangedEvent>((resolve) => {
+      admin.once("ticket:status-changed", resolve);
+    });
+
+    emitTicketStatusChanged(statusEvent);
+
+    await expect(adminReceived).resolves.toEqual(statusEvent);
+  });
+
+  it("delivers comments to an admin who has not joined that specific ticket room", async () => {
+    prismaMock.ticket.findUnique.mockResolvedValue({
+      project: { clientId: "client_1" },
+    });
+    const url = await startServer();
+    const admin = await connect(url, accessToken("admin_1", "ADMIN"));
+    // Note: admin does NOT call joinTicket here — only the admin:tickets room membership applies.
+
+    const adminReceived = new Promise<TicketComment>((resolve) => {
+      admin.once("ticket:comment-created", resolve);
+    });
+
+    emitTicketComment(internalComment);
+
+    await expect(adminReceived).resolves.toEqual(internalComment);
   });
 });

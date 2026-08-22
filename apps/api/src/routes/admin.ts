@@ -6,6 +6,7 @@ import { sendInviteEmail } from "../lib/email";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
 import { requireRoles } from "../middleware/authorize";
+import type { AdminDashboardStatusCounts, RecentActivityEntry } from "@illustriober/shared";
 
 const router = Router();
 
@@ -141,6 +142,83 @@ router.post(
     });
 
     res.status(201).json({ success: true, project });
+  })
+);
+
+// GET /api/admin/dashboard
+router.get(
+  "/dashboard",
+  ...adminOnly,
+  asyncHandler(async (_req: Request, res: Response) => {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    const [statusGroups, recentTickets, recentComments] = await Promise.all([
+      prisma.ticket.groupBy({ by: ["status"], _count: true }),
+      prisma.ticket.findMany({
+        where: { createdAt: { gte: since } },
+        select: {
+          id: true,
+          title: true,
+          createdAt: true,
+          project: { select: { name: true } },
+          submittedBy: { select: { firstName: true, lastName: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+      }),
+      prisma.comment.findMany({
+        where: { createdAt: { gte: since } },
+        select: {
+          id: true,
+          ticketId: true,
+          isInternal: true,
+          createdAt: true,
+          ticket: { select: { title: true, project: { select: { name: true } } } },
+          author: { select: { firstName: true, lastName: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+      }),
+    ]);
+
+    const statusCounts: AdminDashboardStatusCounts = {
+      OPEN: 0,
+      IN_REVIEW: 0,
+      IN_PROGRESS: 0,
+      RESOLVED: 0,
+    };
+    for (const group of statusGroups) {
+      if (group.status in statusCounts) {
+        statusCounts[group.status as keyof AdminDashboardStatusCounts] = group._count;
+      }
+    }
+
+    const ticketActivity: RecentActivityEntry[] = recentTickets.map((ticket) => ({
+      id: ticket.id,
+      kind: "ticket_created",
+      ticketId: ticket.id,
+      ticketTitle: ticket.title,
+      projectName: ticket.project.name,
+      actorName: `${ticket.submittedBy.firstName} ${ticket.submittedBy.lastName}`,
+      createdAt: ticket.createdAt.toISOString(),
+    }));
+
+    const commentActivity: RecentActivityEntry[] = recentComments.map((comment) => ({
+      id: comment.id,
+      kind: "comment_created",
+      ticketId: comment.ticketId,
+      ticketTitle: comment.ticket.title,
+      projectName: comment.ticket.project.name,
+      actorName: `${comment.author.firstName} ${comment.author.lastName}`,
+      isInternal: comment.isInternal,
+      createdAt: comment.createdAt.toISOString(),
+    }));
+
+    const recentActivity = [...ticketActivity, ...commentActivity]
+      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+      .slice(0, 20);
+
+    res.json({ success: true, statusCounts, recentActivity });
   })
 );
 

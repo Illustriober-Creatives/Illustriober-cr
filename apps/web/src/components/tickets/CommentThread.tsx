@@ -47,9 +47,13 @@ export function CommentThread({ ticketId, initialComments }: CommentThreadProps)
   const commentListRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const addComment = useCallback((comment: TicketComment) => {
-    setComments((current) => mergeComment(current, comment));
-  }, []);
+  const addComment = useCallback(
+    (comment: TicketComment) => {
+      if (comment.ticketId !== ticketId) return;
+      setComments((current) => mergeComment(current, comment));
+    },
+    [ticketId]
+  );
 
   useEffect(() => {
     setComments(initialComments);
