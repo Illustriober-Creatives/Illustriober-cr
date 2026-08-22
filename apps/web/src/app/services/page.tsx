@@ -30,6 +30,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { ServicesStickyNav } from "@/components/ServicesStickyNav";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -38,13 +39,6 @@ export const metadata = createMetadata({
     "Full-stack software development, product design, mobile apps, AI automation, and custom technical setups from Illustriober Creatives.",
   path: "/services",
 });
-
-const pageNavigation = [
-  ["Workflow", "#workflow"],
-  ["Capabilities", "#capabilities"],
-  ["Stack", "#stack"],
-  ["Delivery", "#delivery"],
-];
 
 const workflowSteps = [
   ["01", "Define", "Clarify the job, users, scope, and sensible first release."],
@@ -205,30 +199,18 @@ export default function ServicesPage() {
         </section>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.05} scale={0.995} y={14}>
-        <nav
-          aria-label="Explore services"
-          className="mt-4 flex items-center gap-5 overflow-x-auto rounded-full bg-[#1F4D3D] px-5 py-3 text-[#F4EFE5] [scrollbar-width:none] sm:px-6"
+        <ScrollReveal
+          className="sticky top-[calc(var(--navbar-mobile-height)+0.75rem)] z-30 mt-4 md:top-[calc(var(--navbar-height)+0.85rem)]"
+          delay={0.05}
+          scale={0.995}
+          y={14}
         >
-          <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.16em] text-[#F7AD45]">
-            Explore
-          </span>
-          <span aria-hidden="true" className="h-5 w-px shrink-0 bg-[#F4EFE5]/20" />
-          {pageNavigation.map(([label, href]) => (
-            <a
-              className="inline-flex min-h-10 shrink-0 items-center text-sm font-bold text-[#F4EFE5]/80 transition-colors hover:text-white focus-visible:text-white"
-              href={href}
-              key={href}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
+          <ServicesStickyNav />
         </ScrollReveal>
 
         <ScrollReveal blur scale={0.985} y={24}>
         <section
-          className="mt-4 scroll-mt-36 overflow-hidden rounded-[2rem] border border-[#171717]/10 bg-[#FFFDF8]"
+          className="mt-4 scroll-mt-[calc(var(--navbar-mobile-height)+5.5rem)] overflow-hidden rounded-[2rem] border border-[#171717]/10 bg-[#FFFDF8] md:scroll-mt-[calc(var(--navbar-height)+6rem)]"
           id="workflow"
         >
           <div className="flex flex-col gap-2 border-b border-[#171717]/10 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
@@ -256,7 +238,7 @@ export default function ServicesPage() {
         </section>
         </ScrollReveal>
 
-        <section className="mt-20 scroll-mt-36 md:mt-24" id="capabilities">
+        <section className="mt-20 scroll-mt-[calc(var(--navbar-mobile-height)+5.5rem)] md:mt-24 md:scroll-mt-[calc(var(--navbar-height)+6rem)]" id="capabilities">
           <ScrollReveal blur scale={0.99} y={22}>
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">
@@ -318,7 +300,7 @@ export default function ServicesPage() {
 
         <ScrollReveal blur scale={0.985} y={24}>
         <section
-          className="mt-20 scroll-mt-36 overflow-hidden rounded-[2rem] bg-[#1F4D3D] text-[#F4EFE5] md:mt-24"
+          className="mt-20 scroll-mt-[calc(var(--navbar-mobile-height)+5.5rem)] overflow-hidden rounded-[2rem] bg-[#1F4D3D] text-[#F4EFE5] md:mt-24 md:scroll-mt-[calc(var(--navbar-height)+6rem)]"
           id="stack"
         >
           <div className="border-b border-[#F4EFE5]/15 p-7 sm:p-9">
@@ -360,7 +342,7 @@ export default function ServicesPage() {
         </section>
         </ScrollReveal>
 
-        <section className="mt-20 scroll-mt-36 md:mt-24" id="delivery">
+        <section className="mt-20 scroll-mt-[calc(var(--navbar-mobile-height)+5.5rem)] md:mt-24 md:scroll-mt-[calc(var(--navbar-height)+6rem)]" id="delivery">
           <ScrollReveal blur scale={0.985} y={24}>
           <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#F39314] via-[#F7AD45] to-[#F4EFE5] p-7 sm:p-10 lg:p-12">
             <div aria-hidden="true" className="absolute -right-16 -top-20 h-64 w-64 rounded-full border-[3rem] border-[#1F4D3D]/10" />
