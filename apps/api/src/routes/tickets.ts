@@ -75,6 +75,7 @@ router.get(
           include: {
             ...baseInclude,
             comments: {
+              where: role === "ADMIN" ? {} : { isInternal: false },
               orderBy: { createdAt: "desc" as const },
               take: 1,
               select: { createdAt: true },
@@ -135,23 +136,25 @@ router.post(
         projectId: data.projectId,
         submittedById: userId,
       },
+      include: {
+        submittedBy: { select: { firstName: true, lastName: true } },
+      },
     });
 
-    const submitter = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { firstName: true, lastName: true },
-    });
-
-    emitTicketCreated({
-      id: ticket.id,
-      title: ticket.title,
-      type: ticket.type,
-      priority: ticket.priority,
-      status: ticket.status,
-      projectName: project.name,
-      submitterName: submitter ? `${submitter.firstName} ${submitter.lastName}` : "Unknown",
-      createdAt: ticket.createdAt.toISOString(),
-    });
+    try {
+      emitTicketCreated({
+        id: ticket.id,
+        title: ticket.title,
+        type: ticket.type,
+        priority: ticket.priority,
+        status: ticket.status,
+        projectName: project.name,
+        submitterName: `${ticket.submittedBy.firstName} ${ticket.submittedBy.lastName}`,
+        createdAt: ticket.createdAt.toISOString(),
+      });
+    } catch (err) {
+      console.error("Failed to emit ticket:created", err);
+    }
 
     res.status(201).json({ success: true, ticket });
   })
@@ -277,14 +280,18 @@ router.patch(
     });
 
     if (data.status && data.status !== ticket.status) {
-      emitTicketStatusChanged({
-        id: updated.id,
-        title: updated.title,
-        projectName: ticket.project.name,
-        previousStatus: ticket.status,
-        status: updated.status,
-        updatedAt: updated.updatedAt.toISOString(),
-      });
+      try {
+        emitTicketStatusChanged({
+          id: updated.id,
+          title: updated.title,
+          projectName: ticket.project.name,
+          previousStatus: ticket.status,
+          status: updated.status,
+          updatedAt: updated.updatedAt.toISOString(),
+        });
+      } catch (err) {
+        console.error("Failed to emit ticket:status-changed", err);
+      }
     }
 
     res.json({ success: true, ticket: updated });

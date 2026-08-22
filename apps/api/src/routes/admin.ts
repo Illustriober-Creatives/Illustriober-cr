@@ -164,6 +164,7 @@ router.get(
           submittedBy: { select: { firstName: true, lastName: true } },
         },
         orderBy: { createdAt: "desc" },
+        take: 20,
       }),
       prisma.comment.findMany({
         where: { createdAt: { gte: since } },
@@ -176,6 +177,7 @@ router.get(
           author: { select: { firstName: true, lastName: true } },
         },
         orderBy: { createdAt: "desc" },
+        take: 20,
       }),
     ]);
 

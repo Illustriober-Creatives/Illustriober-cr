@@ -125,6 +125,40 @@ describe("ticket routes isolation", () => {
       );
       expect(res.body.pagination).toEqual({ page: 2, limit: 20, total: 45, totalPages: 3 });
     });
+
+    it("hides internal comment timestamps from clients on the paginated path", async () => {
+      prismaMock.ticket.findMany.mockResolvedValue([]);
+      prismaMock.ticket.count.mockResolvedValue(0);
+
+      await request(app)
+        .get("/api/tickets?page=1&limit=20")
+        .set("Authorization", `Bearer ${clientToken("c123")}`);
+
+      expect(prismaMock.ticket.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          include: expect.objectContaining({
+            comments: expect.objectContaining({ where: { isInternal: false } }),
+          }),
+        })
+      );
+    });
+
+    it("exposes internal comment timestamps to admins on the paginated path", async () => {
+      prismaMock.ticket.findMany.mockResolvedValue([]);
+      prismaMock.ticket.count.mockResolvedValue(0);
+
+      await request(app)
+        .get("/api/tickets?page=1&limit=20")
+        .set("Authorization", `Bearer ${adminToken()}`);
+
+      expect(prismaMock.ticket.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          include: expect.objectContaining({
+            comments: expect.objectContaining({ where: {} }),
+          }),
+        })
+      );
+    });
   });
 
   describe("POST /api/tickets", () => {
@@ -137,6 +171,7 @@ describe("ticket routes isolation", () => {
         priority: "MEDIUM",
         status: "OPEN",
         createdAt: new Date("2026-08-22T10:00:00.000Z"),
+        submittedBy: { firstName: "Jane", lastName: "Doe" },
       });
 
       const res = await request(app)
@@ -177,8 +212,8 @@ describe("ticket routes isolation", () => {
         priority: "MEDIUM",
         status: "OPEN",
         createdAt: new Date("2026-08-22T10:00:00.000Z"),
+        submittedBy: { firstName: "Jane", lastName: "Doe" },
       });
-      prismaMock.user.findUnique.mockResolvedValue({ firstName: "Jane", lastName: "Doe" });
 
       await request(app)
         .post("/api/tickets")
