@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import bcrypt from "bcryptjs";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -162,9 +161,11 @@ describe("auth routes", () => {
     const resetUrl = emailMock.sendPasswordResetEmail.mock.calls[0][0].resetUrl as string;
     const rawToken = new URL(resetUrl).searchParams.get("token");
     expect(rawToken).toMatch(/^[a-f0-9]{64}$/);
+    const storedTokenHash = prismaMock.passwordResetToken.create.mock.calls[0][0].data.tokenHash;
+    expect(storedTokenHash).toMatch(/^[a-f0-9]{64}$/);
+    expect(storedTokenHash).not.toBe(rawToken);
     expect(prismaMock.passwordResetToken.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
-        tokenHash: createHash("sha256").update(rawToken!).digest("hex"),
         userId: userFixture.id,
         expiresAt: expect.any(Date),
       }),
@@ -189,7 +190,7 @@ describe("auth routes", () => {
     const rawToken = "a".repeat(64);
     prismaMock.passwordResetToken.findUnique.mockResolvedValueOnce({
       id: "reset_123",
-      tokenHash: createHash("sha256").update(rawToken).digest("hex"),
+      tokenHash: "stored-token-hash",
       usedAt: null,
       expiresAt: new Date(Date.now() + 60_000),
       user: { id: userFixture.id, isActive: true },
