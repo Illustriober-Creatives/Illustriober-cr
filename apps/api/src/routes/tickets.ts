@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { Router, Request, Response } from "express";
 import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 import prisma from "../lib/prisma";
@@ -17,7 +18,13 @@ const commentRateLimit = rateLimit({
   limit: 30,
   standardHeaders: "draft-8",
   legacyHeaders: false,
-  keyGenerator: (req) => req.user?.id || ipKeyGenerator(req.ip ?? "unknown"),
+  keyGenerator: (req) => {
+    const authorization = req.headers.authorization;
+    if (authorization) {
+      return createHash("sha256").update(authorization).digest("hex");
+    }
+    return ipKeyGenerator(req.ip ?? "unknown");
+  },
   message: { success: false, error: "Too many replies. Please wait a moment." },
 });
 
@@ -126,8 +133,8 @@ router.get(
 // POST /api/tickets/:id/comments
 router.post(
   "/:id/comments",
-  authenticate,
   commentRateLimit,
+  authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     const userId = req.user!.id;
     const role = req.user!.role;
