@@ -5,6 +5,7 @@ import prisma from "../lib/prisma";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
 import {
+  adminTicketQuerySchema,
   createCommentSchema,
   createTicketSchema,
   updateTicketSchema,
@@ -37,6 +38,7 @@ router.get(
     const userId = (req as any).user.id;
     const role = (req as any).user.role;
     const { projectId } = req.query;
+    const query = adminTicketQuerySchema.parse(req.query);
 
     const where: any = {};
 
@@ -48,12 +50,54 @@ router.get(
       where.projectId = projectId;
     }
 
+    if (query.status) where.status = query.status;
+    if (query.priority) where.priority = query.priority;
+    if (query.search) {
+      where.OR = [
+        { title: { contains: query.search, mode: "insensitive" } },
+        { project: { name: { contains: query.search, mode: "insensitive" } } },
+        { submittedBy: { firstName: { contains: query.search, mode: "insensitive" } } },
+        { submittedBy: { lastName: { contains: query.search, mode: "insensitive" } } },
+      ];
+    }
+
+    const baseInclude = {
+      project: { select: { name: true, slug: true } },
+      submittedBy: { select: { firstName: true, lastName: true } },
+    };
+
+    if (query.page || query.limit) {
+      const page = query.page ?? 1;
+      const limit = query.limit ?? 20;
+      const [tickets, total] = await Promise.all([
+        prisma.ticket.findMany({
+          where,
+          include: {
+            ...baseInclude,
+            comments: {
+              orderBy: { createdAt: "desc" as const },
+              take: 1,
+              select: { createdAt: true },
+            },
+          },
+          orderBy: { createdAt: "desc" },
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+        prisma.ticket.count({ where }),
+      ]);
+
+      res.json({
+        success: true,
+        tickets,
+        pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
+      });
+      return;
+    }
+
     const tickets = await prisma.ticket.findMany({
       where,
-      include: {
-        project: { select: { name: true, slug: true } },
-        submittedBy: { select: { firstName: true, lastName: true } },
-      },
+      include: baseInclude,
       orderBy: { createdAt: "desc" },
     });
 
