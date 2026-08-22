@@ -17,6 +17,43 @@
   }
 }
 
+.heroGlideTrack {
+  position: absolute;
+  left: 1.25rem;
+  bottom: 3rem;
+  z-index: 0;
+  height: clamp(5rem, 16vh, 9rem);
+  width: 1px;
+  overflow: hidden;
+  background: linear-gradient(to bottom, rgba(31, 77, 61, 0), rgba(31, 77, 61, 0.42));
+}
+
+.heroGlideTrack::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: 42%;
+  background: linear-gradient(to bottom, rgba(243, 147, 20, 0), rgba(243, 147, 20, 0.95), rgba(243, 147, 20, 0));
+  animation: hero-glide-track 2.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes hero-glide-track {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  18%,
+  72% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(250%);
+  }
+}
+
 .purposeLine {
   white-space: nowrap;
 }
@@ -43,6 +80,10 @@
 }
 
 @media (max-width: 639px) {
+  .heroGlideTrack {
+    display: none;
+  }
+
   .purposeLine {
     font-size: 0.88em;
     white-space: nowrap;
@@ -55,6 +96,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .heroGlideTrack::after {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
   .purposeWord {
     opacity: 0;
     animation: none !important;

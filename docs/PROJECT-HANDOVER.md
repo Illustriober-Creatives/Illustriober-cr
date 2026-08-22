@@ -84,3 +84,10 @@ For design work, include the copy or interaction decision behind the change—no
 - Commits are welcome when requested; do not push without explicit permission.
 - The user values polished, direct, market-aware design and will review visual previews personally.
 - Keep the public site useful and credible before the studio has a large shipped-work archive.
+
+## Smooth glide branch note
+
+- Branch/worktree: use `feat/smooth-glide` at `/tmp/illustriober-smooth-glide` for the scroll-motion exploration before merging into `feat/redesign`.
+- Direction already discussed with the user: build a signature-feeling scroll experience inspired by Rich Energy / MarketGenie, with Lenis-style smooth scrolling, restrained section reveals, hero handoff motion, and responsive/reduced-motion fallbacks.
+- Safety constraint: a previous dependency install attempt froze WSL. Avoid broad installs such as root `npm install` unless explicitly needed. Prefer using existing `framer-motion` first; if Lenis is required, install only the minimal package for `apps/web`, one command at a time, and verify the process completes before continuing.
+- Do not add heavy scroll-jacking or multiple pinned sections. The desired feel is convincing glide over native content, not a page that fights the user's scroll.
