@@ -102,6 +102,7 @@ model User {
   files             File[]
   notifications     Notification[]
   refreshTokens     RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
   inviteTokens      InviteToken[]
   sentMessages      Message[]       @relation("SentMessages")
 
@@ -138,6 +139,19 @@ model InviteToken {
 
   @@index([token])
   @@index([email])
+}
+
+model PasswordResetToken {
+  id          String    @id @default(cuid())
+  tokenHash   String    @unique
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 // ─────────────────────────────────────────
