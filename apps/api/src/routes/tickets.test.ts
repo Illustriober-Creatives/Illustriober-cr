@@ -11,6 +11,14 @@ const prismaMock = vi.hoisted(() => ({
 
 vi.mock("../lib/prisma", () => ({ default: prismaMock, prisma: prismaMock }));
 
+const realtimeMock = vi.hoisted(() => ({
+  emitTicketComment: vi.fn(),
+  emitTicketCreated: vi.fn(),
+  emitTicketStatusChanged: vi.fn(),
+}));
+
+vi.mock("../lib/realtime", () => realtimeMock);
+
 import app from "../app";
 
 function adminToken() {
@@ -121,8 +129,15 @@ describe("ticket routes isolation", () => {
 
   describe("POST /api/tickets", () => {
     it("allows client to create ticket for their own project", async () => {
-      prismaMock.project.findUnique.mockResolvedValue({ id: "p1", clientId: "c123" });
-      prismaMock.ticket.create.mockResolvedValue({ id: "t1" });
+      prismaMock.project.findUnique.mockResolvedValue({ id: "p1", clientId: "c123", name: "Studio Site" });
+      prismaMock.ticket.create.mockResolvedValue({
+        id: "t1",
+        title: "Bug",
+        type: "BUG",
+        priority: "MEDIUM",
+        status: "OPEN",
+        createdAt: new Date("2026-08-22T10:00:00.000Z"),
+      });
 
       const res = await request(app)
         .post("/api/tickets")
@@ -151,6 +166,33 @@ describe("ticket routes isolation", () => {
         });
 
       expect(res.status).toBe(403);
+    });
+
+    it("emits ticket:created after a successful creation", async () => {
+      prismaMock.project.findUnique.mockResolvedValue({ id: "p1", clientId: "c123", name: "Studio Site" });
+      prismaMock.ticket.create.mockResolvedValue({
+        id: "t1",
+        title: "Bug",
+        type: "BUG",
+        priority: "MEDIUM",
+        status: "OPEN",
+        createdAt: new Date("2026-08-22T10:00:00.000Z"),
+      });
+      prismaMock.user.findUnique.mockResolvedValue({ firstName: "Jane", lastName: "Doe" });
+
+      await request(app)
+        .post("/api/tickets")
+        .set("Authorization", `Bearer ${clientToken("c123")}`)
+        .send({ title: "Bug", description: "Something broke big time", type: "BUG", projectId: "p1" });
+
+      expect(realtimeMock.emitTicketCreated).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: "t1",
+          title: "Bug",
+          projectName: "Studio Site",
+          submitterName: "Jane Doe",
+        })
+      );
     });
   });
 
@@ -181,6 +223,59 @@ describe("ticket routes isolation", () => {
         .set("Authorization", `Bearer ${clientToken("c123")}`);
 
       expect(res.status).toBe(403);
+    });
+  });
+
+  describe("PATCH /api/tickets/:id", () => {
+    it("emits ticket:status-changed when status changes", async () => {
+      prismaMock.ticket.findUnique.mockResolvedValue({
+        id: "t1",
+        status: "OPEN",
+        title: "Bug",
+        project: { clientId: "c123", name: "Studio Site" },
+      });
+      prismaMock.ticket.update.mockResolvedValue({
+        id: "t1",
+        title: "Bug",
+        status: "IN_PROGRESS",
+        updatedAt: new Date("2026-08-22T11:00:00.000Z"),
+      });
+
+      await request(app)
+        .patch("/api/tickets/t1")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ status: "IN_PROGRESS" });
+
+      expect(realtimeMock.emitTicketStatusChanged).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: "t1",
+          previousStatus: "OPEN",
+          status: "IN_PROGRESS",
+          projectName: "Studio Site",
+        })
+      );
+    });
+
+    it("does not emit ticket:status-changed when status is unchanged", async () => {
+      prismaMock.ticket.findUnique.mockResolvedValue({
+        id: "t1",
+        status: "OPEN",
+        title: "Bug",
+        project: { clientId: "c123", name: "Studio Site" },
+      });
+      prismaMock.ticket.update.mockResolvedValue({
+        id: "t1",
+        title: "Bug",
+        status: "OPEN",
+        updatedAt: new Date("2026-08-22T11:00:00.000Z"),
+      });
+
+      await request(app)
+        .patch("/api/tickets/t1")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ priority: "HIGH" });
+
+      expect(realtimeMock.emitTicketStatusChanged).not.toHaveBeenCalled();
     });
   });
 });

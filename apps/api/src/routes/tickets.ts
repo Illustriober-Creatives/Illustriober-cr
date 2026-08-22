@@ -11,7 +11,7 @@ import {
   updateTicketSchema,
   type TicketComment,
 } from "@illustriober/shared";
-import { emitTicketComment } from "../lib/realtime";
+import { emitTicketComment, emitTicketCreated, emitTicketStatusChanged } from "../lib/realtime";
 
 const router = Router();
 const commentRateLimit = rateLimit({
@@ -137,6 +137,22 @@ router.post(
       },
     });
 
+    const submitter = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { firstName: true, lastName: true },
+    });
+
+    emitTicketCreated({
+      id: ticket.id,
+      title: ticket.title,
+      type: ticket.type,
+      priority: ticket.priority,
+      status: ticket.status,
+      projectName: project.name,
+      submitterName: submitter ? `${submitter.firstName} ${submitter.lastName}` : "Unknown",
+      createdAt: ticket.createdAt.toISOString(),
+    });
+
     res.status(201).json({ success: true, ticket });
   })
 );
@@ -259,6 +275,17 @@ router.patch(
         resolvedAt: data.status === "RESOLVED" ? new Date() : undefined,
       },
     });
+
+    if (data.status && data.status !== ticket.status) {
+      emitTicketStatusChanged({
+        id: updated.id,
+        title: updated.title,
+        projectName: ticket.project.name,
+        previousStatus: ticket.status,
+        status: updated.status,
+        updatedAt: updated.updatedAt.toISOString(),
+      });
+    }
 
     res.json({ success: true, ticket: updated });
   })
