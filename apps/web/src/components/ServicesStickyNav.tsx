@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const servicesNavigation = [
   { id: "workflow", label: "Workflow" },
@@ -12,28 +12,44 @@ const servicesNavigation = [
 type ServicesSectionId = (typeof servicesNavigation)[number]["id"];
 
 export function ServicesStickyNav() {
+  const navRef = useRef<HTMLElement>(null);
   const [activeId, setActiveId] = useState<ServicesSectionId>("workflow");
 
   useEffect(() => {
     let frame = 0;
 
     const updateActiveSection = () => {
-      const marker = Math.min(window.innerHeight * 0.38, 340);
+      const viewportHeight = window.innerHeight;
+      const navBottom = navRef.current?.getBoundingClientRect().bottom ?? 0;
+      const activationLine = navBottom + Math.min(170, viewportHeight * 0.18);
+      const earlyActivationBottom = viewportHeight * 0.72;
       let nextActive: ServicesSectionId = servicesNavigation[0].id;
+      let visibleCandidate: { id: ServicesSectionId; score: number } | null = null;
 
       for (const { id } of servicesNavigation) {
         const section = document.getElementById(id);
 
-        if (section && section.getBoundingClientRect().top <= marker) {
+        if (!section) {
+          continue;
+        }
+
+        const rect = section.getBoundingClientRect();
+
+        if (rect.top <= activationLine) {
           nextActive = id;
+        }
+
+        if (rect.bottom > navBottom && rect.top < earlyActivationBottom) {
+          const visibleHeight = Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, navBottom);
+          const score = Math.abs(rect.top - activationLine) - Math.max(visibleHeight, 0) * 0.25;
+
+          if (!visibleCandidate || score < visibleCandidate.score) {
+            visibleCandidate = { id, score };
+          }
         }
       }
 
-      if (window.location.hash && window.location.hash !== `#${nextActive}`) {
-        window.history.replaceState(null, "", `#${nextActive}`);
-      }
-
-      setActiveId(nextActive);
+      setActiveId(visibleCandidate?.id ?? nextActive);
     };
 
     const scheduleUpdate = () => {
@@ -57,39 +73,9 @@ export function ServicesStickyNav() {
   return (
     <nav
       aria-label="Explore services"
+      ref={navRef}
       className="services-sticky-nav overflow-hidden rounded-full border border-[#F4EFE5]/15 bg-[#1F4D3D]/95 px-3 py-2 text-[#F4EFE5] shadow-[0_18px_45px_rgba(31,77,61,0.16)] backdrop-blur md:px-4"
     >
-      <style jsx global>{`
-        html:has(#workflow:target) .services-sticky-nav .services-nav-link,
-        html:has(#capabilities:target) .services-sticky-nav .services-nav-link,
-        html:has(#stack:target) .services-sticky-nav .services-nav-link,
-        html:has(#delivery:target) .services-sticky-nav .services-nav-link {
-          color: rgba(244, 239, 229, 0.78) !important;
-        }
-
-        html:has(#workflow:target) .services-sticky-nav .services-nav-indicator,
-        html:has(#capabilities:target) .services-sticky-nav .services-nav-indicator,
-        html:has(#stack:target) .services-sticky-nav .services-nav-indicator,
-        html:has(#delivery:target) .services-sticky-nav .services-nav-indicator {
-          opacity: 0 !important;
-          transform: scaleX(0) !important;
-        }
-
-        html:has(#workflow:target) .services-sticky-nav .services-nav-link[href="#workflow"],
-        html:has(#capabilities:target) .services-sticky-nav .services-nav-link[href="#capabilities"],
-        html:has(#stack:target) .services-sticky-nav .services-nav-link[href="#stack"],
-        html:has(#delivery:target) .services-sticky-nav .services-nav-link[href="#delivery"] {
-          color: #f7ad45 !important;
-        }
-
-        html:has(#workflow:target) .services-sticky-nav .services-nav-link[href="#workflow"] .services-nav-indicator,
-        html:has(#capabilities:target) .services-sticky-nav .services-nav-link[href="#capabilities"] .services-nav-indicator,
-        html:has(#stack:target) .services-sticky-nav .services-nav-link[href="#stack"] .services-nav-indicator,
-        html:has(#delivery:target) .services-sticky-nav .services-nav-link[href="#delivery"] .services-nav-indicator {
-          opacity: 1 !important;
-          transform: scaleX(1) !important;
-        }
-      `}</style>
       <div className="flex items-center gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <span className="shrink-0 rounded-full bg-[#F7AD45]/12 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#F7AD45]">
           Explore
