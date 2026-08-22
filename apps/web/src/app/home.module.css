@@ -4,13 +4,13 @@
     transform: translate3d(0, 58%, 0) skewX(-7deg);
   }
 
-  1.8%,
-  10.4% {
+  0.25%,
+  13.75% {
     opacity: 1;
     transform: translate3d(0, 0, 0) skewX(0deg);
   }
 
-  12.5%,
+  14.28%,
   100% {
     opacity: 0;
     transform: translate3d(0, -48%, 0) skewX(5deg);
@@ -39,7 +39,7 @@
   line-height: 0.98;
   opacity: 0;
   will-change: transform, opacity;
-  animation: purpose-word 9.45s cubic-bezier(0.22, 1, 0.36, 1) infinite both;
+  animation: purpose-word 210s cubic-bezier(0.22, 1, 0.36, 1) infinite both;
 }
 
 .purposeWord::after {

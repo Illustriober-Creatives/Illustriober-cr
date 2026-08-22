@@ -19,7 +19,8 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen bg-[#F4EFE5] pb-20 pt-36 text-[#171717] md:pt-48">
       <section className="mx-auto max-w-7xl px-5 md:px-8">
-        <div className="grid items-start gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">About Illustriober</p>
+        <div className="mt-5 grid items-start gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <h1 className="max-w-4xl font-display text-6xl leading-[0.87] tracking-[-0.055em] md:text-8xl">We make the complicated feel <em className="font-normal text-[#F39314]">clear.</em></h1>
           <p className="max-w-md text-lg leading-8 text-[#5F5A50] lg:pt-2">Illustriober is a small, practical studio for digital products that need to look considered and work hard.</p>
         </div>
@@ -28,7 +29,8 @@ export default function AboutPage() {
       <section className="mx-auto mt-14 max-w-7xl px-5 md:mt-20 md:px-8">
         <div className="grid overflow-hidden rounded-[2rem] bg-[#1F4D3D] lg:grid-cols-2">
           <div className="p-8 text-[#F4EFE5] md:p-12 lg:p-16">
-            <p className="max-w-xl font-display text-4xl leading-[1.02] tracking-[-0.035em] md:text-5xl">Strong digital work needs a sharp idea, a calm interface, and the engineering to hold it together.</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f7ad45]">Our point of view</p>
+            <p className="mt-7 max-w-xl font-display text-4xl leading-[1.02] tracking-[-0.035em] md:text-5xl">Strong digital work needs a sharp idea, a calm interface, and the engineering to hold it together.</p>
           </div>
           <div className="relative min-h-[340px]"><Image alt="A considered product interface concept" className="object-cover" fill sizes="(max-width: 1024px) 100vw, 50vw" src="/projects/concept-project-gallery.png" /></div>
         </div>

@@ -171,7 +171,10 @@ export default function ServicesPage() {
           <div aria-hidden="true" className="absolute -bottom-32 right-1/4 h-64 w-64 rounded-full bg-[#1F4D3D]/15 blur-3xl" />
           <div className="relative grid gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
             <div>
-              <h1 className="max-w-4xl text-balance font-display text-[clamp(3.1rem,6vw,6.2rem)] leading-[1.02] tracking-[-0.055em]">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">
+                Full-stack software studio
+              </p>
+              <h1 className="mt-4 max-w-4xl text-balance font-display text-[clamp(3.1rem,6vw,6.2rem)] leading-[1.02] tracking-[-0.055em]">
                 We design, <em className="font-normal text-[#F39314]">build,</em> and improve software.
               </h1>
             </div>
@@ -204,6 +207,10 @@ export default function ServicesPage() {
           aria-label="Explore services"
           className="mt-4 flex items-center gap-5 overflow-x-auto rounded-full bg-[#1F4D3D] px-5 py-3 text-[#F4EFE5] [scrollbar-width:none] sm:px-6"
         >
+          <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.16em] text-[#F7AD45]">
+            Explore
+          </span>
+          <span aria-hidden="true" className="h-5 w-px shrink-0 bg-[#F4EFE5]/20" />
           {pageNavigation.map(([label, href]) => (
             <a
               className="inline-flex min-h-10 shrink-0 items-center text-sm font-bold text-[#F4EFE5]/80 transition-colors hover:text-white focus-visible:text-white"
@@ -245,7 +252,10 @@ export default function ServicesPage() {
 
         <section className="mt-20 scroll-mt-36 md:mt-24" id="capabilities">
           <div>
-            <h2 className="max-w-6xl text-balance font-display text-4xl leading-[1.02] tracking-[-0.03em] sm:text-5xl">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">
+              What we can build
+            </p>
+            <h2 className="mt-4 max-w-6xl text-balance font-display text-4xl leading-[1.02] tracking-[-0.03em] sm:text-5xl">
               The whole product, or the part holding it back.
             </h2>
             <p className="mt-5 max-w-3xl text-base leading-7 text-[#5F5A50]">
@@ -254,15 +264,16 @@ export default function ServicesPage() {
           </div>
 
           <div className="mt-9 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {capabilities.map(({ copy, Icon, title }) => (
+            {capabilities.map(({ copy, Icon, label, title }) => (
               <article
                 className="group rounded-[1.5rem] border border-[#171717]/10 bg-[#FFFDF8] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#F39314]/50 hover:shadow-[0_18px_45px_rgba(23,23,23,0.08)]"
                 key={title}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center justify-between gap-4">
                   <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1F4D3D] text-[#F4EFE5] transition-colors group-hover:bg-[#F39314] group-hover:text-[#171717]">
                     <Icon aria-hidden="true" className="h-5 w-5" />
                   </span>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#D96800]">{label}</p>
                 </div>
                 <h3 className="mt-8 font-display text-3xl leading-none">{title}</h3>
                 <p className="mt-4 text-sm leading-6 text-[#5F5A50]">{copy}</p>
@@ -275,7 +286,8 @@ export default function ServicesPage() {
           <div className="grid overflow-hidden rounded-[2rem] border border-[#171717]/10 bg-[#FFFDF8] lg:grid-cols-[0.72fr_1.28fr]">
             <div className="bg-[#F39314] p-7 sm:p-9">
               <RefreshCw aria-hidden="true" className="h-7 w-7" />
-              <h2 className="mt-12 font-display text-4xl leading-[0.95] tracking-[-0.03em] sm:text-5xl">
+              <p className="mt-12 text-xs font-bold uppercase tracking-[0.18em]">Flexible engagements</p>
+              <h2 className="mt-4 font-display text-4xl leading-[0.95] tracking-[-0.03em] sm:text-5xl">
                 Meet the product where it is.
               </h2>
               <p className="mt-5 max-w-md text-sm leading-6 text-[#171717]/70">
@@ -300,11 +312,12 @@ export default function ServicesPage() {
         >
           <div className="grid gap-6 border-b border-[#F4EFE5]/15 p-7 sm:p-9 lg:grid-cols-[1fr_0.8fr] lg:items-start">
             <div>
-              <h2 className="max-w-2xl font-display text-4xl leading-[0.95] tracking-[-0.03em] sm:text-5xl">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F7AD45]">Tools for the job</p>
+              <h2 className="mt-4 max-w-2xl font-display text-4xl leading-[0.95] tracking-[-0.03em] sm:text-5xl">
                 A practical stack, selected around the product.
               </h2>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-[#F4EFE5]/70 lg:justify-self-end lg:pt-1">
+            <p className="max-w-xl text-sm leading-6 text-[#F4EFE5]/70 lg:justify-self-end lg:pt-8">
               These are common tools, not a fixed recipe. We choose for maintainability, team fit, performance, and the work ahead.
             </p>
           </div>
@@ -342,11 +355,12 @@ export default function ServicesPage() {
             <div aria-hidden="true" className="absolute -right-16 -top-20 h-64 w-64 rounded-full border-[3rem] border-[#1F4D3D]/10" />
             <div className="relative grid gap-8 lg:grid-cols-[1fr_0.7fr] lg:items-start">
               <div>
-                <h2 className="max-w-3xl font-display text-4xl leading-[0.92] tracking-[-0.035em] sm:text-6xl">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Human-led. AI-assisted.</p>
+                <h2 className="mt-5 max-w-3xl font-display text-4xl leading-[0.92] tracking-[-0.035em] sm:text-6xl">
                   Move faster without giving up judgment.
                 </h2>
               </div>
-              <div>
+              <div className="lg:pt-9">
                 <p className="max-w-xl text-sm leading-6 text-[#171717]/75 sm:text-base sm:leading-7">
                   We use AI where it improves research, prototyping, development, testing, and operations. Product decisions, quality review, security, and release responsibility stay with people.
                 </p>
