@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   AdminDashboardStatusCounts,
   AdminTicketCreatedEvent,
@@ -23,11 +23,19 @@ interface KpiStripProps {
   statusChangedSeq?: { seq: number; event: AdminTicketStatusChangedEvent } | null;
 }
 
+interface PendingDelta {
+  type: "created" | "statusChanged";
+  event: AdminTicketCreatedEvent | AdminTicketStatusChangedEvent;
+}
+
 export function KpiStrip({ ticketCreatedSeq, statusChangedSeq }: KpiStripProps) {
   const { fetchWithAuth } = useAuth();
   const [counts, setCounts] = useState<AdminDashboardStatusCounts | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const isInitialLoadCompleteRef = useRef(false);
+  const pendingDeltasRef = useRef<PendingDelta[]>([]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -37,6 +45,35 @@ export function KpiStrip({ ticketCreatedSeq, statusChangedSeq }: KpiStripProps) 
       if (!res.ok) throw new Error("Failed to load ticket counts");
       const data = await res.json();
       setCounts(data.statusCounts);
+
+      // Mark initial load as complete, then replay any pending deltas
+      isInitialLoadCompleteRef.current = true;
+      const deltas = pendingDeltasRef.current;
+      pendingDeltasRef.current = [];
+
+      for (const delta of deltas) {
+        if (delta.type === "created") {
+          const event = delta.event as AdminTicketCreatedEvent;
+          setCounts((current) => {
+            const base = current ?? EMPTY_COUNTS;
+            const status = event.status as keyof AdminDashboardStatusCounts;
+            if (!(status in base)) return base;
+            return { ...base, [status]: base[status] + 1 };
+          });
+        } else {
+          const event = delta.event as AdminTicketStatusChangedEvent;
+          setCounts((current) => {
+            const base = current ?? EMPTY_COUNTS;
+            const next = { ...base };
+            const { previousStatus, status } = event;
+            const prevKey = previousStatus as keyof AdminDashboardStatusCounts;
+            const nextKey = status as keyof AdminDashboardStatusCounts;
+            if (prevKey in next) next[prevKey] = Math.max(0, next[prevKey] - 1);
+            if (nextKey in next) next[nextKey] += 1;
+            return next;
+          });
+        }
+      }
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Failed to load ticket counts");
     } finally {
@@ -50,26 +87,46 @@ export function KpiStrip({ ticketCreatedSeq, statusChangedSeq }: KpiStripProps) 
 
   useEffect(() => {
     if (!ticketCreatedSeq) return;
-    setCounts((current) => {
-      const base = current ?? EMPTY_COUNTS;
-      const status = ticketCreatedSeq.event.status as keyof AdminDashboardStatusCounts;
-      if (!(status in base)) return base;
-      return { ...base, [status]: base[status] + 1 };
-    });
+
+    if (isInitialLoadCompleteRef.current) {
+      // Initial load is done, apply the delta directly
+      setCounts((current) => {
+        const base = current ?? EMPTY_COUNTS;
+        const status = ticketCreatedSeq.event.status as keyof AdminDashboardStatusCounts;
+        if (!(status in base)) return base;
+        return { ...base, [status]: base[status] + 1 };
+      });
+    } else {
+      // Initial load not done yet, buffer the delta
+      pendingDeltasRef.current.push({
+        type: "created",
+        event: ticketCreatedSeq.event,
+      });
+    }
   }, [ticketCreatedSeq]);
 
   useEffect(() => {
     if (!statusChangedSeq) return;
-    setCounts((current) => {
-      const base = current ?? EMPTY_COUNTS;
-      const next = { ...base };
-      const { previousStatus, status } = statusChangedSeq.event;
-      const prevKey = previousStatus as keyof AdminDashboardStatusCounts;
-      const nextKey = status as keyof AdminDashboardStatusCounts;
-      if (prevKey in next) next[prevKey] = Math.max(0, next[prevKey] - 1);
-      if (nextKey in next) next[nextKey] += 1;
-      return next;
-    });
+
+    if (isInitialLoadCompleteRef.current) {
+      // Initial load is done, apply the delta directly
+      setCounts((current) => {
+        const base = current ?? EMPTY_COUNTS;
+        const next = { ...base };
+        const { previousStatus, status } = statusChangedSeq.event;
+        const prevKey = previousStatus as keyof AdminDashboardStatusCounts;
+        const nextKey = status as keyof AdminDashboardStatusCounts;
+        if (prevKey in next) next[prevKey] = Math.max(0, next[prevKey] - 1);
+        if (nextKey in next) next[nextKey] += 1;
+        return next;
+      });
+    } else {
+      // Initial load not done yet, buffer the delta
+      pendingDeltasRef.current.push({
+        type: "statusChanged",
+        event: statusChangedSeq.event,
+      });
+    }
   }, [statusChangedSeq]);
 
   if (loading) {
