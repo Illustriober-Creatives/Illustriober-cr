@@ -308,14 +308,12 @@ export default function ServicesPage() {
           className="mt-20 scroll-mt-36 overflow-hidden rounded-[2rem] bg-[#1F4D3D] text-[#F4EFE5] md:mt-24"
           id="stack"
         >
-          <div className="grid gap-6 border-b border-[#F4EFE5]/15 p-7 sm:p-9 lg:grid-cols-[1fr_0.8fr] lg:items-start">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F7AD45]">Tools for the job</p>
-              <h2 className="mt-4 max-w-2xl font-display text-4xl leading-[0.95] tracking-[-0.03em] sm:text-5xl">
-                A practical stack, selected around the product.
-              </h2>
-            </div>
-            <p className="max-w-xl text-sm leading-6 text-[#F4EFE5]/70 lg:justify-self-end lg:pt-8">
+          <div className="border-b border-[#F4EFE5]/15 p-7 sm:p-9">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F7AD45]">Tools for the job</p>
+            <h2 className="mt-4 max-w-2xl font-display text-4xl leading-[0.95] tracking-[-0.03em] sm:text-5xl">
+              A practical stack, selected around the product.
+            </h2>
+            <p className="mt-5 max-w-2xl text-sm leading-6 text-[#F4EFE5]/70">
               These are common tools, not a fixed recipe. We choose for maintainability, team fit, performance, and the work ahead.
             </p>
           </div>
