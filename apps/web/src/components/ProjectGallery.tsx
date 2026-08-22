@@ -45,9 +45,9 @@ export function ProjectGallery({ limit, compact = false }: ProjectGalleryProps) 
                 }
                 src={project.image}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#171717] via-[#171717]/60 to-[#171717]/10 opacity-100 transition-opacity duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-45 motion-reduce:transition-none" />
-              <div className="absolute inset-0 bg-[#171717] opacity-0 transition-opacity duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-35 motion-reduce:transition-none" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/90 via-[#171717]/30 to-transparent opacity-0 transition-opacity duration-[950ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 motion-reduce:transition-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#171717] via-[#171717]/58 to-[#171717]/12 opacity-95 transition-opacity duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-70 motion-reduce:transition-none" />
+              <div className="absolute inset-0 bg-[#171717] opacity-0 transition-opacity duration-[1500ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-55 motion-reduce:transition-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/92 via-[#171717]/34 to-transparent opacity-35 transition-opacity duration-[1500ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-95 motion-reduce:transition-none" />
               <div className="absolute inset-x-0 bottom-0 p-6 transition-transform duration-[850ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover:-translate-y-1 motion-reduce:transition-none md:p-8">
                 <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#f7ad45]">{project.category}</p>
                 <div className="flex items-end justify-between gap-5">
