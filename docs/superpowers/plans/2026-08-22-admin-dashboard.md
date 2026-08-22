@@ -142,7 +142,7 @@ git commit -m "feat(shared): add admin dashboard types and ticket query schema"
 
 **Interfaces:**
 - Consumes: `adminTicketQuerySchema` from Task 1 (`@illustriober/shared`)
-- Produces: `GET /api/tickets` accepts optional query params `status`, `priority`, `search`, `page`, `limit`. Response is `{ success, tickets }` with no params, or `{ success, tickets, pagination: { page, limit, total, totalPages } }` when `page` or `limit` is present. Each ticket now includes `comments: [{ createdAt: string }]` (0 or 1 items, most recent first) for later "latest activity" display.
+- Produces: `GET /api/tickets` accepts optional query params `status`, `priority`, `search`, `page`, `limit`. With no params, the response is exactly `{ success, tickets }` with the same per-ticket shape as today (no `comments` field — preserves the Global Constraint that the no-params response is byte-identical for `/dashboard/tickets`). When `page` or `limit` is present, the response is `{ success, tickets, pagination: { page, limit, total, totalPages } }` and each ticket additionally includes `comments: [{ createdAt: string }]` (0 or 1 items, most recent first) for "latest activity" display — this richer shape only applies to the paginated (admin queue) path.
 
 - [ ] **Step 1: Run gitnexus impact analysis before editing**
 
@@ -272,14 +272,9 @@ router.get(
       ];
     }
 
-    const includeShape = {
+    const baseInclude = {
       project: { select: { name: true, slug: true } },
       submittedBy: { select: { firstName: true, lastName: true } },
-      comments: {
-        orderBy: { createdAt: "desc" as const },
-        take: 1,
-        select: { createdAt: true },
-      },
     };
 
     if (query.page || query.limit) {
@@ -288,7 +283,14 @@ router.get(
       const [tickets, total] = await Promise.all([
         prisma.ticket.findMany({
           where,
-          include: includeShape,
+          include: {
+            ...baseInclude,
+            comments: {
+              orderBy: { createdAt: "desc" as const },
+              take: 1,
+              select: { createdAt: true },
+            },
+          },
           orderBy: { createdAt: "desc" },
           skip: (page - 1) * limit,
           take: limit,
@@ -306,7 +308,7 @@ router.get(
 
     const tickets = await prisma.ticket.findMany({
       where,
-      include: includeShape,
+      include: baseInclude,
       orderBy: { createdAt: "desc" },
     });
 
