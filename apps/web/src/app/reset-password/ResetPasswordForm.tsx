@@ -1,6 +1,5 @@
 "use client";
 
-import { resetPasswordSchema } from "@illustriober/shared";
 import { type CSSProperties, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, CheckCircle2 } from "lucide-react";
@@ -17,7 +16,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
     event.preventDefault();
     setError(null);
 
-    if (!token) {
+    if (token.length < 32 || token.length > 256) {
       setError("This reset link is incomplete. Request a new one.");
       return;
     }
@@ -26,9 +25,12 @@ export function ResetPasswordForm({ token }: { token: string }) {
       return;
     }
 
-    const parsed = resetPasswordSchema.safeParse({ token, password });
-    if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message || "Enter a valid password");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+    if (password.length > 128) {
+      setError("Password is too long");
       return;
     }
 
@@ -38,7 +40,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
         method: "POST",
         headers: authMutationHeaders(true),
         credentials: "include",
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify({ token, password }),
       });
       if (!response.ok) {
         const data = (await response.json().catch(() => null)) as { error?: string } | null;

@@ -35,10 +35,6 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: [
           {
-            key: "Cache-Control",
-            value: "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
-          },
-          {
             key: "X-Content-Type-Options",
             value: "nosniff",
           },
@@ -49,6 +45,24 @@ const nextConfig: NextConfig = {
           {
             key: "X-XSS-Protection",
             value: "1; mode=block",
+          },
+        ],
+      },
+      {
+        source: "/forgot-password",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "private, no-store, max-age=0",
+          },
+        ],
+      },
+      {
+        source: "/reset-password",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "private, no-store, max-age=0",
           },
         ],
       },
