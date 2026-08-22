@@ -258,7 +258,7 @@ GET  /api/auth/me          # Requires Bearer access token
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **Illustriober-cr** (4503 symbols, 5373 relationships, 40 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **Illustriober-cr** (4513 symbols, 5397 relationships, 43 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
