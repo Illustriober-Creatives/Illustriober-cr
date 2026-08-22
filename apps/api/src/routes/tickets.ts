@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 import prisma from "../lib/prisma";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
@@ -11,6 +12,14 @@ import {
 import { emitTicketComment } from "../lib/realtime";
 
 const router = Router();
+const commentRateLimit = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 30,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  keyGenerator: (req) => req.user?.id || ipKeyGenerator(req.ip ?? "unknown"),
+  message: { success: false, error: "Too many replies. Please wait a moment." },
+});
 
 // GET /api/tickets
 // List tickets with isolation
@@ -118,6 +127,7 @@ router.get(
 router.post(
   "/:id/comments",
   authenticate,
+  commentRateLimit,
   asyncHandler(async (req: Request, res: Response) => {
     const userId = req.user!.id;
     const role = req.user!.role;
