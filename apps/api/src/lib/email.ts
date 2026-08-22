@@ -126,6 +126,42 @@ export async function sendInviteEmail(params: {
   return { success: true };
 }
 
+export async function sendPasswordResetEmail(params: {
+  to: string;
+  resetUrl: string;
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = getResend();
+  const from = process.env.ENQUIRY_FROM_EMAIL;
+
+  if (!resend || !from) {
+    console.warn("[email] Password reset skipped - RESEND_API_KEY or ENQUIRY_FROM_EMAIL not set");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  const resetUrl = escapeHtml(params.resetUrl);
+  const { data, error } = await resend.emails.send({
+    from,
+    to: params.to,
+    subject: "Reset your Illustriober password",
+    text: `Reset your Illustriober password: ${params.resetUrl}\n\nThis link expires in 30 minutes. If you did not request it, you can ignore this email.`,
+    html: `
+      <p>We received a request to reset your Illustriober password.</p>
+      <p><a href="${resetUrl}">Choose a new password</a></p>
+      <p>This link expires in 30 minutes and can only be used once.</p>
+      <p>If you did not request it, you can ignore this email.</p>
+    `,
+    tags: [{ name: "type", value: "password-reset" }],
+  });
+
+  if (error) {
+    console.error("[email] Failed to send password reset:", error);
+    return { success: false, error: error.message };
+  }
+
+  console.log(`[email] Password reset sent (ID: ${data?.id})`);
+  return { success: true };
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")

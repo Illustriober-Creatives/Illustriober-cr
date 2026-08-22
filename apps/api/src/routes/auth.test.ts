@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import bcrypt from "bcryptjs";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -19,11 +20,28 @@ const prismaMock = vi.hoisted(() => ({
     create: vi.fn(),
     findUnique: vi.fn(),
   },
+  passwordResetToken: {
+    updateMany: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    findUnique: vi.fn(),
+  },
+  $transaction: vi.fn((callback: (client: unknown) => unknown) => callback(prismaMock)),
+}));
+
+const emailMock = vi.hoisted(() => ({
+  sendPasswordResetEmail: vi.fn(),
 }));
 
 vi.mock("../lib/prisma", () => ({
   default: prismaMock,
   prisma: prismaMock,
+}));
+
+vi.mock("../lib/email", () => ({
+  sendEnquiryEmails: vi.fn(),
+  sendInviteEmail: vi.fn(),
+  sendPasswordResetEmail: emailMock.sendPasswordResetEmail,
 }));
 
 import app from "../app";
@@ -53,6 +71,10 @@ describe("auth routes", () => {
     vi.clearAllMocks();
     prismaMock.refreshToken.updateMany.mockResolvedValue({ count: 1 });
     prismaMock.refreshToken.create.mockResolvedValue({ id: "refresh_123" });
+    prismaMock.passwordResetToken.updateMany.mockResolvedValue({ count: 1 });
+    prismaMock.passwordResetToken.create.mockResolvedValue({ id: "reset_123" });
+    prismaMock.passwordResetToken.update.mockResolvedValue({ id: "reset_123" });
+    emailMock.sendPasswordResetEmail.mockResolvedValue({ success: true });
   });
 
   it("registers a user, returns an access token, and sets the refresh cookie", async () => {
@@ -123,6 +145,94 @@ describe("auth routes", () => {
         expect.stringContaining(`${CSRF_COOKIE_NAME}=`),
       ])
     );
+  });
+
+  it("creates a hashed reset token and sends a reset link for an active user", async () => {
+    prismaMock.user.findUnique.mockResolvedValueOnce(userFixture);
+
+    const response = await request(app)
+      .post("/api/auth/forgot-password")
+      .set(...REQUESTED_WITH_HEADER)
+      .send({ email: userFixture.email.toUpperCase() });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toContain("If an active account exists");
+    expect(emailMock.sendPasswordResetEmail).toHaveBeenCalledOnce();
+
+    const resetUrl = emailMock.sendPasswordResetEmail.mock.calls[0][0].resetUrl as string;
+    const rawToken = new URL(resetUrl).searchParams.get("token");
+    expect(rawToken).toMatch(/^[a-f0-9]{64}$/);
+    expect(prismaMock.passwordResetToken.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        tokenHash: createHash("sha256").update(rawToken!).digest("hex"),
+        userId: userFixture.id,
+        expiresAt: expect.any(Date),
+      }),
+    });
+  });
+
+  it("returns the same forgot-password response for an unknown email", async () => {
+    prismaMock.user.findUnique.mockResolvedValueOnce(null);
+
+    const response = await request(app)
+      .post("/api/auth/forgot-password")
+      .set(...REQUESTED_WITH_HEADER)
+      .send({ email: "unknown@example.com" });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toContain("If an active account exists");
+    expect(prismaMock.passwordResetToken.create).not.toHaveBeenCalled();
+    expect(emailMock.sendPasswordResetEmail).not.toHaveBeenCalled();
+  });
+
+  it("resets a password with a valid single-use token and revokes sessions", async () => {
+    const rawToken = "a".repeat(64);
+    prismaMock.passwordResetToken.findUnique.mockResolvedValueOnce({
+      id: "reset_123",
+      tokenHash: createHash("sha256").update(rawToken).digest("hex"),
+      usedAt: null,
+      expiresAt: new Date(Date.now() + 60_000),
+      user: { id: userFixture.id, isActive: true },
+    });
+
+    const response = await request(app)
+      .post("/api/auth/reset-password")
+      .set(...REQUESTED_WITH_HEADER)
+      .send({ token: rawToken, password: "new-secure-password" });
+
+    expect(response.status).toBe(200);
+    expect(prismaMock.passwordResetToken.updateMany).toHaveBeenCalledWith({
+      where: {
+        id: "reset_123",
+        usedAt: null,
+        expiresAt: { gt: expect.any(Date) },
+      },
+      data: { usedAt: expect.any(Date) },
+    });
+    const passwordHash = prismaMock.user.update.mock.calls[0][0].data.passwordHash;
+    await expect(bcrypt.compare("new-secure-password", passwordHash)).resolves.toBe(true);
+    expect(prismaMock.refreshToken.updateMany).toHaveBeenCalledWith({
+      where: { userId: userFixture.id, revokedAt: null },
+      data: { revokedAt: expect.any(Date) },
+    });
+  });
+
+  it("rejects an expired password reset token", async () => {
+    prismaMock.passwordResetToken.findUnique.mockResolvedValueOnce({
+      id: "reset_123",
+      usedAt: null,
+      expiresAt: new Date(Date.now() - 60_000),
+      user: { id: userFixture.id, isActive: true },
+    });
+
+    const response = await request(app)
+      .post("/api/auth/reset-password")
+      .set(...REQUESTED_WITH_HEADER)
+      .send({ token: "b".repeat(64), password: "new-secure-password" });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("Invalid or expired reset link");
+    expect(prismaMock.user.update).not.toHaveBeenCalled();
   });
 
   it("returns the authenticated user for /me when given a valid bearer token", async () => {

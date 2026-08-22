@@ -2,12 +2,18 @@
  * Authentication: register, login, logout, refresh, me
  */
 
-import { randomBytes } from "crypto";
+import { createHash, randomBytes } from "crypto";
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { loginSchema, registerSchema } from "@illustriober/shared";
+import {
+  forgotPasswordSchema,
+  loginSchema,
+  registerSchema,
+  resetPasswordSchema,
+} from "@illustriober/shared";
 import prisma from "../lib/prisma";
+import { sendPasswordResetEmail } from "../lib/email";
 import { signAccessToken } from "../lib/jwt";
 import {
   CSRF_COOKIE_NAME,
@@ -23,9 +29,21 @@ import { authenticate } from "../middleware/authenticate";
 const router = Router();
 
 const REFRESH_DAYS = 30;
+const PASSWORD_RESET_MINUTES = 30;
+const RESET_REQUEST_MESSAGE =
+  "If an active account exists for that email, a reset link has been sent.";
 
 function createRefreshTokenValue(): string {
   return randomBytes(48).toString("hex");
+}
+
+function hashPasswordResetToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+function publicAppUrl(): string {
+  const configured = process.env.APP_URL || process.env.CORS_ORIGIN?.split(",")[0];
+  return (configured || "http://localhost:3000").trim().replace(/\/$/, "");
 }
 
 async function issueRefreshCookie(res: Response, userId: string): Promise<void> {
@@ -159,6 +177,89 @@ router.post(
         role: user.role,
       },
     });
+  })
+);
+
+router.post(
+  "/forgot-password",
+  asyncHandler(async (req: Request, res: Response) => {
+    const { email } = forgotPasswordSchema.parse(req.body);
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+      select: { id: true, email: true, isActive: true },
+    });
+
+    if (user?.isActive) {
+      const rawToken = randomBytes(32).toString("hex");
+      const expiresAt = new Date(Date.now() + PASSWORD_RESET_MINUTES * 60 * 1000);
+
+      await prisma.passwordResetToken.updateMany({
+        where: { userId: user.id, usedAt: null },
+        data: { usedAt: new Date() },
+      });
+
+      const resetToken = await prisma.passwordResetToken.create({
+        data: {
+          tokenHash: hashPasswordResetToken(rawToken),
+          userId: user.id,
+          expiresAt,
+        },
+      });
+
+      const delivery = await sendPasswordResetEmail({
+        to: user.email,
+        resetUrl: `${publicAppUrl()}/reset-password?token=${rawToken}`,
+      });
+
+      if (!delivery.success) {
+        await prisma.passwordResetToken.update({
+          where: { id: resetToken.id },
+          data: { usedAt: new Date() },
+        });
+      }
+    }
+
+    res.json({ success: true, message: RESET_REQUEST_MESSAGE });
+  })
+);
+
+router.post(
+  "/reset-password",
+  asyncHandler(async (req: Request, res: Response) => {
+    const body = resetPasswordSchema.parse(req.body);
+    const now = new Date();
+    const record = await prisma.passwordResetToken.findUnique({
+      where: { tokenHash: hashPasswordResetToken(body.token) },
+      include: { user: { select: { id: true, isActive: true } } },
+    });
+
+    if (!record || record.usedAt || record.expiresAt <= now || !record.user.isActive) {
+      throw new AppError(400, "Invalid or expired reset link");
+    }
+
+    const passwordHash = await bcrypt.hash(body.password, 12);
+
+    await prisma.$transaction(async (tx) => {
+      const consumed = await tx.passwordResetToken.updateMany({
+        where: { id: record.id, usedAt: null, expiresAt: { gt: now } },
+        data: { usedAt: now },
+      });
+      if (consumed.count !== 1) {
+        throw new AppError(400, "Invalid or expired reset link");
+      }
+
+      await tx.user.update({
+        where: { id: record.user.id },
+        data: { passwordHash },
+      });
+      await tx.refreshToken.updateMany({
+        where: { userId: record.user.id, revokedAt: null },
+        data: { revokedAt: now },
+      });
+    });
+
+    clearSessionCookies(res);
+    res.json({ success: true, message: "Password updated. You can now sign in." });
   })
 );
 
