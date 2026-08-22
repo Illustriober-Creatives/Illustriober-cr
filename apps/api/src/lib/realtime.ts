@@ -1,5 +1,5 @@
 import type { Server as HttpServer } from "node:http";
-import type { TicketComment } from "@illustriober/shared";
+import type { AdminTicketCreatedEvent, AdminTicketStatusChangedEvent, TicketComment } from "@illustriober/shared";
 import { Server } from "socket.io";
 import { verifyAccessToken } from "./jwt";
 import { isAllowedOrigin } from "./origins";
@@ -15,6 +15,8 @@ interface ClientToServerEvents {
 
 interface ServerToClientEvents {
   "ticket:comment-created": (comment: TicketComment) => void;
+  "ticket:created": (ticket: AdminTicketCreatedEvent) => void;
+  "ticket:status-changed": (ticket: AdminTicketStatusChangedEvent) => void;
 }
 
 interface InterServerEvents {}
@@ -35,6 +37,8 @@ export type RealtimeServer = Server<
 >;
 
 let realtimeServer: RealtimeServer | null = null;
+
+const ADMIN_ROOM = "admin:tickets";
 
 function publicTicketRoom(ticketId: string): string {
   return `ticket:${ticketId}`;
@@ -80,6 +84,10 @@ export function initializeRealtime(httpServer: HttpServer): RealtimeServer {
   });
 
   io.on("connection", (socket) => {
+    if (socket.data.user.role === "ADMIN") {
+      void socket.join(ADMIN_ROOM);
+    }
+
     socket.on("ticket:join", async (payload, acknowledge) => {
       const ticketId = payload?.ticketId;
       if (typeof ticketId !== "string" || !ticketId || ticketId.length > 128) {
@@ -127,5 +135,15 @@ export function emitTicketComment(comment: TicketComment): void {
   const room = comment.isInternal
     ? internalTicketRoom(comment.ticketId)
     : publicTicketRoom(comment.ticketId);
-  realtimeServer.to(room).emit("ticket:comment-created", comment);
+  realtimeServer.to(room).to(ADMIN_ROOM).emit("ticket:comment-created", comment);
+}
+
+export function emitTicketCreated(event: AdminTicketCreatedEvent): void {
+  if (!realtimeServer) return;
+  realtimeServer.to(ADMIN_ROOM).emit("ticket:created", event);
+}
+
+export function emitTicketStatusChanged(event: AdminTicketStatusChangedEvent): void {
+  if (!realtimeServer) return;
+  realtimeServer.to(ADMIN_ROOM).emit("ticket:status-changed", event);
 }
