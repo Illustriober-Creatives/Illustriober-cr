@@ -48,20 +48,6 @@ export function ProjectGallery({ limit, compact = false }: ProjectGalleryProps) 
           </article>
         </Link>
       ))}
-      {!compact && (
-        <div className="flex flex-col justify-between gap-5 rounded-[1.5rem] bg-[#1F4D3D] p-6 text-[#F4EFE5] sm:flex-row sm:items-center md:col-span-2 md:p-7">
-          <p className="whitespace-nowrap text-[clamp(0.78rem,3.7vw,1.125rem)] leading-6">
-            See how we turn ideas into useful software.
-          </p>
-          <Link
-            className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-bold underline decoration-[#F39314] decoration-2 underline-offset-4"
-            href="/enquiry"
-          >
-            Tell us your idea
-            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
-        </div>
-      )}
     </div>
   );
 }

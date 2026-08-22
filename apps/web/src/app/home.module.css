@@ -33,12 +33,50 @@
 }
 
 .purposeWord {
+  position: relative;
   grid-area: 1 / 1;
   white-space: nowrap;
   line-height: 0.98;
   opacity: 0;
   will-change: transform, opacity;
-  animation: purpose-word 21.6s cubic-bezier(0.22, 1, 0.36, 1) infinite both;
+  animation: purpose-word 9.45s cubic-bezier(0.22, 1, 0.36, 1) infinite both;
+}
+
+.purposeWord::after {
+  position: absolute;
+  right: 0.02em;
+  bottom: -0.06em;
+  left: 0.01em;
+  height: 0.055em;
+  min-height: 3px;
+  content: "";
+  background: currentColor;
+  clip-path: polygon(
+    0 54%,
+    7% 30%,
+    15% 56%,
+    25% 36%,
+    36% 62%,
+    48% 32%,
+    59% 58%,
+    70% 34%,
+    82% 61%,
+    92% 38%,
+    100% 55%,
+    100% 88%,
+    91% 72%,
+    80% 91%,
+    69% 70%,
+    57% 90%,
+    46% 68%,
+    34% 89%,
+    23% 69%,
+    12% 88%,
+    0 75%
+  );
+  opacity: 0.82;
+  transform: rotate(-0.6deg) scaleX(0.98);
+  transform-origin: left center;
 }
 
 @media (max-width: 639px) {

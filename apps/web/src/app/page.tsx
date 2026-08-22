@@ -34,7 +34,7 @@ export default function Home() {
                       <em
                         className={`${styles.purposeWord} font-normal`}
                         key={phrase}
-                        style={{ animationDelay: `${index * 2.7 - 0.25}s` }}
+                        style={{ animationDelay: `${index * 1.35 - 0.125}s` }}
                       >
                         {phrase}
                       </em>
@@ -49,13 +49,11 @@ export default function Home() {
               <a className="inline-flex min-h-12 items-center gap-2 text-sm font-bold underline decoration-[#F39314] decoration-2 underline-offset-4" href="#work">See the work <ArrowDown className="h-4 w-4" aria-hidden="true" /></a>
             </div>
           </div>
-          <div className="relative mx-auto w-full max-w-2xl rotate-[-2deg] rounded-[1.8rem] bg-white p-3 shadow-[18px_22px_0_#1F4D3D] lg:mt-10 lg:translate-x-[clamp(0rem,calc(23vw_-_18.4rem),9rem)]">
+          <div className="relative mx-auto w-full max-w-2xl rotate-[-2deg] rounded-[1.8rem] bg-white p-3 shadow-[18px_22px_0_#1F4D3D] lg:mt-6 lg:w-[122%] lg:max-w-none lg:translate-x-[clamp(0rem,calc(19vw_-_13.5rem),7rem)]">
             <Image alt="Concept project gallery showing responsive digital products" className="aspect-[4/3] rounded-[1.25rem] object-cover" height={1152} priority sizes="(max-width: 1023px) calc(100vw - 2.5rem), 38rem" src="/projects/concept-project-gallery.png" width={1536} />
           </div>
         </div>
       </section>
-
-      <section aria-label="Capabilities" className="border-y border-black/10 bg-white/55 py-7"><div className="mx-auto flex max-w-7xl flex-wrap gap-x-12 gap-y-3 px-5 text-sm font-semibold text-[#5F5A50] md:px-8"><span>Product strategy</span><span>Web platforms</span><span>Operations tools</span><span>Mobile experiences</span></div></section>
 
       <section className="mx-auto grid max-w-7xl gap-8 px-5 py-20 md:px-8 md:py-28 lg:grid-cols-[0.78fr_1.22fr]">
         <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F39314]">How we help</p><h2 className="mt-5 font-display text-5xl leading-[0.92] tracking-[-0.045em] md:text-6xl">From a rough idea to something people can use.</h2></div>
