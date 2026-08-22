@@ -15,6 +15,11 @@ const ACCESS_KEY = "illustriober_access_token";
 const CSRF_COOKIE_NAME = "illustriober_csrf";
 const REQUESTED_WITH_VALUE = "Illustriober-Web";
 
+export function readBrowserAccessToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return sessionStorage.getItem(ACCESS_KEY);
+}
+
 export function authMutationHeaders(includeJson = false): Headers {
   const headers = new Headers();
   headers.set("X-Requested-With", REQUESTED_WITH_VALUE);

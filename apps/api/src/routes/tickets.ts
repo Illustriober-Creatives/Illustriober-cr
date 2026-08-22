@@ -1,10 +1,32 @@
+import { createHash } from "node:crypto";
 import { Router, Request, Response } from "express";
+import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 import prisma from "../lib/prisma";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
-import { createTicketSchema, updateTicketSchema } from "@illustriober/shared";
+import {
+  createCommentSchema,
+  createTicketSchema,
+  updateTicketSchema,
+  type TicketComment,
+} from "@illustriober/shared";
+import { emitTicketComment } from "../lib/realtime";
 
 const router = Router();
+const commentRateLimit = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 30,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const authorization = req.headers.authorization;
+    if (authorization) {
+      return createHash("sha256").update(authorization).digest("hex");
+    }
+    return ipKeyGenerator(req.ip ?? "unknown");
+  },
+  message: { success: false, error: "Too many replies. Please wait a moment." },
+});
 
 // GET /api/tickets
 // List tickets with isolation
@@ -89,8 +111,9 @@ router.get(
         project: true,
         submittedBy: { select: { firstName: true, lastName: true, email: true } },
         comments: {
+          where: role === "ADMIN" ? {} : { isInternal: false },
           include: {
-            author: { select: { firstName: true, lastName: true, role: true } },
+            author: { select: { id: true, firstName: true, lastName: true, role: true } },
           },
           orderBy: { createdAt: "asc" },
         },
@@ -104,6 +127,54 @@ router.get(
     }
 
     res.json({ success: true, ticket });
+  })
+);
+
+// POST /api/tickets/:id/comments
+router.post(
+  "/:id/comments",
+  commentRateLimit,
+  authenticate,
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user!.id;
+    const role = req.user!.role;
+    const data = createCommentSchema.parse(req.body);
+
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: req.params.id },
+      include: { project: true },
+    });
+
+    if (!ticket) throw new AppError(404, "Ticket not found");
+    if (role !== "ADMIN" && ticket.project.clientId !== userId) {
+      throw new AppError(403, "Access denied");
+    }
+
+    const comment = await prisma.comment.create({
+      data: {
+        content: data.content,
+        ticketId: ticket.id,
+        authorId: userId,
+        isInternal: role === "ADMIN" && data.isInternal,
+      },
+      include: {
+        author: { select: { id: true, firstName: true, lastName: true, role: true } },
+      },
+    });
+
+    const serializedComment: TicketComment = {
+      id: comment.id,
+      content: comment.content,
+      ticketId: comment.ticketId,
+      authorId: comment.authorId,
+      isInternal: comment.isInternal,
+      createdAt: comment.createdAt.toISOString(),
+      editedAt: comment.editedAt?.toISOString() ?? null,
+      author: comment.author,
+    };
+
+    emitTicketComment(serializedComment);
+    res.status(201).json({ success: true, comment: serializedComment });
   })
 );
 

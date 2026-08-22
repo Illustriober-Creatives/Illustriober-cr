@@ -82,3 +82,30 @@ export const updateTicketStatusSchema = z.object({
 });
 
 export type UpdateTicketStatusInput = z.infer<typeof updateTicketStatusSchema>;
+
+export const createCommentSchema = z.object({
+  content: z
+    .string()
+    .trim()
+    .min(1, "Comment cannot be empty")
+    .max(4000, "Comment must be 4,000 characters or fewer"),
+  isInternal: z.boolean().optional().default(false),
+});
+
+export type CreateCommentInput = z.infer<typeof createCommentSchema>;
+
+export type TicketComment = {
+  id: string;
+  content: string;
+  ticketId: string;
+  authorId: string;
+  isInternal: boolean;
+  createdAt: string;
+  editedAt: string | null;
+  author: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+  };
+};

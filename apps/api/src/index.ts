@@ -3,7 +3,9 @@
  * Initializes Express server and database connections
  */
 
+import { createServer } from "node:http";
 import app from "./app";
+import { initializeRealtime } from "./lib/realtime";
 
 const PORT = process.env.PORT || 4000;
 const NODE_ENV = process.env.NODE_ENV || "development";
@@ -17,7 +19,10 @@ if (NODE_ENV === "production" && !process.env.JWT_SECRET) {
  * Start the API server
  * Listen on configured port and log startup information
  */
-app.listen(PORT, () => {
+const httpServer = createServer(app);
+initializeRealtime(httpServer);
+
+httpServer.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════════════════════════╗
 ║                   🚀 API Server Ready                     ║
