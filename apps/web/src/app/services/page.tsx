@@ -18,7 +18,6 @@ import {
   Network,
   Palette,
   PanelsTopLeft,
-  RefreshCw,
   Rocket,
   Server,
   ServerCog,
@@ -285,8 +284,7 @@ export default function ServicesPage() {
         <section className="mt-20 md:mt-24">
           <div className="grid overflow-hidden rounded-[2rem] border border-[#171717]/10 bg-[#FFFDF8] lg:grid-cols-[0.72fr_1.28fr]">
             <div className="bg-[#F39314] p-7 sm:p-9">
-              <RefreshCw aria-hidden="true" className="h-7 w-7" />
-              <p className="mt-12 text-xs font-bold uppercase tracking-[0.18em]">Flexible engagements</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em]">Flexible engagements</p>
               <h2 className="mt-4 font-display text-4xl leading-[0.95] tracking-[-0.03em] sm:text-5xl">
                 Meet the product where it is.
               </h2>
