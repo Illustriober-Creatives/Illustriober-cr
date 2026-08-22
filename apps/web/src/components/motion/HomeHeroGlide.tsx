@@ -34,7 +34,7 @@ export function HomeHeroGlide({ copy, media }: HomeHeroGlideProps) {
     <section ref={sectionRef} className="relative mx-auto max-w-[90rem] px-5 pb-16 pt-12 md:px-8 md:pb-20 md:pt-20 lg:pb-14 lg:pt-[7.25rem]">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-start lg:gap-16 xl:gap-20">
         <motion.div
-          className="min-w-0"
+          className="min-w-0 overflow-x-hidden"
           style={shouldReduceMotion ? undefined : { y: copyY, opacity: copyOpacity }}
         >
           {copy}
