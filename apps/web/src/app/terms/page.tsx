@@ -1,5 +1,6 @@
 import { createMetadata } from "@/lib/seo";
 import { Container } from "@/components/Container";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { SectionWrapper } from "@/components/SectionWrapper";
 
 export const metadata = createMetadata({
@@ -40,6 +41,7 @@ export default function TermsPage() {
           <div className="absolute -top-20 right-0 h-72 w-72 rounded-full bg-accent-soft blur-3xl" />
           <div className="absolute -bottom-24 left-[-8%] h-64 w-64 rounded-full bg-accent-soft/50 blur-3xl" />
         </div>
+        <ScrollReveal blur scale={0.99} y={24}>
         <Container className="relative z-10 max-w-4xl">
           <p className="inline-block rounded-full border border-accent/25 bg-accent-soft px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-accent">
             Legal
@@ -52,15 +54,16 @@ export default function TermsPage() {
             website and portal.
           </p>
         </Container>
+        </ScrollReveal>
       </section>
 
       <SectionWrapper>
         <Container className="max-w-4xl">
           <div className="space-y-8">
-            {sections.map((section) => (
+            {sections.map((section, index) => (
+              <ScrollReveal blur delay={index * 0.05} key={section.title} scale={0.988} y={22}>
               <article
-                key={section.title}
-                className="rounded-2xl border border-glass-border bg-surface/25 p-8"
+                className="rounded-2xl border border-glass-border bg-surface/25 p-8 transition-[transform,border-color,background-color] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-accent/35 hover:bg-surface/40 motion-safe:hover:-translate-y-1 motion-reduce:transition-none"
               >
                 <h2 className="text-2xl font-display font-medium text-foreground">
                   {section.title}
@@ -69,6 +72,7 @@ export default function TermsPage() {
                   {section.body}
                 </p>
               </article>
+              </ScrollReveal>
             ))}
           </div>
         </Container>

@@ -29,6 +29,7 @@ import {
   Wind,
   Workflow,
 } from "lucide-react";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -165,6 +166,7 @@ export default function ServicesPage() {
   return (
     <main className="min-h-screen bg-[#F4EFE5] pb-20 pt-36 text-[#171717] md:pt-40">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
+        <ScrollReveal blur scale={0.99} y={24}>
         <section className="relative overflow-hidden rounded-[2rem] border border-[#171717]/10 bg-[#FFFDF8] px-6 py-8 sm:px-8 lg:px-10 lg:py-9">
           <div aria-hidden="true" className="absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#F39314]/20 blur-3xl" />
           <div aria-hidden="true" className="absolute -bottom-32 right-1/4 h-64 w-64 rounded-full bg-[#1F4D3D]/15 blur-3xl" />
@@ -201,7 +203,9 @@ export default function ServicesPage() {
             </div>
           </div>
         </section>
+        </ScrollReveal>
 
+        <ScrollReveal delay={0.05} scale={0.995} y={14}>
         <nav
           aria-label="Explore services"
           className="mt-4 flex items-center gap-5 overflow-x-auto rounded-full bg-[#1F4D3D] px-5 py-3 text-[#F4EFE5] [scrollbar-width:none] sm:px-6"
@@ -220,7 +224,9 @@ export default function ServicesPage() {
             </a>
           ))}
         </nav>
+        </ScrollReveal>
 
+        <ScrollReveal blur scale={0.985} y={24}>
         <section
           className="mt-4 scroll-mt-36 overflow-hidden rounded-[2rem] border border-[#171717]/10 bg-[#FFFDF8]"
           id="workflow"
@@ -248,8 +254,10 @@ export default function ServicesPage() {
             ))}
           </div>
         </section>
+        </ScrollReveal>
 
         <section className="mt-20 scroll-mt-36 md:mt-24" id="capabilities">
+          <ScrollReveal blur scale={0.99} y={22}>
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">
               What we can build
@@ -261,12 +269,13 @@ export default function ServicesPage() {
               Start with an idea, a defined build, or a live system. We can own the full path or join your team at the layer where focused design and engineering will make the clearest difference.
             </p>
           </div>
+          </ScrollReveal>
 
           <div className="mt-9 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {capabilities.map(({ copy, Icon, label, title }) => (
+            {capabilities.map(({ copy, Icon, label, title }, index) => (
+              <ScrollReveal blur className="h-full" delay={(index % 3) * 0.06} key={title} scale={0.982} y={24}>
               <article
                 className="group rounded-[1.5rem] border border-[#171717]/10 bg-[#FFFDF8] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#F39314]/50 hover:shadow-[0_18px_45px_rgba(23,23,23,0.08)]"
-                key={title}
               >
                 <div className="flex items-center justify-between gap-4">
                   <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1F4D3D] text-[#F4EFE5] transition-colors group-hover:bg-[#F39314] group-hover:text-[#171717]">
@@ -277,11 +286,13 @@ export default function ServicesPage() {
                 <h3 className="mt-8 font-display text-3xl leading-none">{title}</h3>
                 <p className="mt-4 text-sm leading-6 text-[#5F5A50]">{copy}</p>
               </article>
+              </ScrollReveal>
             ))}
           </div>
         </section>
 
         <section className="mt-20 md:mt-24">
+          <ScrollReveal blur scale={0.985} y={24}>
           <div className="grid overflow-hidden rounded-[2rem] border border-[#171717]/10 bg-[#FFFDF8] lg:grid-cols-[0.72fr_1.28fr]">
             <div className="bg-[#F39314] p-7 sm:p-9">
               <p className="text-xs font-bold uppercase tracking-[0.18em]">Flexible engagements</p>
@@ -302,8 +313,10 @@ export default function ServicesPage() {
               ))}
             </div>
           </div>
+          </ScrollReveal>
         </section>
 
+        <ScrollReveal blur scale={0.985} y={24}>
         <section
           className="mt-20 scroll-mt-36 overflow-hidden rounded-[2rem] bg-[#1F4D3D] text-[#F4EFE5] md:mt-24"
           id="stack"
@@ -345,8 +358,10 @@ export default function ServicesPage() {
             ))}
           </div>
         </section>
+        </ScrollReveal>
 
         <section className="mt-20 scroll-mt-36 md:mt-24" id="delivery">
+          <ScrollReveal blur scale={0.985} y={24}>
           <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#F39314] via-[#F7AD45] to-[#F4EFE5] p-7 sm:p-10 lg:p-12">
             <div aria-hidden="true" className="absolute -right-16 -top-20 h-64 w-64 rounded-full border-[3rem] border-[#1F4D3D]/10" />
             <div className="relative grid gap-8 lg:grid-cols-[1fr_0.7fr] lg:items-start">
@@ -370,6 +385,7 @@ export default function ServicesPage() {
               </div>
             </div>
           </div>
+          </ScrollReveal>
         </section>
       </div>
     </main>
