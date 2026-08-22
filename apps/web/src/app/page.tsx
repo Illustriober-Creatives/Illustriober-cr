@@ -34,7 +34,7 @@ export default function Home() {
                       <em
                         className={`${styles.purposeWord} font-normal`}
                         key={phrase}
-                        style={{ animationDelay: `${index * 30 - 0.5}s` }}
+                        style={{ animationDelay: `${index * 3 - 0.5}s` }}
                       >
                         {phrase}
                       </em>
