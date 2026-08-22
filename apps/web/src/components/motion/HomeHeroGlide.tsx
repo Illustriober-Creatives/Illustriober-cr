@@ -3,7 +3,6 @@
 import type { ReactNode } from "react";
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import styles from "@/app/home.module.css";
 import { useHydrated } from "@/components/motion/useHydrated";
 
 type HomeHeroGlideProps = {
@@ -33,7 +32,6 @@ export function HomeHeroGlide({ copy, media }: HomeHeroGlideProps) {
 
   return (
     <section ref={sectionRef} className="relative mx-auto max-w-7xl px-5 pb-16 pt-12 md:px-8 md:pb-20 md:pt-20 lg:min-h-[calc(100svh-var(--navbar-height)-2rem)] lg:pb-16 lg:pt-[6.25rem]">
-      <div className={styles.heroGlideTrack} aria-hidden="true" />
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-start lg:gap-10">
         <motion.div
           className="min-w-0"

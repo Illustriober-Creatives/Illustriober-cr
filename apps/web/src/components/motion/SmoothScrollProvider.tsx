@@ -14,10 +14,10 @@ const smoothScrollOptions = {
   allowNestedScroll: true,
   anchors: true,
   autoRaf: false,
-  duration: 1.15,
+  duration: 1.28,
   smoothWheel: true,
-  touchMultiplier: 1,
-  wheelMultiplier: 1,
+  touchMultiplier: 1.06,
+  wheelMultiplier: 1.18,
 };
 
 export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
