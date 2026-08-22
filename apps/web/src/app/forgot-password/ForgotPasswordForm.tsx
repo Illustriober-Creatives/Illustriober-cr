@@ -1,6 +1,5 @@
 "use client";
 
-import { forgotPasswordSchema } from "@illustriober/shared";
 import { type CSSProperties, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, CheckCircle2 } from "lucide-react";
@@ -16,9 +15,9 @@ export function ForgotPasswordForm() {
     event.preventDefault();
     setError(null);
 
-    const parsed = forgotPasswordSchema.safeParse({ email });
-    if (!parsed.success) {
-      setError(parsed.error.flatten().fieldErrors.email?.[0] || "Enter a valid email address");
+    const normalizedEmail = email.trim();
+    if (!/^\S+@\S+\.\S+$/.test(normalizedEmail)) {
+      setError("Enter a valid email address");
       return;
     }
 
@@ -28,7 +27,7 @@ export function ForgotPasswordForm() {
         method: "POST",
         headers: authMutationHeaders(true),
         credentials: "include",
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify({ email: normalizedEmail }),
       });
       if (!response.ok) {
         const data = (await response.json().catch(() => null)) as { error?: string } | null;
