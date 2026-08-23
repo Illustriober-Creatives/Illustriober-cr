@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { signAccessToken } from "../lib/jwt";
+import { REFRESH_COOKIE_NAME, createCsrfToken } from "../lib/cookies";
 
 const prismaMock = vi.hoisted(() => ({
   user: {
@@ -34,6 +35,11 @@ const userFixture = {
 function bearer(userId = userFixture.id, role: "CLIENT" | "ADMIN" = "CLIENT") {
   const token = signAccessToken({ sub: userId, role, email: userFixture.email });
   return `Bearer ${token}`;
+}
+
+function sessionCookie(refreshToken: string) {
+  const csrfToken = createCsrfToken(refreshToken);
+  return `${REFRESH_COOKIE_NAME}=${refreshToken}; XSRF-TOKEN=${csrfToken}`;
 }
 
 describe("users routes", () => {
@@ -120,7 +126,34 @@ describe("users routes", () => {
       expect(prismaMock.user.update).not.toHaveBeenCalled();
     });
 
-    it("updates the password and revokes other sessions when current password is correct", async () => {
+    it("updates the password and revokes other sessions, excluding the current session's refresh token", async () => {
+      const currentRefreshToken = "refresh_token_current_session";
+      prismaMock.user.findUnique.mockResolvedValueOnce({
+        ...userFixture,
+        passwordHash: await bcrypt.hash("correct-password", 12),
+      });
+      prismaMock.user.update.mockResolvedValueOnce({ ...userFixture });
+
+      const response = await request(app)
+        .post("/api/users/me/password")
+        .set("Authorization", bearer())
+        .set("Cookie", sessionCookie(currentRefreshToken))
+        .send({ currentPassword: "correct-password", newPassword: "new-password-1" });
+
+      expect(response.status).toBe(200);
+      expect(prismaMock.user.update).toHaveBeenCalledTimes(1);
+      expect(prismaMock.refreshToken.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            userId: userFixture.id,
+            revokedAt: null,
+            token: { not: currentRefreshToken },
+          }),
+        })
+      );
+    });
+
+    it("revokes all sessions when changing password with no refresh cookie", async () => {
       prismaMock.user.findUnique.mockResolvedValueOnce({
         ...userFixture,
         passwordHash: await bcrypt.hash("correct-password", 12),
@@ -133,8 +166,13 @@ describe("users routes", () => {
         .send({ currentPassword: "correct-password", newPassword: "new-password-1" });
 
       expect(response.status).toBe(200);
-      expect(prismaMock.user.update).toHaveBeenCalledTimes(1);
-      expect(prismaMock.refreshToken.updateMany).toHaveBeenCalledTimes(1);
+      expect(prismaMock.refreshToken.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.not.objectContaining({
+            token: expect.anything(),
+          }),
+        })
+      );
     });
 
     it("rejects a new password shorter than 8 characters", async () => {
