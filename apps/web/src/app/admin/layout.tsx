@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { LayoutDashboard, Mail, FolderKanban, Ticket, User } from "lucide-react";
+import { LayoutDashboard, Mail, FolderKanban, Ticket, Users, User } from "lucide-react";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { DashboardShell, type DashboardNavItem } from "@/components/dashboard/DashboardShell";
 
@@ -10,6 +10,7 @@ const ADMIN_NAV: DashboardNavItem[] = [
   { href: "/admin/enquiries", label: "Enquiries", icon: Mail },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
   { href: "/admin/tickets", label: "Tickets", icon: Ticket },
+  { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/profile", label: "Profile", icon: User },
 ];
 
