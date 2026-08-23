@@ -69,114 +69,112 @@ export default function NewTicketPage() {
   };
 
   return (
-    <div className="w-full bg-background min-h-screen">
-      <div className="mx-auto max-w-2xl px-6 py-32">
-        <Link
-          href={`/dashboard/projects/${slug}`}
-          className="mb-8 inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
-        >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-          Back to project
-        </Link>
+    <div className="mx-auto max-w-2xl p-8">
+      <Link
+        href={`/dashboard/projects/${slug}`}
+        className="mb-8 inline-flex items-center gap-1.5 text-sm text-foreground/50 hover:text-accent transition-colors"
+      >
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+        Back to project
+      </Link>
 
-        <p className="mb-1 text-sm uppercase tracking-[0.18em] text-orange-500">New Ticket</p>
-        <h1 className="mb-8 text-3xl font-bold text-foreground">Submit a ticket</h1>
+      <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-accent">New Ticket</p>
+      <h1 className="mb-8 text-3xl font-bold text-foreground">Submit a ticket</h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="rounded-lg bg-red-500/10 p-4 text-sm text-red-400">{error}</div>
-          )}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-600">{error}</div>
+        )}
 
-          {/* Title */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Title</label>
-            <input
-              type="text"
-              required
-              minLength={5}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Short summary of the issue"
-              className="w-full rounded-lg border border-glass-border bg-glass-bg px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:border-accent focus:outline-none"
-            />
+        {/* Title */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground/70">Title</label>
+          <input
+            type="text"
+            required
+            minLength={5}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Short summary of the issue"
+            className="w-full rounded-lg border border-glass-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-foreground/35 focus:border-accent focus:outline-none"
+          />
+        </div>
+
+        {/* Type */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground/70">Type</label>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {TYPE_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setType(opt.value)}
+                className={`rounded-lg border px-3 py-2.5 text-left transition-all ${
+                  type === opt.value
+                    ? "border-accent bg-accent/10 text-foreground"
+                    : "border-glass-border bg-background text-foreground/60 hover:border-accent/40"
+                }`}
+              >
+                <p className="text-xs font-semibold">{opt.label}</p>
+                <p className="mt-0.5 text-xs text-foreground/50">{opt.description}</p>
+              </button>
+            ))}
           </div>
+        </div>
 
-          {/* Type */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Type</label>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {TYPE_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setType(opt.value)}
-                  className={`rounded-lg border px-3 py-2.5 text-left transition-all ${
-                    type === opt.value
-                      ? "border-accent bg-accent/10 text-white"
-                      : "border-zinc-800 bg-zinc-900/30 text-zinc-400 hover:border-zinc-700"
-                  }`}
-                >
-                  <p className="text-xs font-semibold">{opt.label}</p>
-                  <p className="mt-0.5 text-xs text-zinc-600">{opt.description}</p>
-                </button>
-              ))}
-            </div>
+        {/* Priority */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground/70">Priority</label>
+          <div className="flex gap-2">
+            {PRIORITY_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setPriority(opt.value)}
+                className={`rounded-lg border px-4 py-2 text-xs font-semibold transition-all ${
+                  priority === opt.value
+                    ? "border-accent bg-accent/10 text-foreground"
+                    : "border-glass-border bg-background text-foreground/60 hover:border-accent/40"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
+        </div>
 
-          {/* Priority */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Priority</label>
-            <div className="flex gap-2">
-              {PRIORITY_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setPriority(opt.value)}
-                  className={`rounded-lg border px-4 py-2 text-xs font-semibold transition-all ${
-                    priority === opt.value
-                      ? "border-accent bg-accent/10 text-white"
-                      : "border-zinc-800 bg-zinc-900/30 text-zinc-400 hover:border-zinc-700"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* Description — TipTap */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground/70">Description</label>
+          <RichTextEditor
+            value={description}
+            onChange={setDescription}
+            placeholder="Describe the issue in detail. Include steps to reproduce for bugs."
+            minHeight="180px"
+          />
+        </div>
 
-          {/* Description — TipTap */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Description</label>
-            <RichTextEditor
-              value={description}
-              onChange={setDescription}
-              placeholder="Describe the issue in detail. Include steps to reproduce for bugs."
-              minHeight="180px"
-            />
-          </div>
-
-          <div className="flex gap-3 pt-2">
-            <Button
-              type="submit"
-              variant="primary"
-              className="rounded-xl"
-              disabled={submitting}
-            >
-              {submitting ? "Submitting..." : "Submit Ticket"}
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              className="rounded-xl"
-              onClick={() => router.push(`/dashboard/projects/${slug}`)}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </div>
+        <div className="flex gap-3 pt-2">
+          <Button
+            type="submit"
+            variant="primary"
+            className="rounded-xl"
+            disabled={submitting}
+          >
+            {submitting ? "Submitting..." : "Submit Ticket"}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            className="rounded-xl"
+            onClick={() => router.push(`/dashboard/projects/${slug}`)}
+          >
+            Cancel
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

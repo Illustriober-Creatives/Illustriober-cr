@@ -2,8 +2,6 @@ import { Metadata } from "next";
 import { SiteChrome } from "@/components/SiteChrome";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { ScrollProgress } from "@/components/motion/ScrollProgress";
-import { SmoothScrollProvider } from "@/components/motion/SmoothScrollProvider";
 import {
   getDefaultKeywords,
   getOrganizationSchema,
@@ -68,10 +66,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <SmoothScrollProvider>
-              <ScrollProgress />
-              <SiteChrome>{children}</SiteChrome>
-            </SmoothScrollProvider>
+            <SiteChrome>{children}</SiteChrome>
           </AuthProvider>
         </ThemeProvider>
         {/* SEO JSON-LD Schema */}
