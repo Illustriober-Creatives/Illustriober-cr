@@ -54,4 +54,31 @@ router.get(
   })
 );
 
+// GET /api/projects/:slug/updates
+// Broadcast project updates (Messages with receiverId: null), newest first
+router.get(
+  "/:slug/updates",
+  authenticate,
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user!.id;
+    const role = req.user!.role;
+    const { slug } = req.params;
+
+    const project = await prisma.project.findUnique({ where: { slug } });
+    if (!project) return res.status(404).json({ success: false, error: "Project not found" });
+
+    if (role !== "ADMIN" && project.clientId !== userId) {
+      return res.status(403).json({ success: false, error: "Access denied" });
+    }
+
+    const updates = await prisma.message.findMany({
+      where: { projectId: project.id, receiverId: null },
+      include: { sender: { select: { firstName: true, lastName: true, role: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return res.json({ success: true, updates });
+  })
+);
+
 export default router;
