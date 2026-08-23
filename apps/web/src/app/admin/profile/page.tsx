@@ -2,6 +2,6 @@
 
 import { ProfileSettingsForm } from "@/components/profile/ProfileSettingsForm";
 
-export default function ClientProfilePage() {
+export default function AdminProfilePage() {
   return <ProfileSettingsForm />;
 }
