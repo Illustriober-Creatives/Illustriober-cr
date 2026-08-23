@@ -23,6 +23,10 @@ async function readErrorMessage(res: Response): Promise<string> {
 export function ProfileSettingsForm() {
   const { user, fetchWithAuth, updateUser } = useAuth();
 
+  // ProtectedRoute/AdminGuard guarantee `user` is populated (via AuthContext's own
+  // /api/auth/me fetch) before this component renders, so the form seeds
+  // directly from context — no separate fetch, no loading state, and no
+  // risk of a failed load silently blanking the form.
   const [firstName, setFirstName] = useState(user?.firstName ?? "");
   const [lastName, setLastName] = useState(user?.lastName ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
@@ -55,6 +59,11 @@ export function ProfileSettingsForm() {
         return;
       }
 
+      // Update AuthContext directly from the server's response instead of
+      // calling refreshSession() — refreshSession() toggles AuthContext's
+      // `loading` flag, which makes ProtectedRoute/AdminGuard unmount this
+      // component's parent page mid-save, so the success message below
+      // would never actually render.
       const data = (await res.json()) as UpdateProfileResponse;
       updateUser({
         firstName: data.user.firstName,
