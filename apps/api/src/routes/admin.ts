@@ -344,10 +344,18 @@ router.post(
   "/projects/:slug/milestones",
   ...adminOnly,
   asyncHandler(async (req: Request, res: Response) => {
+    let body: z.infer<typeof createMilestoneSchema>;
+    try {
+      body = createMilestoneSchema.parse(req.body);
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        throw new AppError(400, e.issues.map((issue) => issue.message).join(", "));
+      }
+      throw e;
+    }
+
     const project = await prisma.project.findUnique({ where: { slug: req.params.slug } });
     if (!project) throw new AppError(404, "Project not found");
-
-    const body = createMilestoneSchema.parse(req.body);
 
     const milestone = await prisma.milestone.create({
       data: {
@@ -408,27 +416,44 @@ router.post(
   "/projects/:slug/updates",
   ...adminOnly,
   asyncHandler(async (req: Request, res: Response) => {
+    let body: z.infer<typeof postProjectUpdateSchema>;
+    try {
+      body = postProjectUpdateSchema.parse(req.body);
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        throw new AppError(400, e.issues.map((issue) => issue.message).join(", "));
+      }
+      throw e;
+    }
+
     const project = await prisma.project.findUnique({ where: { slug: req.params.slug } });
     if (!project) throw new AppError(404, "Project not found");
 
-    const body = postProjectUpdateSchema.parse(req.body);
+    // Transaction: a client must never see a broadcast update without the
+    // matching notification existing (or vice versa) — if either write
+    // failed alone, a retry after the resulting 500 would post the content
+    // again, showing up as a duplicate on the client's feed with no way to
+    // remove it.
+    const message = await prisma.$transaction(async (tx) => {
+      const created = await tx.message.create({
+        data: {
+          projectId: project.id,
+          senderId: req.user!.id,
+          receiverId: null,
+          content: body.content,
+        },
+      });
 
-    const message = await prisma.message.create({
-      data: {
-        projectId: project.id,
-        senderId: req.user!.id,
-        receiverId: null,
-        content: body.content,
-      },
-    });
+      await tx.notification.create({
+        data: {
+          userId: project.clientId,
+          title: `New update on ${project.name}`,
+          body: body.content.length > 140 ? `${body.content.slice(0, 137)}...` : body.content,
+          link: `/dashboard/projects/${project.slug}`,
+        },
+      });
 
-    await prisma.notification.create({
-      data: {
-        userId: project.clientId,
-        title: `New update on ${project.name}`,
-        body: body.content.length > 140 ? `${body.content.slice(0, 137)}...` : body.content,
-        link: `/dashboard/projects/${project.slug}`,
-      },
+      return created;
     });
 
     res.status(201).json({ success: true, update: message });

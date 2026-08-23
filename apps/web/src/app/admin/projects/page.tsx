@@ -47,7 +47,7 @@ export default function AdminProjectsPage() {
         <h1 className="text-3xl font-bold">Projects</h1>
         <Link
           href="/admin/projects/new"
-          className="rounded-lg bg-accent px-4 py-2 font-medium text-accent-foreground hover:opacity-90 transition-opacity"
+          className="rounded-lg bg-accent px-4 py-2 font-medium text-foreground hover:opacity-90 transition-opacity"
         >
           Initialize Project
         </Link>
@@ -60,9 +60,10 @@ export default function AdminProjectsPage() {
           </div>
         ) : (
           projects.map((project) => (
-            <div
+            <Link
               key={project.id}
-              className="flex items-center justify-between rounded-xl border border-glass-border bg-surface p-6 transition-colors hover:border-accent/20"
+              href={`/admin/projects/${project.slug}`}
+              className="flex items-center justify-between rounded-xl border border-glass-border bg-surface p-6 transition-colors hover:border-accent/40"
             >
               <div>
                 <h3 className="font-semibold">{project.name}</h3>
@@ -78,7 +79,7 @@ export default function AdminProjectsPage() {
                   {new Date(project.createdAt).toLocaleDateString()}
                 </p>
               </div>
-            </div>
+            </Link>
           ))
         )}
       </div>

@@ -65,7 +65,9 @@ export default function AdminProjectDetailPage() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [ticketsError, setTicketsError] = useState(false);
   const [updates, setUpdates] = useState<ProjectUpdate[]>([]);
+  const [updatesError, setUpdatesError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -102,11 +104,15 @@ export default function AdminProjectDetailPage() {
         if (ticketRes.ok) {
           const ticketData = await ticketRes.json();
           setTickets(ticketData.tickets);
+        } else {
+          setTicketsError(true);
         }
 
         if (updatesRes.ok) {
           const updatesData = await updatesRes.json();
           setUpdates(updatesData.updates);
+        } else {
+          setUpdatesError(true);
         }
       } catch {
         if (!cancelled) setError("Failed to load project.");
@@ -323,7 +329,11 @@ export default function AdminProjectDetailPage() {
               </span>
             )}
           </h2>
-          {tickets.length === 0 ? (
+          {ticketsError ? (
+            <div className="rounded-xl border border-glass-border bg-surface p-8 text-center">
+              <p className="text-foreground/60">Couldn&apos;t load tickets. Refresh to try again.</p>
+            </div>
+          ) : tickets.length === 0 ? (
             <div className="rounded-xl border border-glass-border bg-surface p-8 text-center">
               <p className="text-foreground/60">No tickets yet.</p>
             </div>
@@ -387,7 +397,9 @@ export default function AdminProjectDetailPage() {
           </button>
         </form>
 
-        {updates.length === 0 ? (
+        {updatesError ? (
+          <p className="text-sm text-foreground/60">Couldn&apos;t load updates. Refresh to try again.</p>
+        ) : updates.length === 0 ? (
           <p className="text-sm text-foreground/60">No updates posted yet.</p>
         ) : (
           <div className="space-y-4 border-t border-glass-border pt-4">
