@@ -1,8 +1,8 @@
-import { randomBytes } from "crypto";
+import { randomBytes, createHash } from "crypto";
 import { Router, Request, Response } from "express";
 import { z } from "zod";
 import prisma from "../lib/prisma";
-import { sendInviteEmail } from "../lib/email";
+import { sendInviteEmail, sendPasswordResetEmail } from "../lib/email";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
 import { requireRoles } from "../middleware/authorize";
@@ -103,6 +103,160 @@ router.get(
       orderBy: { createdAt: "desc" },
     });
     res.json({ success: true, clients });
+  })
+);
+
+const userRoleFilterSchema = z.enum(["CLIENT", "ADMIN"]).optional();
+
+// GET /api/admin/users?role=CLIENT&search=jane
+router.get(
+  "/users",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const role = userRoleFilterSchema.parse(req.query.role || undefined);
+    const search = typeof req.query.search === "string" ? req.query.search.trim() : undefined;
+
+    const where: Record<string, unknown> = {};
+    if (role) where.role = role;
+    if (search) {
+      where.OR = [
+        { firstName: { contains: search, mode: "insensitive" } },
+        { lastName: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    const users = await prisma.user.findMany({
+      where,
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        isActive: true,
+        lastLoginAt: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    res.json({ success: true, users });
+  })
+);
+
+// GET /api/admin/users/:id
+router.get(
+  "/users/:id",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        role: true,
+        isActive: true,
+        lastLoginAt: true,
+        createdAt: true,
+        projects: {
+          select: { id: true, name: true, slug: true, status: true },
+          orderBy: { createdAt: "desc" },
+        },
+        tickets: {
+          select: { id: true, title: true, status: true, createdAt: true },
+          orderBy: { createdAt: "desc" },
+          take: 10,
+        },
+      },
+    });
+
+    if (!user) throw new AppError(404, "User not found");
+
+    res.json({ success: true, user });
+  })
+);
+
+const updateUserStatusSchema = z.object({
+  isActive: z.boolean(),
+});
+
+// PATCH /api/admin/users/:id
+// Toggle isActive. An admin cannot deactivate their own account.
+router.patch(
+  "/users/:id",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const body = updateUserStatusSchema.parse(req.body);
+
+    if (req.params.id === req.user!.id && !body.isActive) {
+      throw new AppError(400, "You cannot deactivate your own account");
+    }
+
+    const user = await prisma.user.update({
+      where: { id: req.params.id },
+      data: { isActive: body.isActive },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        isActive: true,
+      },
+    });
+
+    res.json({ success: true, user });
+  })
+);
+
+// POST /api/admin/users/:id/reset-password
+// Sends a password-reset email to the given user via the existing token flow.
+router.post(
+  "/users/:id/reset-password",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = await prisma.user.findUnique({ where: { id: req.params.id } });
+    if (!user) throw new AppError(404, "User not found");
+    if (!user.isActive) throw new AppError(400, "Cannot reset password for a deactivated user");
+
+    const rawToken = randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+
+    await prisma.passwordResetToken.updateMany({
+      where: { userId: user.id, usedAt: null },
+      data: { usedAt: new Date() },
+    });
+
+    const resetToken = await prisma.passwordResetToken.create({
+      data: {
+        tokenHash: createHash("sha256").update(rawToken).digest("hex"),
+        userId: user.id,
+        expiresAt,
+      },
+    });
+
+    const appUrl = (process.env.APP_URL || process.env.CORS_ORIGIN?.split(",")[0] || "http://localhost:3000")
+      .trim()
+      .replace(/\/$/, "");
+
+    const delivery = await sendPasswordResetEmail({
+      to: user.email,
+      resetUrl: `${appUrl}/reset-password?token=${rawToken}`,
+    });
+
+    if (!delivery.success) {
+      await prisma.passwordResetToken.update({
+        where: { id: resetToken.id },
+        data: { usedAt: new Date() },
+      });
+      throw new AppError(502, "Failed to send the reset email. Please try again.");
+    }
+
+    res.json({ success: true, message: `Password reset link sent to ${user.email}.` });
   })
 );
 

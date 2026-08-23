@@ -3,16 +3,20 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { signAccessToken } from "../lib/jwt";
 
 const prismaMock = vi.hoisted(() => ({
-  user: { findUnique: vi.fn() },
+  user: { findUnique: vi.fn(), findMany: vi.fn(), update: vi.fn() },
   enquiry: { findMany: vi.fn(), findUnique: vi.fn(), update: vi.fn() },
   inviteToken: { create: vi.fn() },
   refreshToken: { updateMany: vi.fn(), create: vi.fn(), findUnique: vi.fn() },
   ticket: { groupBy: vi.fn(), findMany: vi.fn() },
   comment: { findMany: vi.fn() },
+  passwordResetToken: { updateMany: vi.fn(), create: vi.fn(), update: vi.fn() },
 }));
 
 vi.mock("../lib/prisma", () => ({ default: prismaMock, prisma: prismaMock }));
-vi.mock("../lib/email", () => ({ sendInviteEmail: vi.fn().mockResolvedValue({ success: true }) }));
+vi.mock("../lib/email", () => ({
+  sendInviteEmail: vi.fn().mockResolvedValue({ success: true }),
+  sendPasswordResetEmail: vi.fn().mockResolvedValue({ success: true }),
+}));
 
 import app from "../app";
 
@@ -156,6 +160,159 @@ describe("admin enquiry routes", () => {
         .set("Authorization", `Bearer ${adminToken()}`);
 
       expect(res.status).toBe(400);
+    });
+  });
+});
+
+describe("admin user management routes", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    prismaMock.refreshToken.updateMany.mockResolvedValue({ count: 0 });
+    prismaMock.refreshToken.create.mockResolvedValue({ id: "r1" });
+    prismaMock.passwordResetToken.updateMany.mockResolvedValue({ count: 0 });
+    prismaMock.passwordResetToken.create.mockResolvedValue({ id: "reset_1" });
+    prismaMock.passwordResetToken.update.mockResolvedValue({ id: "reset_1" });
+  });
+
+  const userFixture = {
+    id: "user_1",
+    email: "jane@example.com",
+    firstName: "Jane",
+    lastName: "Doe",
+    phone: null,
+    role: "CLIENT" as const,
+    isActive: true,
+    lastLoginAt: null,
+    createdAt: new Date(),
+    projects: [],
+    tickets: [],
+  };
+
+  describe("GET /api/admin/users", () => {
+    it("returns all users for admin", async () => {
+      prismaMock.user.findMany.mockResolvedValue([userFixture]);
+
+      const res = await request(app)
+        .get("/api/admin/users")
+        .set("Authorization", `Bearer ${adminToken()}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.users).toHaveLength(1);
+      expect(prismaMock.user.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: {} })
+      );
+    });
+
+    it("filters by role", async () => {
+      prismaMock.user.findMany.mockResolvedValue([]);
+
+      await request(app)
+        .get("/api/admin/users?role=ADMIN")
+        .set("Authorization", `Bearer ${adminToken()}`);
+
+      expect(prismaMock.user.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { role: "ADMIN" } })
+      );
+    });
+
+    it("returns 403 for client role", async () => {
+      const res = await request(app)
+        .get("/api/admin/users")
+        .set("Authorization", `Bearer ${clientToken()}`);
+      expect(res.status).toBe(403);
+    });
+  });
+
+  describe("GET /api/admin/users/:id", () => {
+    it("returns user detail for admin", async () => {
+      prismaMock.user.findUnique.mockResolvedValue(userFixture);
+
+      const res = await request(app)
+        .get("/api/admin/users/user_1")
+        .set("Authorization", `Bearer ${adminToken()}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.user.id).toBe("user_1");
+    });
+
+    it("returns 404 for unknown user", async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+
+      const res = await request(app)
+        .get("/api/admin/users/does-not-exist")
+        .set("Authorization", `Bearer ${adminToken()}`);
+
+      expect(res.status).toBe(404);
+    });
+  });
+
+  describe("PATCH /api/admin/users/:id", () => {
+    it("toggles isActive", async () => {
+      prismaMock.user.update.mockResolvedValue({ ...userFixture, isActive: false });
+
+      const res = await request(app)
+        .patch("/api/admin/users/user_1")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ isActive: false });
+
+      expect(res.status).toBe(200);
+      expect(res.body.user.isActive).toBe(false);
+    });
+
+    it("rejects an admin deactivating their own account", async () => {
+      const res = await request(app)
+        .patch("/api/admin/users/admin_1")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ isActive: false });
+
+      expect(res.status).toBe(400);
+      expect(prismaMock.user.update).not.toHaveBeenCalled();
+    });
+
+    it("allows an admin to reactivate their own account", async () => {
+      prismaMock.user.update.mockResolvedValue({ ...userFixture, id: "admin_1", isActive: true });
+
+      const res = await request(app)
+        .patch("/api/admin/users/admin_1")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ isActive: true });
+
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe("POST /api/admin/users/:id/reset-password", () => {
+    it("issues a reset token and sends the email", async () => {
+      prismaMock.user.findUnique.mockResolvedValue(userFixture);
+
+      const res = await request(app)
+        .post("/api/admin/users/user_1/reset-password")
+        .set("Authorization", `Bearer ${adminToken()}`);
+
+      expect(res.status).toBe(200);
+      expect(prismaMock.passwordResetToken.create).toHaveBeenCalledTimes(1);
+    });
+
+    it("returns 404 for unknown user", async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+
+      const res = await request(app)
+        .post("/api/admin/users/does-not-exist/reset-password")
+        .set("Authorization", `Bearer ${adminToken()}`);
+
+      expect(res.status).toBe(404);
+      expect(prismaMock.passwordResetToken.create).not.toHaveBeenCalled();
+    });
+
+    it("rejects resetting a deactivated user's password", async () => {
+      prismaMock.user.findUnique.mockResolvedValue({ ...userFixture, isActive: false });
+
+      const res = await request(app)
+        .post("/api/admin/users/user_1/reset-password")
+        .set("Authorization", `Bearer ${adminToken()}`);
+
+      expect(res.status).toBe(400);
+      expect(prismaMock.passwordResetToken.create).not.toHaveBeenCalled();
     });
   });
 });
