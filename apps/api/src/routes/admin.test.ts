@@ -10,6 +10,7 @@ const prismaMock = vi.hoisted(() => ({
   ticket: { groupBy: vi.fn(), findMany: vi.fn() },
   comment: { findMany: vi.fn() },
   passwordResetToken: { updateMany: vi.fn(), create: vi.fn(), update: vi.fn() },
+  $transaction: vi.fn((callback: (client: unknown) => unknown) => callback(prismaMock)),
 }));
 
 vi.mock("../lib/prisma", () => ({ default: prismaMock, prisma: prismaMock }));
@@ -247,7 +248,12 @@ describe("admin user management routes", () => {
   });
 
   describe("PATCH /api/admin/users/:id", () => {
-    it("toggles isActive", async () => {
+    const activeActor = { isActive: true };
+
+    it("toggles isActive and revokes the target's live sessions when deactivating", async () => {
+      prismaMock.user.findUnique
+        .mockResolvedValueOnce(activeActor) // actor check
+        .mockResolvedValueOnce({ id: "user_1" }); // target existence check
       prismaMock.user.update.mockResolvedValue({ ...userFixture, isActive: false });
 
       const res = await request(app)
@@ -257,9 +263,28 @@ describe("admin user management routes", () => {
 
       expect(res.status).toBe(200);
       expect(res.body.user.isActive).toBe(false);
+      expect(prismaMock.refreshToken.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: "user_1", revokedAt: null } })
+      );
+    });
+
+    it("does not revoke sessions when reactivating", async () => {
+      prismaMock.user.findUnique
+        .mockResolvedValueOnce(activeActor)
+        .mockResolvedValueOnce({ id: "user_1" });
+      prismaMock.user.update.mockResolvedValue({ ...userFixture, isActive: true });
+
+      await request(app)
+        .patch("/api/admin/users/user_1")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ isActive: true });
+
+      expect(prismaMock.refreshToken.updateMany).not.toHaveBeenCalled();
     });
 
     it("rejects an admin deactivating their own account", async () => {
+      prismaMock.user.findUnique.mockResolvedValueOnce(activeActor);
+
       const res = await request(app)
         .patch("/api/admin/users/admin_1")
         .set("Authorization", `Bearer ${adminToken()}`)
@@ -270,6 +295,9 @@ describe("admin user management routes", () => {
     });
 
     it("allows an admin to reactivate their own account", async () => {
+      prismaMock.user.findUnique
+        .mockResolvedValueOnce(activeActor)
+        .mockResolvedValueOnce({ id: "admin_1" });
       prismaMock.user.update.mockResolvedValue({ ...userFixture, id: "admin_1", isActive: true });
 
       const res = await request(app)
@@ -278,6 +306,32 @@ describe("admin user management routes", () => {
         .send({ isActive: true });
 
       expect(res.status).toBe(200);
+    });
+
+    it("rejects the action when the acting admin is themselves deactivated", async () => {
+      prismaMock.user.findUnique.mockResolvedValueOnce({ isActive: false });
+
+      const res = await request(app)
+        .patch("/api/admin/users/user_1")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ isActive: true });
+
+      expect(res.status).toBe(403);
+      expect(prismaMock.user.update).not.toHaveBeenCalled();
+    });
+
+    it("returns 404 when the target user doesn't exist", async () => {
+      prismaMock.user.findUnique
+        .mockResolvedValueOnce(activeActor)
+        .mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .patch("/api/admin/users/does-not-exist")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ isActive: false });
+
+      expect(res.status).toBe(404);
+      expect(prismaMock.user.update).not.toHaveBeenCalled();
     });
   });
 

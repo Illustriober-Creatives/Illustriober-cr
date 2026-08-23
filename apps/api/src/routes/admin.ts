@@ -186,27 +186,60 @@ const updateUserStatusSchema = z.object({
 
 // PATCH /api/admin/users/:id
 // Toggle isActive. An admin cannot deactivate their own account.
+//
+// Deactivating a user revokes their live refresh tokens, but access tokens
+// are stateless JWTs that authenticate() never re-checks against the DB, so
+// a just-deactivated admin's own access token stays valid for up to its
+// remaining 15-minute lifetime. Without the actor check below, that window
+// would let a deactivated admin call this same route again to reactivate
+// themselves — the isActive flip alone isn't enforced against the actor's
+// own current DB state, only asserted from a JWT that can't reflect it.
 router.patch(
   "/users/:id",
   ...adminOnly,
   asyncHandler(async (req: Request, res: Response) => {
     const body = updateUserStatusSchema.parse(req.body);
 
+    const actor = await prisma.user.findUnique({
+      where: { id: req.user!.id },
+      select: { isActive: true },
+    });
+    if (!actor?.isActive) {
+      throw new AppError(403, "Your account is deactivated");
+    }
+
     if (req.params.id === req.user!.id && !body.isActive) {
       throw new AppError(400, "You cannot deactivate your own account");
     }
 
-    const user = await prisma.user.update({
+    const target = await prisma.user.findUnique({
       where: { id: req.params.id },
-      data: { isActive: body.isActive },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        role: true,
-        isActive: true,
-      },
+      select: { id: true },
+    });
+    if (!target) {
+      throw new AppError(404, "User not found");
+    }
+
+    const user = await prisma.$transaction(async (tx) => {
+      if (!body.isActive) {
+        await tx.refreshToken.updateMany({
+          where: { userId: req.params.id, revokedAt: null },
+          data: { revokedAt: new Date() },
+        });
+      }
+
+      return tx.user.update({
+        where: { id: req.params.id },
+        data: { isActive: body.isActive },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          role: true,
+          isActive: true,
+        },
+      });
     });
 
     res.json({ success: true, user });
