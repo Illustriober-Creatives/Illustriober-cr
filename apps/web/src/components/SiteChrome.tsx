@@ -4,14 +4,11 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-
-const CHROME_LESS_PREFIXES = ["/dashboard", "/admin"];
+import { isAppRoute } from "@/lib/routes";
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const hideChrome = CHROME_LESS_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
-  );
+  const hideChrome = isAppRoute(pathname);
 
   if (hideChrome) {
     return <>{children}</>;

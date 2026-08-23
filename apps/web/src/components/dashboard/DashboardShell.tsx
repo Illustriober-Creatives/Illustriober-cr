@@ -1,7 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { LogOut } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { LogOut, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { DashboardSidebar, type DashboardNavItem } from "./DashboardSidebar";
@@ -17,6 +17,7 @@ interface DashboardShellProps {
 export function DashboardShell({ navItems, eyebrow, children }: DashboardShellProps) {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -24,15 +25,30 @@ export function DashboardShell({ navItems, eyebrow, children }: DashboardShellPr
   };
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
-      <DashboardSidebar navItems={navItems} eyebrow={eyebrow} />
-      <div className="flex min-h-screen flex-1 flex-col">
+    <div className="flex min-h-dvh bg-background text-foreground">
+      <DashboardSidebar
+        navItems={navItems}
+        eyebrow={eyebrow}
+        isOpen={mobileNavOpen}
+        onClose={() => setMobileNavOpen(false)}
+      />
+      <div className="flex flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-glass-border bg-surface px-6 py-4 md:px-8">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">{eyebrow}</p>
-            <p className="mt-0.5 text-sm text-foreground/60">
-              {user ? `Welcome, ${user.firstName}` : "Welcome"}
-            </p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileNavOpen(true)}
+              className="flex items-center justify-center rounded-full border border-glass-border p-2 text-foreground/70 transition-colors hover:bg-glass-bg hover:text-foreground md:hidden"
+              type="button"
+              aria-label="Open navigation menu"
+            >
+              <Menu className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">{eyebrow}</p>
+              <p className="mt-0.5 text-sm text-foreground/60">
+                {user ? `Welcome, ${user.firstName}` : "Welcome"}
+              </p>
+            </div>
           </div>
           <button
             onClick={() => void handleLogout()}
@@ -43,7 +59,13 @@ export function DashboardShell({ navItems, eyebrow, children }: DashboardShellPr
             Sign out
           </button>
         </header>
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        {/* data-app-shell opts this <main> out of the global marketing-navbar
+            padding-top rule in globals.css. overflow-y-auto + min-h-0 together
+            are load-bearing for the internal-scroll height model: min-h-0
+            stops this flex item's min-height:auto from growing past the
+            column's height, which is what lets overflow-y-auto actually
+            scroll internally instead of the whole page scrolling. */}
+        <main data-app-shell className="min-h-0 flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>
   );

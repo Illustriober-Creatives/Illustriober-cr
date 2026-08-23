@@ -277,12 +277,14 @@ html.no-transition *:after {
 }
 
 /* Main content wrapper - Accounts for fixed navbar */
-main {
+/* :not([data-app-shell]) excludes the dashboard/admin app shell's <main>,
+   which sits under its own topbar, not the marketing site's fixed navbar. */
+main:not([data-app-shell]) {
   padding-top: var(--navbar-height);
 }
 
 @media (max-width: 768px) {
-  main {
+  main:not([data-app-shell]) {
     padding-top: var(--navbar-mobile-height);
   }
 }
