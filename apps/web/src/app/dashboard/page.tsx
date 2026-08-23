@@ -1,10 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Container } from "@/components/Container";
-import { SectionWrapper } from "@/components/SectionWrapper";
-import { Button } from "@/components/Button";
+import { FolderKanban, Ticket as TicketIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface Project {
@@ -15,139 +13,138 @@ interface Project {
   createdAt: string;
 }
 
+interface TicketSummary {
+  id: string;
+  status: string;
+}
+
+const INACTIVE_PROJECT_STATUSES = new Set(["COMPLETE", "CANCELLED"]);
+const CLOSED_TICKET_STATUSES = new Set(["RESOLVED", "CLOSED", "REJECTED"]);
+
 export default function DashboardPage() {
-  const router = useRouter();
-  const { user, logout, fetchWithAuth } = useAuth();
+  const { user, fetchWithAuth } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
+  const [tickets, setTickets] = useState<TicketSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadProjects() {
-      if (!user) return;
+    if (!user) return;
+
+    let cancelled = false;
+
+    async function load() {
       try {
-        const res = await fetchWithAuth("/api/projects");
-        if (res.ok) {
-          const data = await res.json();
+        const [projectsRes, ticketsRes] = await Promise.all([
+          fetchWithAuth("/api/projects"),
+          fetchWithAuth("/api/tickets"),
+        ]);
+
+        if (!cancelled && projectsRes.ok) {
+          const data = await projectsRes.json();
           setProjects(data.projects);
         }
+        if (!cancelled && ticketsRes.ok) {
+          const data = await ticketsRes.json();
+          setTickets(data.tickets);
+        }
       } catch (err) {
-        console.error("Failed to load projects", err);
+        console.error("Failed to load dashboard data", err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
-    void loadProjects();
-  }, [user, fetchWithAuth]);
 
-  const handleLogout = async () => {
-    await logout();
-    router.replace("/login");
-  };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [user, fetchWithAuth]);
 
   if (!user) {
     return null;
   }
 
+  const activeProjectCount = projects.filter(
+    (project) => !INACTIVE_PROJECT_STATUSES.has(project.status)
+  ).length;
+  const openTicketCount = tickets.filter(
+    (ticket) => !CLOSED_TICKET_STATUSES.has(ticket.status)
+  ).length;
+
   return (
-    <div className="page-medium">
-      <SectionWrapper spacing="lg">
-        <Container variant="narrow">
-          <div className="mx-auto w-full glass-card rounded-[2rem] border border-zinc-800/80 p-8 md:p-10 lg:p-12">
-            <p className="mb-3 text-sm uppercase tracking-[0.18em] text-orange-500">
-              Dashboard
-            </p>
-            <h1 className="mb-3 text-3xl font-bold text-white md:text-4xl">
-              Welcome, {user.firstName}
-            </h1>
-            <p className="mb-8 text-lg text-zinc-400">
-              Signed in as{" "}
-              <span className="text-zinc-200">{user.email}</span>
-              <span className="text-zinc-500"> · </span>
-              <span className="text-zinc-300">{user.role}</span>
-            </p>
-            <p className="max-w-2xl text-base leading-relaxed text-zinc-500 md:text-lg">
-              Project tracking, tickets, and deliverables will appear here.
-              Click a project to see its progress and tickets.
-            </p>
+    <div className="flex flex-col gap-8 p-8">
+      <div>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Dashboard</p>
+        <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">
+          Welcome, {user.firstName}
+        </h1>
+        <p className="mt-2 max-w-2xl text-base leading-relaxed text-foreground/60">
+          Track your projects and support tickets in one place.
+        </p>
+      </div>
 
-            <div className="mt-12 space-y-4">
-              <h2 className="text-xl font-bold text-white">Your Projects</h2>
-              {loading ? (
-                <p className="text-zinc-500">Loading your projects...</p>
-              ) : projects.length === 0 ? (
-                <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-8 text-center">
-                  <p className="text-zinc-500">No active projects found.</p>
-                </div>
-              ) : (
-                <div className="grid gap-4">
-                  {projects.map((project) => (
-                    <div
-                      key={project.id}
-                      className="group flex items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 transition-all hover:border-zinc-700 hover:bg-zinc-900/50"
-                    >
-                      <div>
-                        <h3 className="text-lg font-semibold text-white group-hover:text-orange-500 transition-colors">
-                          {project.name}
-                        </h3>
-                        <p className="text-sm text-zinc-500 uppercase tracking-wider">
-                          Status: <span className="text-zinc-300">{project.status}</span>
-                        </p>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        className="rounded-xl text-xs"
-                        onClick={() => router.push(`/dashboard/projects/${project.slug}`)}
-                      >
-                        View Project
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Button
-                type="button"
-                variant="primary"
-                className="rounded-xl px-8"
-                onClick={() => router.push("/dashboard/tickets")}
-              >
-                Support Tickets
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                className="rounded-xl px-8"
-                onClick={() => router.push("/dashboard/tickets/new")}
-              >
-                Submit New Ticket
-              </Button>
-            </div>
-
-            <div className="mt-10 flex flex-wrap gap-4 border-t border-zinc-800/50 pt-10">
-              <Button
-                type="button"
-                variant="secondary"
-                className="rounded-xl"
-                onClick={() => router.push("/")}
-              >
-                Back to site
-              </Button>
-              <Button
-                type="button"
-                variant="primary"
-                className="rounded-xl"
-                onClick={() => void handleLogout()}
-              >
-                Sign out
-              </Button>
-            </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="rounded-xl border border-glass-border bg-surface px-5 py-4">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-foreground/40">
+            <FolderKanban className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+            Active Projects
           </div>
-        </Container>
-      </SectionWrapper>
+          <p className="mt-2 text-3xl font-bold tabular-nums text-foreground">
+            {loading ? "–" : activeProjectCount}
+          </p>
+        </div>
+        <div className="rounded-xl border border-glass-border bg-surface px-5 py-4">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-foreground/40">
+            <TicketIcon className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+            Open Tickets
+          </div>
+          <p className="mt-2 text-3xl font-bold tabular-nums text-foreground">
+            {loading ? "–" : openTicketCount}
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <h2 className="mb-4 text-xl font-bold text-foreground">Your Projects</h2>
+        {loading ? (
+          <p className="text-foreground/50">Loading your projects...</p>
+        ) : projects.length === 0 ? (
+          <div className="rounded-xl border border-glass-border bg-surface p-8 text-center">
+            <p className="text-foreground/50">No active projects yet.</p>
+          </div>
+        ) : (
+          <div className="grid gap-3">
+            {projects.map((project) => (
+              <Link
+                key={project.id}
+                href={`/dashboard/projects/${project.slug}`}
+                className="group flex items-center justify-between rounded-xl border border-glass-border bg-surface p-6 transition-colors hover:border-accent/40"
+              >
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground transition-colors group-hover:text-accent">
+                    {project.name}
+                  </h3>
+                  <p className="mt-1 text-xs font-bold uppercase tracking-widest text-foreground/40">
+                    {project.status.replace(/_/g, " ")}
+                  </p>
+                </div>
+                <span className="text-sm font-semibold text-accent opacity-0 transition-opacity group-hover:opacity-100">
+                  View →
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-xl border border-glass-border bg-surface p-6">
+        <h2 className="text-sm font-bold uppercase tracking-widest text-foreground/40">
+          Recent Activity
+        </h2>
+        <p className="mt-2 text-sm text-foreground/60">
+          Project updates from your team will appear here as they happen.
+        </p>
+      </div>
     </div>
   );
 }
