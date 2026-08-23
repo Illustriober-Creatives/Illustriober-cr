@@ -38,6 +38,7 @@ router.get(
     const project = await prisma.project.findUnique({
       where: { slug },
       include: {
+        client: { select: { firstName: true, lastName: true, email: true } },
         milestones: { orderBy: { order: "asc" } },
         tickets: { orderBy: { createdAt: "desc" }, take: 5 },
       }

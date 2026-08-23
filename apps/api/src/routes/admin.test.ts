@@ -10,6 +10,10 @@ const prismaMock = vi.hoisted(() => ({
   ticket: { groupBy: vi.fn(), findMany: vi.fn() },
   comment: { findMany: vi.fn() },
   passwordResetToken: { updateMany: vi.fn(), create: vi.fn(), update: vi.fn() },
+  milestone: { create: vi.fn(), findUnique: vi.fn(), update: vi.fn() },
+  message: { create: vi.fn() },
+  notification: { create: vi.fn() },
+  project: { findUnique: vi.fn() },
   $transaction: vi.fn((callback: (client: unknown) => unknown) => callback(prismaMock)),
 }));
 
@@ -367,6 +371,178 @@ describe("admin user management routes", () => {
 
       expect(res.status).toBe(400);
       expect(prismaMock.passwordResetToken.create).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe("admin project management routes", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    prismaMock.refreshToken.updateMany.mockResolvedValue({ count: 0 });
+    prismaMock.refreshToken.create.mockResolvedValue({ id: "r1" });
+  });
+
+  const projectFixture = {
+    id: "proj_1",
+    slug: "my-project",
+    name: "My Project",
+    clientId: "client_1",
+  };
+
+  describe("POST /api/admin/projects/:slug/milestones", () => {
+    it("creates a milestone for an existing project", async () => {
+      prismaMock.project.findUnique.mockResolvedValue(projectFixture);
+      prismaMock.milestone.create.mockResolvedValue({
+        id: "ms_1",
+        projectId: "proj_1",
+        title: "Design phase",
+        order: 0,
+        status: "PENDING",
+      });
+
+      const res = await request(app)
+        .post("/api/admin/projects/my-project/milestones")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ title: "Design phase", order: 0 });
+
+      expect(res.status).toBe(201);
+      expect(res.body.milestone.title).toBe("Design phase");
+      expect(prismaMock.milestone.create).toHaveBeenCalledWith(
+        expect.objectContaining({ data: expect.objectContaining({ projectId: "proj_1", title: "Design phase" }) })
+      );
+    });
+
+    it("returns 404 for an unknown project slug", async () => {
+      prismaMock.project.findUnique.mockResolvedValue(null);
+
+      const res = await request(app)
+        .post("/api/admin/projects/does-not-exist/milestones")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ title: "Design phase", order: 0 });
+
+      expect(res.status).toBe(404);
+      expect(prismaMock.milestone.create).not.toHaveBeenCalled();
+    });
+
+    it("rejects a missing title", async () => {
+      prismaMock.project.findUnique.mockResolvedValue(projectFixture);
+
+      const res = await request(app)
+        .post("/api/admin/projects/my-project/milestones")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ order: 0 });
+
+      expect(res.status).toBe(400);
+      expect(prismaMock.milestone.create).not.toHaveBeenCalled();
+    });
+
+    it("returns 403 for client role", async () => {
+      const res = await request(app)
+        .post("/api/admin/projects/my-project/milestones")
+        .set("Authorization", `Bearer ${clientToken()}`)
+        .send({ title: "Design phase", order: 0 });
+
+      expect(res.status).toBe(403);
+    });
+  });
+
+  describe("PATCH /api/admin/milestones/:id", () => {
+    it("updates a milestone's status and stamps completedAt when marked COMPLETE", async () => {
+      prismaMock.milestone.findUnique.mockResolvedValue({ id: "ms_1", status: "IN_PROGRESS" });
+      prismaMock.milestone.update.mockResolvedValue({ id: "ms_1", status: "COMPLETE" });
+
+      const res = await request(app)
+        .patch("/api/admin/milestones/ms_1")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ status: "COMPLETE" });
+
+      expect(res.status).toBe(200);
+      expect(prismaMock.milestone.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ status: "COMPLETE", completedAt: expect.any(Date) }),
+        })
+      );
+    });
+
+    it("clears completedAt when status moves away from COMPLETE", async () => {
+      prismaMock.milestone.findUnique.mockResolvedValue({ id: "ms_1", status: "COMPLETE" });
+      prismaMock.milestone.update.mockResolvedValue({ id: "ms_1", status: "IN_PROGRESS" });
+
+      await request(app)
+        .patch("/api/admin/milestones/ms_1")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ status: "IN_PROGRESS" });
+
+      expect(prismaMock.milestone.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ status: "IN_PROGRESS", completedAt: null }),
+        })
+      );
+    });
+
+    it("returns 404 for an unknown milestone", async () => {
+      prismaMock.milestone.findUnique.mockResolvedValue(null);
+
+      const res = await request(app)
+        .patch("/api/admin/milestones/does-not-exist")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ status: "COMPLETE" });
+
+      expect(res.status).toBe(404);
+      expect(prismaMock.milestone.update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("POST /api/admin/projects/:slug/updates", () => {
+    it("creates a broadcast message and a notification for the client", async () => {
+      prismaMock.project.findUnique.mockResolvedValue(projectFixture);
+      prismaMock.message.create.mockResolvedValue({
+        id: "msg_1",
+        projectId: "proj_1",
+        senderId: "admin_1",
+        receiverId: null,
+        content: "Kicked off the design phase.",
+      });
+      prismaMock.notification.create.mockResolvedValue({ id: "notif_1" });
+
+      const res = await request(app)
+        .post("/api/admin/projects/my-project/updates")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ content: "Kicked off the design phase." });
+
+      expect(res.status).toBe(201);
+      expect(prismaMock.message.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ projectId: "proj_1", senderId: "admin_1", receiverId: null }),
+        })
+      );
+      expect(prismaMock.notification.create).toHaveBeenCalledWith(
+        expect.objectContaining({ data: expect.objectContaining({ userId: "client_1" }) })
+      );
+    });
+
+    it("returns 404 for an unknown project slug", async () => {
+      prismaMock.project.findUnique.mockResolvedValue(null);
+
+      const res = await request(app)
+        .post("/api/admin/projects/does-not-exist/updates")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ content: "Update" });
+
+      expect(res.status).toBe(404);
+      expect(prismaMock.message.create).not.toHaveBeenCalled();
+    });
+
+    it("rejects empty content", async () => {
+      prismaMock.project.findUnique.mockResolvedValue(projectFixture);
+
+      const res = await request(app)
+        .post("/api/admin/projects/my-project/updates")
+        .set("Authorization", `Bearer ${adminToken()}`)
+        .send({ content: "" });
+
+      expect(res.status).toBe(400);
+      expect(prismaMock.message.create).not.toHaveBeenCalled();
     });
   });
 });

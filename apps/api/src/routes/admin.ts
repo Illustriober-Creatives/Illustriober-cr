@@ -332,6 +332,109 @@ router.post(
   })
 );
 
+const createMilestoneSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").max(200),
+  description: z.string().trim().max(2000).optional(),
+  order: z.number().int().min(0),
+  dueDate: z.string().datetime().optional(),
+});
+
+// POST /api/admin/projects/:slug/milestones
+router.post(
+  "/projects/:slug/milestones",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const project = await prisma.project.findUnique({ where: { slug: req.params.slug } });
+    if (!project) throw new AppError(404, "Project not found");
+
+    const body = createMilestoneSchema.parse(req.body);
+
+    const milestone = await prisma.milestone.create({
+      data: {
+        projectId: project.id,
+        title: body.title,
+        description: body.description,
+        order: body.order,
+        dueDate: body.dueDate ? new Date(body.dueDate) : undefined,
+      },
+    });
+
+    res.status(201).json({ success: true, milestone });
+  })
+);
+
+const updateMilestoneSchema = z.object({
+  title: z.string().trim().min(1).max(200).optional(),
+  description: z.string().trim().max(2000).optional(),
+  status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETE"]).optional(),
+  order: z.number().int().min(0).optional(),
+  dueDate: z.string().datetime().nullable().optional(),
+});
+
+// PATCH /api/admin/milestones/:id
+router.patch(
+  "/milestones/:id",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const body = updateMilestoneSchema.parse(req.body);
+
+    const existing = await prisma.milestone.findUnique({ where: { id: req.params.id } });
+    if (!existing) throw new AppError(404, "Milestone not found");
+
+    const milestone = await prisma.milestone.update({
+      where: { id: req.params.id },
+      data: {
+        ...(body.title !== undefined ? { title: body.title } : {}),
+        ...(body.description !== undefined ? { description: body.description } : {}),
+        ...(body.order !== undefined ? { order: body.order } : {}),
+        ...(body.dueDate !== undefined ? { dueDate: body.dueDate ? new Date(body.dueDate) : null } : {}),
+        ...(body.status !== undefined
+          ? { status: body.status, completedAt: body.status === "COMPLETE" ? new Date() : null }
+          : {}),
+      },
+    });
+
+    res.json({ success: true, milestone });
+  })
+);
+
+const postProjectUpdateSchema = z.object({
+  content: z.string().trim().min(1, "Update content is required").max(4000),
+});
+
+// POST /api/admin/projects/:slug/updates
+// Posts a broadcast update (Message, receiverId: null) and notifies the client.
+router.post(
+  "/projects/:slug/updates",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const project = await prisma.project.findUnique({ where: { slug: req.params.slug } });
+    if (!project) throw new AppError(404, "Project not found");
+
+    const body = postProjectUpdateSchema.parse(req.body);
+
+    const message = await prisma.message.create({
+      data: {
+        projectId: project.id,
+        senderId: req.user!.id,
+        receiverId: null,
+        content: body.content,
+      },
+    });
+
+    await prisma.notification.create({
+      data: {
+        userId: project.clientId,
+        title: `New update on ${project.name}`,
+        body: body.content.length > 140 ? `${body.content.slice(0, 137)}...` : body.content,
+        link: `/dashboard/projects/${project.slug}`,
+      },
+    });
+
+    res.status(201).json({ success: true, update: message });
+  })
+);
+
 // GET /api/admin/dashboard
 router.get(
   "/dashboard",
