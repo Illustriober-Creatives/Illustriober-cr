@@ -460,6 +460,173 @@ router.post(
   })
 );
 
+const createTaskSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").max(200),
+  description: z.string().trim().max(2000).optional(),
+  dueDate: z.string().datetime().optional(),
+});
+
+const updateTaskSchema = z.object({
+  title: z.string().trim().min(1).max(200).optional(),
+  description: z.string().trim().max(2000).optional(),
+  status: z.enum(["TODO", "IN_PROGRESS", "DONE"]).optional(),
+  dueDate: z.string().datetime().nullable().optional(),
+});
+
+const taskStatusFilterSchema = z.enum(["TODO", "IN_PROGRESS", "DONE"]).optional();
+
+// GET /api/admin/tasks?status=TODO
+router.get(
+  "/tasks",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const status = taskStatusFilterSchema.parse(req.query.status || undefined);
+    const where: Record<string, unknown> = {};
+    if (status) where.status = status;
+
+    const tasks = await prisma.task.findMany({
+      where,
+      include: { createdBy: { select: { firstName: true, lastName: true } } },
+      orderBy: [{ status: "asc" }, { createdAt: "desc" }],
+    });
+
+    res.json({ success: true, tasks });
+  })
+);
+
+// POST /api/admin/tasks
+router.post(
+  "/tasks",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    let body: z.infer<typeof createTaskSchema>;
+    try {
+      body = createTaskSchema.parse(req.body);
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        throw new AppError(400, e.issues.map((issue) => issue.message).join(", "));
+      }
+      throw e;
+    }
+
+    const task = await prisma.task.create({
+      data: {
+        title: body.title,
+        description: body.description,
+        dueDate: body.dueDate ? new Date(body.dueDate) : undefined,
+        createdById: req.user!.id,
+      },
+      include: { createdBy: { select: { firstName: true, lastName: true } } },
+    });
+
+    res.status(201).json({ success: true, task });
+  })
+);
+
+// PATCH /api/admin/tasks/:id
+router.patch(
+  "/tasks/:id",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    let body: z.infer<typeof updateTaskSchema>;
+    try {
+      body = updateTaskSchema.parse(req.body);
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        throw new AppError(400, e.issues.map((issue) => issue.message).join(", "));
+      }
+      throw e;
+    }
+
+    const existing = await prisma.task.findUnique({ where: { id: req.params.id } });
+    if (!existing) throw new AppError(404, "Task not found");
+
+    const task = await prisma.task.update({
+      where: { id: req.params.id },
+      data: {
+        ...(body.title !== undefined ? { title: body.title } : {}),
+        ...(body.description !== undefined ? { description: body.description } : {}),
+        ...(body.status !== undefined ? { status: body.status } : {}),
+        ...(body.dueDate !== undefined ? { dueDate: body.dueDate ? new Date(body.dueDate) : null } : {}),
+      },
+      include: { createdBy: { select: { firstName: true, lastName: true } } },
+    });
+
+    res.json({ success: true, task });
+  })
+);
+
+// DELETE /api/admin/tasks/:id
+router.delete(
+  "/tasks/:id",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const existing = await prisma.task.findUnique({ where: { id: req.params.id } });
+    if (!existing) throw new AppError(404, "Task not found");
+
+    await prisma.task.delete({ where: { id: req.params.id } });
+
+    res.json({ success: true });
+  })
+);
+
+const upsertCompanyProfileSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(200),
+  tagline: z.string().trim().max(300).optional(),
+  contactEmail: z.string().trim().email("Invalid email address"),
+  phone: z.string().trim().max(30).optional(),
+  address: z.string().trim().max(500).optional(),
+});
+
+// GET /api/admin/company
+router.get(
+  "/company",
+  ...adminOnly,
+  asyncHandler(async (_req: Request, res: Response) => {
+    const company = await prisma.companyProfile.findUnique({ where: { id: "singleton" } });
+    res.json({ success: true, company });
+  })
+);
+
+// PATCH /api/admin/company
+// Upserts the singleton row — the first save creates it.
+router.patch(
+  "/company",
+  ...adminOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    let body: z.infer<typeof upsertCompanyProfileSchema>;
+    try {
+      body = upsertCompanyProfileSchema.parse(req.body);
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        throw new AppError(400, e.issues.map((issue) => issue.message).join(", "));
+      }
+      throw e;
+    }
+
+    const company = await prisma.companyProfile.upsert({
+      where: { id: "singleton" },
+      create: {
+        id: "singleton",
+        name: body.name,
+        tagline: body.tagline,
+        contactEmail: body.contactEmail,
+        phone: body.phone,
+        address: body.address,
+      },
+      update: {
+        name: body.name,
+        tagline: body.tagline,
+        contactEmail: body.contactEmail,
+        phone: body.phone,
+        address: body.address,
+      },
+    });
+
+    res.json({ success: true, company });
+  })
+);
+
 // GET /api/admin/dashboard
 router.get(
   "/dashboard",
