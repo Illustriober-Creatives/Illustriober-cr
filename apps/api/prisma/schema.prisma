@@ -407,6 +407,7 @@ model Task {
   updatedAt   DateTime   @updatedAt
 
   @@index([status])
+  @@index([createdById])
 }
 
 model CompanyProfile {
