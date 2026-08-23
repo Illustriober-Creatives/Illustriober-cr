@@ -28,6 +28,7 @@ export default function ClientTicketDetailPage() {
 
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadTicket() {
@@ -38,9 +39,11 @@ export default function ClientTicketDetailPage() {
           setTicket(data.ticket);
         } else if (res.status === 403) {
           router.replace("/dashboard/tickets");
+        } else {
+          setError(res.status === 404 ? "Ticket not found." : "Failed to load ticket.");
         }
-      } catch (err) {
-        console.error("Failed to load ticket", err);
+      } catch {
+        setError("Failed to load ticket.");
       } finally {
         setLoading(false);
       }
@@ -51,7 +54,20 @@ export default function ClientTicketDetailPage() {
   if (loading) {
     return <div className="p-8 text-foreground/50">Loading ticket...</div>;
   }
-  if (!ticket) return null;
+
+  if (error || !ticket) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 p-8">
+        <p className="text-foreground/60">{error ?? "Ticket not found."}</p>
+        <Link
+          href="/dashboard/tickets"
+          className="rounded-full border border-glass-border px-5 py-2 text-sm font-semibold text-foreground/70 transition-colors hover:bg-glass-bg hover:text-foreground"
+        >
+          Back to Tickets
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6 p-8">

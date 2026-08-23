@@ -22,6 +22,7 @@ export default function ClientTicketsPage() {
   const router = useRouter();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function loadTickets() {
@@ -30,9 +31,11 @@ export default function ClientTicketsPage() {
         if (res.ok) {
           const data = await res.json();
           setTickets(data.tickets);
+        } else {
+          setError(true);
         }
-      } catch (err) {
-        console.error("Failed to load tickets", err);
+      } catch {
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -68,7 +71,11 @@ export default function ClientTicketsPage() {
       </div>
 
       <div className="grid gap-3">
-        {tickets.length === 0 ? (
+        {error ? (
+          <div className="rounded-xl border border-glass-border bg-surface p-12 text-center">
+            <p className="text-foreground/50">Couldn&apos;t load your tickets. Refresh to try again.</p>
+          </div>
+        ) : tickets.length === 0 ? (
           <div className="rounded-xl border border-glass-border bg-surface p-12 text-center">
             <p className="text-foreground/50">No tickets submitted yet. Have a bug or a feature request?</p>
             <button

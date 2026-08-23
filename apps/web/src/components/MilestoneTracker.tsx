@@ -16,8 +16,8 @@ interface MilestoneTrackerProps {
 
 const STATUS_CONFIG: Record<MilestoneStatus, { ring: string; bg: string; text: string }> = {
   COMPLETE: { ring: "ring-accent", bg: "bg-accent", text: "text-accent" },
-  IN_PROGRESS: { ring: "ring-blue-400", bg: "bg-blue-400/20", text: "text-blue-400" },
-  PENDING: { ring: "ring-glass-border", bg: "bg-glass-bg", text: "text-foreground/40" },
+  IN_PROGRESS: { ring: "ring-blue-400", bg: "bg-blue-400/20", text: "text-blue-700" },
+  PENDING: { ring: "ring-glass-border", bg: "bg-glass-bg", text: "text-foreground/70" },
 };
 
 export function MilestoneTracker({ milestones }: MilestoneTrackerProps) {

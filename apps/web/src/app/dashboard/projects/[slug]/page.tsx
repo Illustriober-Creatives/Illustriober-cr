@@ -67,7 +67,9 @@ export default function ProjectDetailPage() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [ticketsError, setTicketsError] = useState(false);
   const [updates, setUpdates] = useState<ProjectUpdate[]>([]);
+  const [updatesError, setUpdatesError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -91,11 +93,15 @@ export default function ProjectDetailPage() {
         if (ticketRes.ok) {
           const ticketData = await ticketRes.json();
           setTickets(ticketData.tickets);
+        } else {
+          setTicketsError(true);
         }
 
         if (updatesRes.ok) {
           const updatesData = await updatesRes.json();
           setUpdates(updatesData.updates);
+        } else {
+          setUpdatesError(true);
         }
       } catch {
         setError("Failed to load project.");
@@ -181,7 +187,11 @@ export default function ProjectDetailPage() {
             </button>
           </div>
 
-          {tickets.length === 0 ? (
+          {ticketsError ? (
+            <div className="rounded-xl border border-glass-border bg-surface p-8 text-center">
+              <p className="text-foreground/50">Couldn&apos;t load tickets. Refresh to try again.</p>
+            </div>
+          ) : tickets.length === 0 ? (
             <div className="rounded-xl border border-glass-border bg-surface p-8 text-center">
               <p className="text-foreground/50">No tickets yet.</p>
               <p className="mt-1 text-sm text-foreground/40">
@@ -244,7 +254,9 @@ export default function ProjectDetailPage() {
           <MessageSquare className="h-4 w-4 text-accent" aria-hidden="true" />
           Updates
         </h2>
-        {updates.length === 0 ? (
+        {updatesError ? (
+          <p className="text-sm text-foreground/50">Couldn&apos;t load updates. Refresh to try again.</p>
+        ) : updates.length === 0 ? (
           <p className="text-sm text-foreground/50">
             Updates from your project team will appear here as they happen.
           </p>
