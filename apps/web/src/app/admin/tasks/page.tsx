@@ -30,6 +30,7 @@ const STATUS_LABELS: Record<TaskStatus, string> = {
   IN_PROGRESS: "In Progress",
   DONE: "Done",
 };
+const STATUS_ORDER: Record<TaskStatus, number> = { TODO: 0, IN_PROGRESS: 1, DONE: 2 };
 
 export default function AdminTasksPage() {
   const { fetchWithAuth } = useAuth();
@@ -41,25 +42,31 @@ export default function AdminTasksPage() {
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
 
-  const load = async () => {
-    try {
-      const res = await fetchWithAuth("/api/admin/tasks");
-      if (res.ok) {
-        const data = await res.json();
-        setTasks(data.tasks);
-        setError(false);
-      } else {
-        setError(true);
-      }
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      try {
+        const res = await fetchWithAuth("/api/admin/tasks");
+        if (cancelled) return;
+        if (res.ok) {
+          const data = await res.json();
+          setTasks(data.tasks);
+          setError(false);
+        } else {
+          setError(true);
+        }
+      } catch {
+        if (!cancelled) setError(true);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
     void load();
+    return () => {
+      cancelled = true;
+    };
   }, [fetchWithAuth]);
 
   const handleAddTask = async (event: FormEvent) => {
@@ -93,8 +100,16 @@ export default function AdminTasksPage() {
       body: JSON.stringify({ status }),
     });
     if (!res.ok) return;
-    const data = await res.json();
-    setTasks((current) => current.map((t) => (t.id === taskId ? data.task : t)));
+    const data = (await res.json()) as { task: Task };
+    // Re-sort so a status change moves the task into its new group
+    // immediately, matching the server's own [status asc, createdAt desc]
+    // ordering; sort() is stable, so relative order within a status is
+    // preserved without needing createdAt on the client.
+    setTasks((current) =>
+      current
+        .map((t) => (t.id === taskId ? data.task : t))
+        .sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status])
+    );
   };
 
   const handleDelete = async (taskId: string) => {
