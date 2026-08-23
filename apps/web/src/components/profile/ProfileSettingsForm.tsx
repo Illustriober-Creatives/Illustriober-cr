@@ -129,10 +129,14 @@ export function ProfileSettingsForm() {
         <h2 className="text-lg font-bold text-foreground">Personal Details</h2>
         <form className="mt-4 flex flex-col gap-4" onSubmit={(e) => void handleProfileSubmit(e)}>
           <div>
-            <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
+            <label
+              htmlFor="profile-email"
+              className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/70"
+            >
               Email
             </label>
             <input
+              id="profile-email"
               type="email"
               value={user.email}
               disabled
@@ -141,10 +145,14 @@ export function ProfileSettingsForm() {
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
+              <label
+                htmlFor="profile-firstName"
+                className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/70"
+              >
                 First Name
               </label>
               <input
+                id="profile-firstName"
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
@@ -153,10 +161,14 @@ export function ProfileSettingsForm() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
+              <label
+                htmlFor="profile-lastName"
+                className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/70"
+              >
                 Last Name
               </label>
               <input
+                id="profile-lastName"
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
@@ -166,10 +178,14 @@ export function ProfileSettingsForm() {
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
+            <label
+              htmlFor="profile-phone"
+              className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/70"
+            >
               Phone
             </label>
             <input
+              id="profile-phone"
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
@@ -196,10 +212,14 @@ export function ProfileSettingsForm() {
         <h2 className="text-lg font-bold text-foreground">Change Password</h2>
         <form className="mt-4 flex flex-col gap-4" onSubmit={(e) => void handlePasswordSubmit(e)}>
           <div>
-            <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
+            <label
+              htmlFor="profile-currentPassword"
+              className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/70"
+            >
               Current Password
             </label>
             <input
+              id="profile-currentPassword"
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
@@ -209,10 +229,14 @@ export function ProfileSettingsForm() {
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
+              <label
+                htmlFor="profile-newPassword"
+                className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/70"
+              >
                 New Password
               </label>
               <input
+                id="profile-newPassword"
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
@@ -222,10 +246,14 @@ export function ProfileSettingsForm() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
+              <label
+                htmlFor="profile-confirmPassword"
+                className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/70"
+              >
                 Confirm New Password
               </label>
               <input
+                id="profile-confirmPassword"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
