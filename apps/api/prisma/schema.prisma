@@ -75,6 +75,12 @@ enum FileCategory {
   INVOICE
 }
 
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
 // ─────────────────────────────────────────
 // USERS
 // ─────────────────────────────────────────
@@ -105,6 +111,7 @@ model User {
   passwordResetTokens PasswordResetToken[]
   inviteTokens      InviteToken[]
   sentMessages      Message[]       @relation("SentMessages")
+  tasksCreated      Task[]
 
   @@index([email])
   @@index([role])
@@ -382,4 +389,32 @@ model PortfolioEntry {
 
   @@index([featured])
   @@index([order])
+}
+
+// ─────────────────────────────────────────
+// INTERNAL OPS (admin-only, not client-facing)
+// ─────────────────────────────────────────
+
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String?    @db.Text
+  status      TaskStatus @default(TODO)
+  dueDate     DateTime?
+  createdById String
+  createdBy   User       @relation(fields: [createdById], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([status])
+}
+
+model CompanyProfile {
+  id           String   @id @default("singleton")
+  name         String
+  tagline      String?
+  contactEmail String
+  phone        String?
+  address      String?
+  updatedAt    DateTime @updatedAt
 }
