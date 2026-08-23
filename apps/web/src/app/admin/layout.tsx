@@ -1,14 +1,23 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { LayoutDashboard, Mail, FolderKanban, Ticket } from "lucide-react";
 import { AdminGuard } from "@/components/admin/AdminGuard";
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { DashboardShell, type DashboardNavItem } from "@/components/dashboard/DashboardShell";
+
+const ADMIN_NAV: DashboardNavItem[] = [
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/enquiries", label: "Enquiries", icon: Mail },
+  { href: "/admin/projects", label: "Projects", icon: FolderKanban },
+  { href: "/admin/tickets", label: "Tickets", icon: Ticket },
+];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <AdminGuard>
-      <div className="flex h-screen bg-background">
-        <AdminSidebar />
-        <main className="flex-1 overflow-y-auto">{children}</main>
-      </div>
+      <DashboardShell navItems={ADMIN_NAV} eyebrow="Admin">
+        {children}
+      </DashboardShell>
     </AdminGuard>
   );
 }

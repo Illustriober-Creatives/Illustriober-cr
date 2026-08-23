@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { DashboardSidebar, type DashboardNavItem } from "./DashboardSidebar";
 
+export type { DashboardNavItem };
+
 interface DashboardShellProps {
   navItems: DashboardNavItem[];
   eyebrow: string;
