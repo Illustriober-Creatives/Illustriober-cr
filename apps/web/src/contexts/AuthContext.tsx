@@ -208,7 +208,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const res = await fetchWithAuth("/api/auth/me");
       if (!res.ok) {
-        clearSession();
+        // Only a genuine "this token is invalid" response should sign the
+        // user out. Any other failure (a transient 5xx, a rate limit) should
+        // leave the existing session alone rather than treating "the server
+        // had a bad moment" as "you are logged out."
+        if (res.status === 401) {
+          clearSession();
+        }
         return;
       }
 
