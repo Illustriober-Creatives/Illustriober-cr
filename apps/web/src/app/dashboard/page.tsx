@@ -24,6 +24,7 @@ const CLOSED_TICKET_STATUSES = new Set(["RESOLVED", "CLOSED", "REJECTED"]);
 export default function DashboardPage() {
   const { user, fetchWithAuth } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
+  const [projectsError, setProjectsError] = useState(false);
   const [tickets, setTickets] = useState<TicketSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,16 +40,21 @@ export default function DashboardPage() {
           fetchWithAuth("/api/tickets"),
         ]);
 
-        if (!cancelled && projectsRes.ok) {
+        if (cancelled) return;
+
+        if (projectsRes.ok) {
           const data = await projectsRes.json();
           setProjects(data.projects);
+        } else {
+          setProjectsError(true);
         }
-        if (!cancelled && ticketsRes.ok) {
+        if (ticketsRes.ok) {
           const data = await ticketsRes.json();
           setTickets(data.tickets);
         }
       } catch (err) {
         console.error("Failed to load dashboard data", err);
+        if (!cancelled) setProjectsError(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -108,6 +114,10 @@ export default function DashboardPage() {
         <h2 className="mb-4 text-xl font-bold text-foreground">Your Projects</h2>
         {loading ? (
           <p className="text-foreground/50">Loading your projects...</p>
+        ) : projectsError ? (
+          <div className="rounded-xl border border-glass-border bg-surface p-8 text-center">
+            <p className="text-foreground/50">Couldn&apos;t load your projects. Refresh to try again.</p>
+          </div>
         ) : projects.length === 0 ? (
           <div className="rounded-xl border border-glass-border bg-surface p-8 text-center">
             <p className="text-foreground/50">No active projects yet.</p>

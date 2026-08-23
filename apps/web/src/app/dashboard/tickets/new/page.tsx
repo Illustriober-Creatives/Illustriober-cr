@@ -88,7 +88,7 @@ export default function NewTicketPage() {
               <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
               Back to Tickets
             </Link>
-            <h1 className="text-3xl font-bold text-white">Submit Support Ticket</h1>
+            <h1 className="text-3xl font-bold text-foreground">Submit Support Ticket</h1>
             <p className="mt-2 text-zinc-500">Report a bug, request a feature, or ask a technical question.</p>
           </div>
 

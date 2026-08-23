@@ -82,7 +82,7 @@ export default function NewTicketPage() {
         </Link>
 
         <p className="mb-1 text-sm uppercase tracking-[0.18em] text-orange-500">New Ticket</p>
-        <h1 className="mb-8 text-3xl font-bold text-white">Submit a ticket</h1>
+        <h1 className="mb-8 text-3xl font-bold text-foreground">Submit a ticket</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (

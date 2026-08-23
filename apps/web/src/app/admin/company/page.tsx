@@ -24,6 +24,7 @@ export default function AdminCompanyPage() {
   const { fetchWithAuth } = useAuth();
 
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [name, setName] = useState("");
   const [tagline, setTagline] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -40,7 +41,8 @@ export default function AdminCompanyPage() {
     async function load() {
       try {
         const res = await fetchWithAuth("/api/admin/company");
-        if (res.ok && !cancelled) {
+        if (cancelled) return;
+        if (res.ok) {
           const data = (await res.json()) as { company: CompanyProfile | null };
           if (data.company) {
             setName(data.company.name);
@@ -49,7 +51,11 @@ export default function AdminCompanyPage() {
             setPhone(data.company.phone ?? "");
             setAddress(data.company.address ?? "");
           }
+        } else {
+          setLoadError(true);
         }
+      } catch {
+        if (!cancelled) setLoadError(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -98,6 +104,10 @@ export default function AdminCompanyPage() {
 
       {loading ? (
         <p className="text-foreground/60">Loading...</p>
+      ) : loadError ? (
+        <div className="max-w-xl rounded-xl border border-glass-border bg-surface p-8 text-center">
+          <p className="text-foreground/60">Couldn&apos;t load company profile. Refresh to try again.</p>
+        </div>
       ) : (
         <div className="max-w-xl rounded-xl border border-glass-border bg-surface p-6">
           <form onSubmit={(e) => void handleSubmit(e)} className="flex flex-col gap-4">
