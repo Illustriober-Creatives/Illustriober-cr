@@ -22,6 +22,7 @@ import adminRoutes from "./routes/admin";
 import projectRoutes from "./routes/projects";
 import ticketRoutes from "./routes/tickets";
 import projectTicketRoutes from "./routes/projectTickets";
+import userRoutes from "./routes/users";
 
 // Load environment variables
 dotenv.config();
@@ -100,6 +101,9 @@ app.use("/api/projects", projectRoutes);
 // Ticket endpoints: bug reports, feature requests
 app.use("/api/tickets", ticketRoutes);
 app.use("/api/projects/:slug/tickets", projectTicketRoutes);
+
+// Self-service user endpoints: profile update, password change
+app.use("/api/users", userRoutes);
 
 // Root endpoint for quick API reachability checks
 app.get("/", (_req: Request, res: Response) => {

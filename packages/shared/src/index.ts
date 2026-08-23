@@ -184,3 +184,21 @@ export type AdminTicketStatusChangedEvent = {
   status: string;
   updatedAt: string;
 };
+
+export const updateProfileSchema = z.object({
+  firstName: z.string().trim().min(1, "First name is required").max(100),
+  lastName: z.string().trim().min(1, "Last name is required").max(100),
+  phone: z.string().trim().max(30, "Phone number is too long"),
+});
+
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password is too long"),
+});
+
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
