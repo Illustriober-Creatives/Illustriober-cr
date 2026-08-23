@@ -44,6 +44,7 @@ export type AuthUser = {
   email: string;
   firstName: string;
   lastName: string;
+  phone: string | null;
   role: string;
 };
 
@@ -59,6 +60,7 @@ type AuthContextValue = {
   }) => Promise<void>;
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
+  updateUser: (patch: Partial<Pick<AuthUser, "firstName" | "lastName" | "phone">>) => void;
   fetchWithAuth: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 };
 
@@ -261,6 +263,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [storeAuth]
   );
 
+  const updateUser = useCallback(
+    (patch: Partial<Pick<AuthUser, "firstName" | "lastName" | "phone">>) => {
+      setUser((current) => (current ? { ...current, ...patch } : current));
+    },
+    []
+  );
+
   const logout = useCallback(async () => {
     clearSession();
     try {
@@ -282,9 +291,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       logout,
       refreshSession,
+      updateUser,
       fetchWithAuth,
     }),
-    [user, loading, login, register, logout, refreshSession, fetchWithAuth]
+    [user, loading, login, register, logout, refreshSession, updateUser, fetchWithAuth]
   );
 
   return (

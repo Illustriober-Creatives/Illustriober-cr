@@ -123,6 +123,7 @@ router.post(
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        phone: user.phone,
         role: user.role,
       },
     });
@@ -174,6 +175,7 @@ router.post(
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        phone: user.phone,
         role: user.role,
       },
     });
@@ -308,6 +310,7 @@ router.post(
         email: record.user.email,
         firstName: record.user.firstName,
         lastName: record.user.lastName,
+        phone: record.user.phone,
         role: record.user.role,
       },
     });

@@ -2,8 +2,10 @@
  * Self-service user routes: update own profile, change own password.
  */
 
+import { createHash } from "node:crypto";
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
+import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 import { z } from "zod";
 import { changePasswordSchema, updateProfileSchema } from "@illustriober/shared";
 import prisma from "../lib/prisma";
@@ -12,6 +14,25 @@ import { authenticate } from "../middleware/authenticate";
 import { REFRESH_COOKIE_NAME, readRequestCookie } from "../lib/cookies";
 
 const router = Router();
+
+// Password-change is an authenticated password-verification oracle — rate
+// limit it the same way ticket comments are limited, keyed on the caller's
+// own Authorization header so one user's attempts can't exhaust another's
+// budget (and so it isn't just an IP-keyed limiter behind a shared proxy).
+const passwordChangeRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const authorization = req.headers.authorization;
+    if (authorization) {
+      return createHash("sha256").update(authorization).digest("hex");
+    }
+    return ipKeyGenerator(req.ip ?? "unknown");
+  },
+  message: { success: false, error: "Too many password change attempts. Please wait a moment." },
+});
 
 // PATCH /api/users/me
 // Update own firstName/lastName/phone
@@ -59,6 +80,7 @@ router.patch(
 // signed out of the device they're using right now.
 router.post(
   "/me/password",
+  passwordChangeRateLimit,
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     let body: z.infer<typeof changePasswordSchema>;

@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
-interface MeResponse {
+interface UpdateProfileResponse {
   user: {
-    id: string;
-    email: string;
     firstName: string;
     lastName: string;
     phone: string | null;
-    role: string;
   };
 }
 
@@ -24,13 +21,15 @@ async function readErrorMessage(res: Response): Promise<string> {
 }
 
 export default function ClientProfilePage() {
-  const { user, fetchWithAuth, refreshSession } = useAuth();
+  const { user, fetchWithAuth, updateUser } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [profileLoading, setProfileLoading] = useState(true);
+  // ProtectedRoute guarantees `user` is populated (via AuthContext's own
+  // /api/auth/me fetch) before this page renders, so the form seeds
+  // directly from context — no separate fetch, no loading state, and no
+  // risk of a failed load silently blanking the form.
+  const [firstName, setFirstName] = useState(user?.firstName ?? "");
+  const [lastName, setLastName] = useState(user?.lastName ?? "");
+  const [phone, setPhone] = useState(user?.phone ?? "");
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileSuccess, setProfileSuccess] = useState(false);
@@ -41,32 +40,6 @@ export default function ClientProfilePage() {
   const [passwordSaving, setPasswordSaving] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSuccess, setPasswordSuccess] = useState(false);
-
-  useEffect(() => {
-    if (!user) return;
-
-    let cancelled = false;
-
-    async function load() {
-      try {
-        const res = await fetchWithAuth("/api/auth/me");
-        if (!res.ok) return;
-        const data = (await res.json()) as MeResponse;
-        if (cancelled) return;
-        setEmail(data.user.email);
-        setFirstName(data.user.firstName);
-        setLastName(data.user.lastName);
-        setPhone(data.user.phone ?? "");
-      } finally {
-        if (!cancelled) setProfileLoading(false);
-      }
-    }
-
-    void load();
-    return () => {
-      cancelled = true;
-    };
-  }, [user, fetchWithAuth]);
 
   const handleProfileSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -86,7 +59,17 @@ export default function ClientProfilePage() {
         return;
       }
 
-      await refreshSession();
+      // Update AuthContext directly from the server's response instead of
+      // calling refreshSession() — refreshSession() toggles AuthContext's
+      // `loading` flag, which makes ProtectedRoute unmount this page's
+      // children while it awaits the refetch, so the success message below
+      // would never actually render.
+      const data = (await res.json()) as UpdateProfileResponse;
+      updateUser({
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        phone: data.user.phone,
+      });
       setProfileSuccess(true);
     } catch {
       setProfileError("Something went wrong. Please try again.");
@@ -144,72 +127,69 @@ export default function ClientProfilePage() {
 
       <div className="max-w-xl rounded-xl border border-glass-border bg-surface p-6">
         <h2 className="text-lg font-bold text-foreground">Personal Details</h2>
-        {profileLoading ? (
-          <p className="mt-4 text-sm text-foreground/50">Loading...</p>
-        ) : (
-          <form className="mt-4 flex flex-col gap-4" onSubmit={(e) => void handleProfileSubmit(e)}>
+        <form className="mt-4 flex flex-col gap-4" onSubmit={(e) => void handleProfileSubmit(e)}>
+          <div>
+            <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
+              Email
+            </label>
+            <input
+              type="email"
+              value={user.email}
+              disabled
+              className="w-full rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground/50"
+            />
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
-                Email
+                First Name
               </label>
               <input
-                type="email"
-                value={email}
-                disabled
-                className="w-full rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground/50"
-              />
-            </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                  className="w-full rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                  className="w-full rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
-                Phone
-              </label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Optional"
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
                 className="w-full rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground"
               />
             </div>
+            <div>
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
+                Last Name
+              </label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                className="w-full rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-foreground/40">
+              Phone
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Optional"
+              maxLength={30}
+              className="w-full rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground"
+            />
+          </div>
 
-            {profileError && <p className="text-sm text-red-600">{profileError}</p>}
-            {profileSuccess && <p className="text-sm text-accent">Profile updated.</p>}
+          {profileError && <p className="text-sm text-red-600">{profileError}</p>}
+          {profileSuccess && <p className="text-sm text-accent">Profile updated.</p>}
 
-            <button
-              type="submit"
-              disabled={profileSaving}
-              className="self-start rounded-full bg-accent px-6 py-2 text-sm font-semibold text-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
-            >
-              {profileSaving ? "Saving..." : "Save Changes"}
-            </button>
-          </form>
-        )}
+          <button
+            type="submit"
+            disabled={profileSaving}
+            className="self-start rounded-full bg-accent px-6 py-2 text-sm font-semibold text-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+          >
+            {profileSaving ? "Saving..." : "Save Changes"}
+          </button>
+        </form>
       </div>
 
       <div className="max-w-xl rounded-xl border border-glass-border bg-surface p-6">
