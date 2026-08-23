@@ -105,7 +105,7 @@ export function HeroTypewriter({ phrases, variant = "home" }: HeroTypewriterProp
           </span>
         </h1>
       ) : (
-        <h1 className="max-w-4xl font-display text-5xl leading-[0.9] tracking-normal sm:text-6xl md:text-7xl lg:max-w-none lg:text-[clamp(5.1875rem,calc(7vw-5px),7.6875rem)] lg:leading-[0.84]">
+        <h1 className="max-w-4xl font-display text-5xl leading-[0.9] tracking-normal sm:text-6xl md:text-7xl lg:max-w-none lg:text-[clamp(4.75rem,calc(6vw-4px),6.5rem)] lg:leading-[0.84]">
           <span className="sr-only">It all starts with useful software.</span>
           <span className={styles.line} aria-hidden="true">
             <span className={styles.firstLine}>It all starts</span>

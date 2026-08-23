@@ -7,6 +7,8 @@ const prismaMock = vi.hoisted(() => ({
   enquiry: { findMany: vi.fn(), findUnique: vi.fn(), update: vi.fn() },
   inviteToken: { create: vi.fn() },
   refreshToken: { updateMany: vi.fn(), create: vi.fn(), findUnique: vi.fn() },
+  ticket: { groupBy: vi.fn(), findMany: vi.fn() },
+  comment: { findMany: vi.fn() },
 }));
 
 vi.mock("../lib/prisma", () => ({ default: prismaMock, prisma: prismaMock }));
@@ -155,5 +157,62 @@ describe("admin enquiry routes", () => {
 
       expect(res.status).toBe(400);
     });
+  });
+});
+
+describe("GET /api/admin/dashboard", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    prismaMock.refreshToken.updateMany.mockResolvedValue({ count: 0 });
+    prismaMock.refreshToken.create.mockResolvedValue({ id: "r1" });
+  });
+
+  it("rejects unauthenticated requests", async () => {
+    const res = await request(app).get("/api/admin/dashboard");
+    expect(res.status).toBe(401);
+  });
+
+  it("rejects non-admin requests", async () => {
+    const res = await request(app)
+      .get("/api/admin/dashboard")
+      .set("Authorization", `Bearer ${clientToken()}`);
+    expect(res.status).toBe(403);
+  });
+
+  it("aggregates status counts and merges recent activity, sorted and capped at 20", async () => {
+    prismaMock.ticket.groupBy.mockResolvedValue([
+      { status: "OPEN", _count: 3 },
+      { status: "IN_PROGRESS", _count: 1 },
+      { status: "CLOSED", _count: 9 },
+    ]);
+    prismaMock.ticket.findMany.mockResolvedValue([
+      {
+        id: "t1",
+        title: "Login broken",
+        createdAt: new Date("2026-08-22T08:00:00.000Z"),
+        project: { name: "Studio Site" },
+        submittedBy: { firstName: "Jane", lastName: "Doe" },
+      },
+    ]);
+    prismaMock.comment.findMany.mockResolvedValue([
+      {
+        id: "c1",
+        ticketId: "t1",
+        isInternal: false,
+        createdAt: new Date("2026-08-22T09:00:00.000Z"),
+        ticket: { title: "Login broken", project: { name: "Studio Site" } },
+        author: { firstName: "Ada", lastName: "Admin" },
+      },
+    ]);
+
+    const res = await request(app)
+      .get("/api/admin/dashboard")
+      .set("Authorization", `Bearer ${adminToken()}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.statusCounts).toEqual({ OPEN: 3, IN_REVIEW: 0, IN_PROGRESS: 1, RESOLVED: 0 });
+    expect(res.body.recentActivity).toHaveLength(2);
+    expect(res.body.recentActivity[0]).toMatchObject({ kind: "comment_created", ticketId: "t1" });
+    expect(res.body.recentActivity[1]).toMatchObject({ kind: "ticket_created", ticketId: "t1" });
   });
 });

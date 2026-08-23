@@ -1,4 +1,8 @@
-import type { TicketComment } from "@illustriober/shared";
+import type {
+  AdminTicketCreatedEvent,
+  AdminTicketStatusChangedEvent,
+  TicketComment,
+} from "@illustriober/shared";
 import { io, type Socket } from "socket.io-client";
 import { readBrowserAccessToken } from "@/contexts/AuthContext";
 
@@ -6,6 +10,8 @@ type TicketRoomAck = (result: { ok: true } | { ok: false; error: string }) => vo
 
 interface ServerToClientEvents {
   "ticket:comment-created": (comment: TicketComment) => void;
+  "ticket:created": (ticket: AdminTicketCreatedEvent) => void;
+  "ticket:status-changed": (ticket: AdminTicketStatusChangedEvent) => void;
 }
 
 interface ClientToServerEvents {

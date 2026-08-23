@@ -109,3 +109,78 @@ export type TicketComment = {
     role: string;
   };
 };
+
+export const adminTicketQuerySchema = z.object({
+  status: z
+    .enum(["OPEN", "IN_REVIEW", "IN_PROGRESS", "RESOLVED", "CLOSED", "REJECTED"])
+    .optional(),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).optional(),
+  search: z.string().trim().min(1).max(200).optional(),
+  page: z.coerce.number().int().min(1).optional(),
+  limit: z.coerce.number().int().min(1).max(100).optional(),
+});
+
+export type AdminTicketQuery = z.infer<typeof adminTicketQuerySchema>;
+
+export type AdminDashboardStatusCounts = {
+  OPEN: number;
+  IN_REVIEW: number;
+  IN_PROGRESS: number;
+  RESOLVED: number;
+};
+
+export type RecentActivityEntry =
+  | {
+      id: string;
+      kind: "ticket_created";
+      ticketId: string;
+      ticketTitle: string;
+      projectName: string;
+      actorName: string;
+      createdAt: string;
+    }
+  | {
+      id: string;
+      kind: "comment_created";
+      ticketId: string;
+      ticketTitle: string;
+      projectName: string;
+      actorName: string;
+      isInternal: boolean;
+      createdAt: string;
+    }
+  | {
+      id: string;
+      kind: "status_changed";
+      ticketId: string;
+      ticketTitle: string;
+      projectName: string;
+      previousStatus: string;
+      status: string;
+      createdAt: string;
+    };
+
+export type AdminDashboardSummary = {
+  statusCounts: AdminDashboardStatusCounts;
+  recentActivity: RecentActivityEntry[];
+};
+
+export type AdminTicketCreatedEvent = {
+  id: string;
+  title: string;
+  type: string;
+  priority: string;
+  status: string;
+  projectName: string;
+  submitterName: string;
+  createdAt: string;
+};
+
+export type AdminTicketStatusChangedEvent = {
+  id: string;
+  title: string;
+  projectName: string;
+  previousStatus: string;
+  status: string;
+  updatedAt: string;
+};

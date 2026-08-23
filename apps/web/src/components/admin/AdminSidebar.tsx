@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
 const NAV = [
+  { href: "/admin", label: "Dashboard" },
   { href: "/admin/enquiries", label: "Enquiries" },
   { href: "/admin/projects", label: "Projects" },
   { href: "/admin/tickets", label: "Tickets" },
@@ -28,7 +29,7 @@ export function AdminSidebar() {
 
       <nav className="flex flex-1 flex-col gap-1">
         {NAV.map(({ href, label }) => {
-          const active = pathname === href || pathname.startsWith(`${href}/`);
+          const active = href === "/admin" ? pathname === "/admin" : pathname === href || pathname.startsWith(`${href}/`);
           return (
             <Link
               key={href}
