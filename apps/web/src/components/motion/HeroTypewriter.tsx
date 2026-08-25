@@ -108,9 +108,9 @@ export function HeroTypewriter({ phrases, variant = "home" }: HeroTypewriterProp
         <h1 className="max-w-4xl font-display tracking-normal lg:max-w-none">
           <span className="sr-only">It all starts with useful software.</span>
           <span className={styles.line} aria-hidden="true">
-            <span className={`${styles.firstLine} text-lg sm:text-xl md:text-2xl`}>It all starts with</span>
+            <span className={`${styles.firstLine} text-xl sm:text-2xl md:text-3xl`}>It all starts</span>
             <span className={`${styles.purposeLine} text-5xl leading-[0.86] sm:text-6xl md:text-7xl lg:text-[clamp(5rem,calc(7vw-4px),7.5rem)]`}>
-              {rotatingWord}
+              with {rotatingWord}
             </span>
           </span>
         </h1>

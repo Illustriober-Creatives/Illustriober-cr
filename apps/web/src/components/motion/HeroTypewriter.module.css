@@ -36,13 +36,14 @@
 .firstLine {
   display: block;
   font-style: italic;
+  line-height: 1;
   letter-spacing: 0.01em;
   color: #5f5a50;
 }
 
 .purposeLine {
   display: block;
-  margin-top: 0.18em;
+  margin-top: 0.04em;
   white-space: nowrap;
   letter-spacing: 0;
 }
