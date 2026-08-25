@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Mail, Phone, ShieldCheck, ShieldOff } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ticketStatusBadgeClass } from "@/lib/ticketBadgeStyles";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface UserProject {
   id: string;
@@ -150,6 +151,20 @@ export default function AdminUserDetailPage() {
 
   return (
     <div className="flex flex-col gap-6 p-8">
+      <PageHeader
+        title={`${user.firstName} ${user.lastName}`}
+        backHref="/admin/users"
+        backLabel="Users"
+        action={
+          <span
+            className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${
+              user.isActive ? "border-glass-border text-foreground/70" : "border-red-500/20 bg-red-500/10 text-red-700"
+            }`}
+          >
+            {user.isActive ? "Active" : "Deactivated"}
+          </span>
+        }
+      />
       <Link
         href="/admin/users"
         className="inline-flex w-fit items-center gap-1.5 text-sm text-foreground/60 transition-colors hover:text-accent"

@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Select } from "@/components/ui/Select";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
@@ -121,6 +122,7 @@ export default function AdminTasksPage() {
 
   return (
     <div className="flex flex-col gap-6 p-8">
+      <PageHeader title="Tasks" />
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Admin</p>
         <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">Tasks</h1>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { ticketStatusBadgeClass } from "@/lib/ticketBadgeStyles";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface Ticket {
   id: string;
@@ -52,6 +53,7 @@ export default function AdminTicketsPage() {
 
   return (
     <div className="p-8">
+      <PageHeader title="Support Tickets" />
       <h1 className="mb-8 text-3xl font-bold">Support Tickets</h1>
 
       <div className="overflow-hidden rounded-xl border border-glass-border bg-surface">
