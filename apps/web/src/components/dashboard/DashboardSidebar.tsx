@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronsLeft, ChevronsRight, type LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 export interface DashboardNavItem {
   href: string;
@@ -40,6 +42,22 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
   const pathname = usePathname();
   const allHrefs = navItems.map((item) => item.href);
+  const shouldReduceMotion = useReducedMotion();
+  const labelTransition = { duration: shouldReduceMotion ? 0 : 0.16, ease: [0.22, 1, 0.36, 1] as const };
+
+  function Label({ children }: { children: ReactNode }) {
+    return (
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={labelTransition}
+        className="overflow-hidden whitespace-nowrap"
+      >
+        {children}
+      </motion.span>
+    );
+  }
 
   function renderSidebarContent(onNavigate?: () => void, isCollapsed = false, showCollapseToggle = false) {
     return (
@@ -52,12 +70,20 @@ export function DashboardSidebar({
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent font-display text-lg font-bold text-foreground">
             il
           </span>
-          {!isCollapsed && <span className="text-sm font-bold tracking-tight text-foreground">Illustriober</span>}
+          <AnimatePresence initial={false}>
+            {!isCollapsed && <Label key="wordmark">
+              <span className="text-sm font-bold tracking-tight text-foreground">Illustriober</span>
+            </Label>}
+          </AnimatePresence>
         </Link>
 
-        {!isCollapsed && (
-          <p className="mb-3 px-2 text-xs font-bold uppercase tracking-[0.18em] text-accent">{eyebrow}</p>
-        )}
+        <AnimatePresence initial={false}>
+          {!isCollapsed && (
+            <Label key="eyebrow">
+              <p className="mb-3 px-2 text-xs font-bold uppercase tracking-[0.18em] text-accent">{eyebrow}</p>
+            </Label>
+          )}
+        </AnimatePresence>
 
         <nav className="flex flex-1 flex-col gap-1">
           {navItems.map(({ href, label, icon: Icon }) => {
@@ -74,7 +100,7 @@ export function DashboardSidebar({
                 } ${active ? "bg-accent/10 text-accent" : "text-foreground/60 hover:bg-glass-bg hover:text-foreground"}`}
               >
                 <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                {!isCollapsed && label}
+                <AnimatePresence initial={false}>{!isCollapsed && <Label key={href}>{label}</Label>}</AnimatePresence>
               </Link>
             );
           })}
@@ -94,7 +120,9 @@ export function DashboardSidebar({
             ) : (
               <>
                 <ChevronsLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
-                Collapse
+                <AnimatePresence initial={false}>
+                  <Label key="collapse-label">Collapse</Label>
+                </AnimatePresence>
               </>
             )}
           </button>
@@ -105,16 +133,18 @@ export function DashboardSidebar({
 
   return (
     <>
-      {/* Desktop sidebar: static, visible at md: and up. Width transitions on
-          collapse so the flex-1 content column resizes with it — no
-          scrollbars or dead space, just less horizontal room. */}
-      <aside
-        className={`hidden shrink-0 flex-col overflow-hidden border-r border-glass-border bg-surface py-8 transition-[width] duration-200 ease-in-out md:flex ${
-          collapsed ? "w-[4.5rem] px-3" : "w-60 px-4"
-        }`}
+      {/* Desktop sidebar: static, visible at md: and up. Width animates on
+          collapse (framer-motion, same easing as the rest of the site) so the
+          flex-1 content column resizes with it smoothly — no scrollbars or
+          dead space, just less horizontal room. */}
+      <motion.aside
+        initial={false}
+        animate={{ width: collapsed ? 72 : 240, paddingLeft: collapsed ? 12 : 16, paddingRight: collapsed ? 12 : 16 }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
+        className="hidden shrink-0 flex-col overflow-hidden border-r border-glass-border bg-surface py-8 md:flex"
       >
         {renderSidebarContent(undefined, collapsed, true)}
-      </aside>
+      </motion.aside>
 
       {/* Mobile drawer: slide-in panel + backdrop, only relevant below md: */}
       {isOpen && (
