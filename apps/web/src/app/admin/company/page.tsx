@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface CompanyProfile {
   name: string;
@@ -92,6 +93,7 @@ export default function AdminCompanyPage() {
 
   return (
     <div className="flex flex-col gap-6 p-8">
+      <PageHeader title="Company Profile" />
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Admin</p>
         <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">

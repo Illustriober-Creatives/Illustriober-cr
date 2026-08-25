@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface UpdateProfileResponse {
   user: {
@@ -118,6 +119,7 @@ export function ProfileSettingsForm() {
 
   return (
     <div className="flex flex-col gap-8 p-8">
+      <PageHeader title="Your Profile" />
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Profile</p>
         <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">

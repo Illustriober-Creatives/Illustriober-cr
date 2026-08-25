@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FolderKanban, Ticket as TicketIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface Project {
   id: string;
@@ -79,6 +80,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-8 p-8">
+      <PageHeader title={`Welcome, ${user.firstName}`} />
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Dashboard</p>
         <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">

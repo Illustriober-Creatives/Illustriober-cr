@@ -7,6 +7,7 @@ import { ActivityPanel } from "@/components/admin/dashboard/ActivityPanel";
 import { KpiStrip } from "@/components/admin/dashboard/KpiStrip";
 import { TicketQueue } from "@/components/admin/dashboard/TicketQueue";
 import { useAdminRealtime } from "@/lib/useAdminRealtime";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 type SeqEvent<T> = { seq: number; event: T };
 
@@ -28,6 +29,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-6 p-8">
+      <PageHeader title={`Welcome, ${user.firstName}`} />
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Dashboard</p>
         <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">
