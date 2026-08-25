@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { LayoutDashboard, Mail, FolderKanban, Ticket, Users, ListTodo, Building2, User } from "lucide-react";
+import { LayoutDashboard, Mail, FolderKanban, Ticket, Users, ListTodo, Building2 } from "lucide-react";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { DashboardShell, type DashboardNavItem } from "@/components/dashboard/DashboardShell";
 
@@ -13,7 +13,6 @@ const ADMIN_NAV: DashboardNavItem[] = [
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/tasks", label: "Tasks", icon: ListTodo },
   { href: "/admin/company", label: "Company", icon: Building2 },
-  { href: "/admin/profile", label: "Profile", icon: User },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
