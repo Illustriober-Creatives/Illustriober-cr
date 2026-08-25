@@ -1,27 +1,33 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { LogOut, Menu } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { Menu } from "lucide-react";
 import { DashboardSidebar, type DashboardNavItem } from "./DashboardSidebar";
+import { ProfileMenu } from "./ProfileMenu";
 
 export type { DashboardNavItem };
+
+const SIDEBAR_COLLAPSED_KEY = "illustriober_sidebar_collapsed";
 
 interface DashboardShellProps {
   navItems: DashboardNavItem[];
   eyebrow: string;
+  profileHref: string;
   children: ReactNode;
 }
 
-export function DashboardShell({ navItems, eyebrow, children }: DashboardShellProps) {
-  const { user, logout } = useAuth();
-  const router = useRouter();
+export function DashboardShell({ navItems, eyebrow, profileHref, children }: DashboardShellProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    () => typeof window !== "undefined" && window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1"
+  );
 
-  const handleLogout = async () => {
-    await logout();
-    router.replace("/login");
+  const toggleCollapsed = () => {
+    setCollapsed((current) => {
+      const next = !current;
+      window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? "1" : "0");
+      return next;
+    });
   };
 
   return (
@@ -31,33 +37,22 @@ export function DashboardShell({ navItems, eyebrow, children }: DashboardShellPr
         eyebrow={eyebrow}
         isOpen={mobileNavOpen}
         onClose={() => setMobileNavOpen(false)}
+        collapsed={collapsed}
+        onToggleCollapsed={toggleCollapsed}
       />
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-glass-border bg-surface px-6 py-4 md:px-8">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileNavOpen(true)}
-              className="flex items-center justify-center rounded-full border border-glass-border p-2 text-foreground/70 transition-colors hover:bg-glass-bg hover:text-foreground md:hidden"
-              type="button"
-              aria-label="Open navigation menu"
-            >
-              <Menu className="h-4 w-4" aria-hidden="true" />
-            </button>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">{eyebrow}</p>
-              <p className="mt-0.5 text-sm text-foreground/60">
-                {user ? `Welcome, ${user.firstName}` : "Welcome"}
-              </p>
-            </div>
-          </div>
           <button
-            onClick={() => void handleLogout()}
-            className="flex items-center gap-2 rounded-full border border-glass-border px-4 py-2 text-sm font-semibold text-foreground/70 transition-colors hover:bg-glass-bg hover:text-foreground"
+            onClick={() => setMobileNavOpen(true)}
+            className="flex items-center justify-center rounded-full border border-glass-border p-2 text-foreground/70 transition-colors hover:bg-glass-bg hover:text-foreground md:hidden"
             type="button"
+            aria-label="Open navigation menu"
           >
-            <LogOut className="h-4 w-4" aria-hidden="true" />
-            Sign out
+            <Menu className="h-4 w-4" aria-hidden="true" />
           </button>
+          <div className="ml-auto">
+            <ProfileMenu profileHref={profileHref} />
+          </div>
         </header>
         {/* data-app-shell opts this <main> out of the global marketing-navbar
             padding-top rule in globals.css. overflow-y-auto + min-h-0 together

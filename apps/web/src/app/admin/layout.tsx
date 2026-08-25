@@ -19,7 +19,7 @@ const ADMIN_NAV: DashboardNavItem[] = [
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <AdminGuard>
-      <DashboardShell navItems={ADMIN_NAV} eyebrow="Admin">
+      <DashboardShell navItems={ADMIN_NAV} eyebrow="Admin" profileHref="/admin/profile">
         {children}
       </DashboardShell>
     </AdminGuard>

@@ -14,7 +14,7 @@ const CLIENT_NAV: DashboardNavItem[] = [
 export function DashboardLayoutClient({ children }: { children: ReactNode }) {
   return (
     <ProtectedRoute>
-      <DashboardShell navItems={CLIENT_NAV} eyebrow="Client">
+      <DashboardShell navItems={CLIENT_NAV} eyebrow="Client" profileHref="/dashboard/profile">
         {children}
       </DashboardShell>
     </ProtectedRoute>
