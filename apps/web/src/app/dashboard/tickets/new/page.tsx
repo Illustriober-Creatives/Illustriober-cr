@@ -7,6 +7,7 @@ import { Button } from "@/components/Button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { CreateTicketInput } from "@illustriober/shared";
+import { Select } from "@/components/ui/Select";
 
 interface Project {
   id: string;
@@ -95,47 +96,53 @@ export default function NewTicketPage() {
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground/70">Related Project</label>
-          <select
-            required
-            value={formData.projectId}
-            onChange={(e) => setFormData((prev) => ({ ...prev, projectId: e.target.value }))}
-            className="w-full rounded-xl border border-glass-border bg-background px-4 py-3 text-foreground focus:border-accent focus:outline-none transition-colors"
-          >
-            {projects.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
-          </select>
+          <Select
+            value={formData.projectId ?? ""}
+            onChange={(next) => setFormData((prev) => ({ ...prev, projectId: next }))}
+            aria-label="Related project"
+            fullWidth
+            className="py-3"
+            options={projects.map((p) => ({ value: p.id, label: p.name }))}
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground/70">Issue Type</label>
-            <select
-              required
-              value={formData.type}
-              onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value as CreateTicketInput["type"] }))}
-              className="w-full rounded-xl border border-glass-border bg-background px-4 py-3 text-foreground focus:border-accent focus:outline-none transition-colors"
-            >
-              <option value="BUG">Bug Report</option>
-              <option value="FEATURE">Feature Request</option>
-              <option value="IDEA">Idea</option>
-              <option value="QUESTION">Question</option>
-              <option value="SUPPORT">General Support</option>
-            </select>
+            <Select
+              value={formData.type ?? "BUG"}
+              onChange={(next) =>
+                setFormData((prev) => ({ ...prev, type: next as CreateTicketInput["type"] }))
+              }
+              aria-label="Issue type"
+              fullWidth
+              className="py-3"
+              options={[
+                { value: "BUG", label: "Bug Report" },
+                { value: "FEATURE", label: "Feature Request" },
+                { value: "IDEA", label: "Idea" },
+                { value: "QUESTION", label: "Question" },
+                { value: "SUPPORT", label: "General Support" },
+              ]}
+            />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground/70">Priority</label>
-            <select
-              required
-              value={formData.priority}
-              onChange={(e) => setFormData((prev) => ({ ...prev, priority: e.target.value as CreateTicketInput["priority"] }))}
-              className="w-full rounded-xl border border-glass-border bg-background px-4 py-3 text-foreground focus:border-accent focus:outline-none transition-colors"
-            >
-              <option value="LOW">Low</option>
-              <option value="MEDIUM">Medium</option>
-              <option value="HIGH">High</option>
-              <option value="CRITICAL">Critical</option>
-            </select>
+            <Select
+              value={formData.priority ?? "MEDIUM"}
+              onChange={(next) =>
+                setFormData((prev) => ({ ...prev, priority: next as CreateTicketInput["priority"] }))
+              }
+              aria-label="Priority"
+              fullWidth
+              className="py-3"
+              options={[
+                { value: "LOW", label: "Low" },
+                { value: "MEDIUM", label: "Medium" },
+                { value: "HIGH", label: "High" },
+                { value: "CRITICAL", label: "Critical" },
+              ]}
+            />
           </div>
         </div>
 

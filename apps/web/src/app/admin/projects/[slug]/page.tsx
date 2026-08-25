@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, MessageSquare, Plus, Send } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Select } from "@/components/ui/Select";
 import {
   ticketPriorityBadgeClass,
   ticketStatusBadgeClass,
@@ -272,19 +273,17 @@ export default function AdminProjectDetailPage() {
                       Due {new Date(milestone.dueDate).toLocaleDateString()}
                     </p>
                   )}
-                  <select
+                  <Select
                     value={milestone.status}
-                    onChange={(e) =>
-                      void handleMilestoneStatusChange(milestone.id, e.target.value as MilestoneStatus)
-                    }
-                    className="mt-2 w-full rounded-lg border border-glass-border bg-background px-2 py-1.5 text-xs text-foreground"
-                  >
-                    {MILESTONE_STATUS_OPTIONS.map((status) => (
-                      <option key={status} value={status}>
-                        {status.replace(/_/g, " ")}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(next) => void handleMilestoneStatusChange(milestone.id, next as MilestoneStatus)}
+                    aria-label={`Status for ${milestone.title}`}
+                    fullWidth
+                    className="mt-2 py-1.5 text-xs"
+                    options={MILESTONE_STATUS_OPTIONS.map((status) => ({
+                      value: status,
+                      label: status.replace(/_/g, " "),
+                    }))}
+                  />
                 </div>
               ))}
             </div>

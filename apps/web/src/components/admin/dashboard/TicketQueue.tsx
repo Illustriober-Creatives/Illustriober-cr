@@ -10,6 +10,7 @@ import type {
 import { AlertCircle, Loader2, RotateCw, Search } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ticketStatusBadgeClass } from "@/lib/ticketBadgeStyles";
+import { Select } from "@/components/ui/Select";
 
 interface QueueTicket {
   id: string;
@@ -157,32 +158,20 @@ export function TicketQueue({ ticketCreatedSeq, statusChangedSeq, commentSeq }: 
             className="w-full rounded-lg border border-glass-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none placeholder:text-foreground/35 focus:border-accent/60"
           />
         </div>
-        <select
+        <Select
           value={status}
-          onChange={(event) => setStatus(event.target.value)}
+          onChange={setStatus}
           aria-label="Filter by status"
-          className="rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-accent/60"
-        >
-          <option value="">All statuses</option>
-          {STATUS_OPTIONS.map((option) => (
-            <option key={option} value={option}>
-              {option.replace("_", " ")}
-            </option>
-          ))}
-        </select>
-        <select
+          placeholder="All statuses"
+          options={STATUS_OPTIONS.map((option) => ({ value: option, label: option.replace("_", " ") }))}
+        />
+        <Select
           value={priority}
-          onChange={(event) => setPriority(event.target.value)}
+          onChange={setPriority}
           aria-label="Filter by priority"
-          className="rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-accent/60"
-        >
-          <option value="">All priorities</option>
-          {PRIORITY_OPTIONS.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+          placeholder="All priorities"
+          options={PRIORITY_OPTIONS.map((option) => ({ value: option, label: option }))}
+        />
       </div>
 
       {loading ? (

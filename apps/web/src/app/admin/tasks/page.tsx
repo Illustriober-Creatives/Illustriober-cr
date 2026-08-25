@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Select } from "@/components/ui/Select";
 
 type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
@@ -177,18 +178,13 @@ export default function AdminTasksPage() {
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
-                <select
+                <Select
                   value={task.status}
-                  onChange={(e) => void handleStatusChange(task.id, e.target.value as TaskStatus)}
+                  onChange={(next) => void handleStatusChange(task.id, next as TaskStatus)}
                   aria-label={`Status for ${task.title}`}
-                  className="rounded-lg border border-glass-border bg-background px-2 py-1.5 text-xs text-foreground"
-                >
-                  {STATUS_OPTIONS.map((status) => (
-                    <option key={status} value={status}>
-                      {STATUS_LABELS[status]}
-                    </option>
-                  ))}
-                </select>
+                  className="py-1.5 text-xs"
+                  options={STATUS_OPTIONS.map((status) => ({ value: status, label: STATUS_LABELS[status] }))}
+                />
                 <button
                   type="button"
                   onClick={() => void handleDelete(task.id)}

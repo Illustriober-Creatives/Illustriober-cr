@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { CommentThread } from "@/components/tickets/CommentThread";
 import { ArrowLeft, Clock, User, Briefcase, Info } from "lucide-react";
+import { Select } from "@/components/ui/Select";
 
 interface Ticket {
   id: string;
@@ -86,16 +87,16 @@ export default function AdminTicketDetailPage() {
           <p className="mt-1 text-sm text-muted-foreground">Ticket #{ticket.id.slice(-6).toUpperCase()}</p>
         </div>
         <div className="flex items-center gap-2">
-          <select
+          <Select
             value={ticket.status}
-            onChange={(e) => void updateStatus(e.target.value)}
+            onChange={(next) => void updateStatus(next)}
             disabled={updating}
-            className="rounded-lg border border-glass-border bg-glass-bg px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
-          >
-            {["OPEN", "IN_REVIEW", "IN_PROGRESS", "RESOLVED", "CLOSED", "REJECTED"].map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
+            aria-label="Ticket status"
+            options={["OPEN", "IN_REVIEW", "IN_PROGRESS", "RESOLVED", "CLOSED", "REJECTED"].map((s) => ({
+              value: s,
+              label: s,
+            }))}
+          />
         </div>
       </div>
 
