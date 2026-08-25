@@ -120,13 +120,6 @@ export function ProfileSettingsForm() {
   return (
     <div className="flex flex-col gap-8 p-8">
       <PageHeader title="Your Profile" />
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Profile</p>
-        <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">
-          Your Profile
-        </h1>
-      </div>
-
       <div className="max-w-xl rounded-xl border border-glass-border bg-surface p-6">
         <h2 className="text-lg font-bold text-foreground">Personal Details</h2>
         <form className="mt-4 flex flex-col gap-4" onSubmit={(e) => void handleProfileSubmit(e)}>

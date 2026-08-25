@@ -30,15 +30,9 @@ export default function AdminDashboardPage() {
   return (
     <div className="flex flex-col gap-6 p-8">
       <PageHeader title={`Welcome, ${user.firstName}`} />
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Dashboard</p>
-        <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">
-          Welcome, {user.firstName}
-        </h1>
-        <p className="mt-2 max-w-2xl text-base leading-relaxed text-foreground/60">
-          Here&apos;s what&apos;s happening across tickets, enquiries, and projects today.
-        </p>
-      </div>
+      <p className="max-w-2xl text-base leading-relaxed text-foreground/60">
+        Here&apos;s what&apos;s happening across tickets, enquiries, and projects today.
+      </p>
 
       <KpiStrip ticketCreatedSeq={ticketCreated} statusChangedSeq={statusChanged} />
 

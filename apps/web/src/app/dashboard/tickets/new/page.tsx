@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/Button";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import { CreateTicketInput } from "@illustriober/shared";
 import { Select } from "@/components/ui/Select";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -82,12 +80,7 @@ export default function NewTicketPage() {
   return (
     <div className="mx-auto max-w-2xl p-8">
       <PageHeader title="Submit Support Ticket" backHref="/dashboard/tickets" backLabel="Back to Tickets" />
-      <Link href="/dashboard/tickets" className="group mb-2 flex w-fit items-center gap-1 text-xs font-medium text-foreground/50 transition-colors hover:text-accent">
-        <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
-        Back to Tickets
-      </Link>
-      <h1 className="text-3xl font-bold text-foreground">Submit Support Ticket</h1>
-      <p className="mt-2 text-foreground/60">Report a bug, request a feature, or ask a technical question.</p>
+      <p className="text-foreground/60">Report a bug, request a feature, or ask a technical question.</p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-6 rounded-2xl border border-glass-border bg-surface p-8">
         {error && (

@@ -90,9 +90,8 @@ export default function NewProjectPage() {
   return (
     <div className="mx-auto max-w-2xl p-8">
       <PageHeader title="Initialize New Project" backHref="/admin/projects" backLabel="Back to Projects" />
-      <h1 className="mb-8 text-3xl font-bold">Initialize New Project</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="mt-8 space-y-6">
         {error && (
           <div className="rounded-lg bg-red-500/10 p-4 text-sm text-red-500">
             {error}

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { TicketComment } from "@illustriober/shared";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Briefcase, Clock, Info } from "lucide-react";
+import { Briefcase, Clock, Info } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CommentThread } from "@/components/tickets/CommentThread";
 import { ticketPriorityBadgeClass, ticketStatusBadgeClass } from "@/lib/ticketBadgeStyles";
@@ -72,26 +72,21 @@ export default function ClientTicketDetailPage() {
 
   return (
     <div className="flex flex-col gap-6 p-8">
-      <PageHeader title={ticket.title} backHref="/dashboard/tickets" backLabel="Back to Tickets" />
-      <Link
-        href="/dashboard/tickets"
-        className="inline-flex w-fit items-center gap-1 text-xs font-medium text-foreground/50 transition-colors hover:text-accent"
-      >
-        <ArrowLeft className="h-3 w-3" aria-hidden="true" />
-        Back to Tickets
-      </Link>
-
-      <div>
-        <div className="mb-2 flex items-center gap-3">
-          <span
-            className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ${ticketStatusBadgeClass(ticket.status)}`}
-          >
-            {ticket.status}
-          </span>
-          <span className="text-xs font-bold uppercase tracking-tighter text-foreground/40">{ticket.type}</span>
-        </div>
-        <h1 className="font-display text-3xl font-bold text-foreground">{ticket.title}</h1>
-      </div>
+      <PageHeader
+        title={ticket.title}
+        backHref="/dashboard/tickets"
+        backLabel="Back to Tickets"
+        action={
+          <div className="flex items-center gap-2">
+            <span
+              className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ${ticketStatusBadgeClass(ticket.status)}`}
+            >
+              {ticket.status}
+            </span>
+            <span className="text-xs font-bold uppercase tracking-tighter text-foreground/40">{ticket.type}</span>
+          </div>
+        }
+      />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-1">

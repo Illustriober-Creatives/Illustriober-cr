@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ticketStatusBadgeClass } from "@/lib/ticketBadgeStyles";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -65,27 +65,6 @@ export default function ClientTicketsPage() {
           </button>
         }
       />
-      <div className="flex items-center justify-between">
-        <div>
-          <Link
-            href="/dashboard"
-            className="mb-2 inline-flex items-center gap-1 text-xs font-medium text-foreground/50 transition-colors hover:text-accent"
-          >
-            <ArrowLeft className="h-3 w-3" aria-hidden="true" />
-            Back to Dashboard
-          </Link>
-          <h1 className="font-display text-3xl font-bold text-foreground">Your Support Tickets</h1>
-        </div>
-        <button
-          type="button"
-          onClick={() => router.push("/dashboard/tickets/new")}
-          className="flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-foreground transition-opacity hover:opacity-90"
-        >
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          New Ticket
-        </button>
-      </div>
-
       <div className="grid gap-3">
         {error ? (
           <div className="rounded-xl border border-glass-border bg-surface p-12 text-center">

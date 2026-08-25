@@ -81,15 +81,9 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-8 p-8">
       <PageHeader title={`Welcome, ${user.firstName}`} />
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Dashboard</p>
-        <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">
-          Welcome, {user.firstName}
-        </h1>
-        <p className="mt-2 max-w-2xl text-base leading-relaxed text-foreground/60">
-          Track your projects and support tickets in one place.
-        </p>
-      </div>
+      <p className="max-w-2xl text-base leading-relaxed text-foreground/60">
+        Track your projects and support tickets in one place.
+      </p>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-glass-border bg-surface px-5 py-4">

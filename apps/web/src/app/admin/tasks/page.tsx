@@ -123,13 +123,9 @@ export default function AdminTasksPage() {
   return (
     <div className="flex flex-col gap-6 p-8">
       <PageHeader title="Tasks" />
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Admin</p>
-        <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">Tasks</h1>
-        <p className="mt-2 max-w-2xl text-base leading-relaxed text-foreground/60">
-          Internal ops todos — not visible to clients.
-        </p>
-      </div>
+      <p className="max-w-2xl text-base leading-relaxed text-foreground/60">
+        Internal ops todos — not visible to clients.
+      </p>
 
       <form onSubmit={(e) => void handleAddTask(e)} className="flex flex-wrap gap-2">
         <input

@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react";
 import type { TicketComment } from "@illustriober/shared";
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { CommentThread } from "@/components/tickets/CommentThread";
-import { ArrowLeft, Clock, User, Briefcase, Info } from "lucide-react";
+import { Clock, User, Briefcase, Info } from "lucide-react";
 import { Select } from "@/components/ui/Select";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 
@@ -92,31 +91,7 @@ export default function AdminTicketDetailPage() {
           />
         }
       />
-      <div className="mb-6 flex items-center gap-3">
-        <Link href="/admin/tickets" className="group flex items-center gap-1 text-xs font-medium text-foreground/50 transition-colors hover:text-accent">
-          <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
-          Back to Tickets
-        </Link>
-      </div>
-
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">{ticket.title}</h1>
-          <p className="mt-1 text-sm text-foreground/50">Ticket #{ticket.id.slice(-6).toUpperCase()}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Select
-            value={ticket.status}
-            onChange={(next) => void updateStatus(next)}
-            disabled={updating}
-            aria-label="Ticket status"
-            options={["OPEN", "IN_REVIEW", "IN_PROGRESS", "RESOLVED", "CLOSED", "REJECTED"].map((s) => ({
-              value: s,
-              label: s,
-            }))}
-          />
-        </div>
-      </div>
+      <p className="mb-8 text-sm text-foreground/50">Ticket #{ticket.id.slice(-6).toUpperCase()}</p>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-1">

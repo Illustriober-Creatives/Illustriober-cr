@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Mail, Phone, ShieldCheck, ShieldOff } from "lucide-react";
+import { Mail, Phone, ShieldCheck, ShieldOff } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ticketStatusBadgeClass } from "@/lib/ticketBadgeStyles";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -165,44 +165,20 @@ export default function AdminUserDetailPage() {
           </span>
         }
       />
-      <Link
-        href="/admin/users"
-        className="inline-flex w-fit items-center gap-1.5 text-sm text-foreground/60 transition-colors hover:text-accent"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Users
-      </Link>
-
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="mb-1 flex items-center gap-2">
-            <h1 className="font-display text-3xl font-bold text-foreground md:text-4xl">
-              {user.firstName} {user.lastName}
-            </h1>
-            <span className="rounded-full bg-glass-bg px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-foreground/60">
-              {user.role}
-            </span>
-          </div>
-          <p className="flex items-center gap-1.5 text-sm text-foreground/60">
-            <Mail className="h-3.5 w-3.5" aria-hidden="true" />
-            {user.email}
-          </p>
-          {user.phone && (
-            <p className="mt-1 flex items-center gap-1.5 text-sm text-foreground/60">
-              <Phone className="h-3.5 w-3.5" aria-hidden="true" />
-              {user.phone}
-            </p>
-          )}
-        </div>
-        <span
-          className={`rounded-full border px-4 py-1.5 text-sm font-medium ${
-            user.isActive
-              ? "border-glass-border text-foreground/70"
-              : "border-red-500/20 bg-red-500/10 text-red-700"
-          }`}
-        >
-          {user.isActive ? "Active" : "Deactivated"}
+      <div>
+        <span className="rounded-full bg-glass-bg px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-foreground/60">
+          {user.role}
         </span>
+        <p className="mt-2 flex items-center gap-1.5 text-sm text-foreground/60">
+          <Mail className="h-3.5 w-3.5" aria-hidden="true" />
+          {user.email}
+        </p>
+        {user.phone && (
+          <p className="mt-1 flex items-center gap-1.5 text-sm text-foreground/60">
+            <Phone className="h-3.5 w-3.5" aria-hidden="true" />
+            {user.phone}
+          </p>
+        )}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">

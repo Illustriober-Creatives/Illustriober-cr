@@ -69,11 +69,6 @@ export default function AdminUsersPage() {
   return (
     <div className="flex flex-col gap-6 p-8">
       <PageHeader title="Users" />
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Admin</p>
-        <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">Users</h1>
-      </div>
-
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[240px]">
           <Search

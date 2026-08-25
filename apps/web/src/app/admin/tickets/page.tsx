@@ -54,9 +54,8 @@ export default function AdminTicketsPage() {
   return (
     <div className="p-8">
       <PageHeader title="Support Tickets" />
-      <h1 className="mb-8 text-3xl font-bold">Support Tickets</h1>
 
-      <div className="overflow-hidden rounded-xl border border-glass-border bg-surface">
+      <div className="mt-8 overflow-hidden rounded-xl border border-glass-border bg-surface">
         <table className="w-full text-left text-sm">
           <thead className="bg-glass-bg border-b border-glass-border text-xs uppercase tracking-wider text-foreground/40">
             <tr>

@@ -44,18 +44,18 @@ export default function AdminProjectsPage() {
 
   return (
     <div className="p-8">
-      <PageHeader title="Projects" />
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Projects</h1>
-        <Link
-          href="/admin/projects/new"
-          className="rounded-lg bg-accent px-4 py-2 font-medium text-foreground hover:opacity-90 transition-opacity"
-        >
-          Initialize Project
-        </Link>
-      </div>
-
-      <div className="grid gap-4">
+      <PageHeader
+        title="Projects"
+        action={
+          <Link
+            href="/admin/projects/new"
+            className="rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-foreground transition-opacity hover:opacity-90"
+          >
+            Initialize Project
+          </Link>
+        }
+      />
+      <div className="grid gap-4 mt-8">
         {projects.length === 0 ? (
           <div className="rounded-xl border border-glass-border bg-surface/50 p-12 text-center">
             <p className="text-foreground/40">No projects yet. Start by initializing one!</p>

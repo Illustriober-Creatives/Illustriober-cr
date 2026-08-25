@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, MessageSquare, Plus } from "lucide-react";
+import { MessageSquare, Plus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { MilestoneTracker } from "@/components/MilestoneTracker";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -153,23 +153,9 @@ export default function ProjectDetailPage() {
           </span>
         }
       />
-      <Link
-        href="/dashboard"
-        className="inline-flex w-fit items-center gap-1.5 text-sm text-foreground/50 transition-colors hover:text-accent"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Dashboard
-      </Link>
-
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-accent">Project</p>
-          <h1 className="font-display text-3xl font-bold text-foreground md:text-4xl">{project.name}</h1>
-          <p className="mt-2 max-w-2xl text-foreground/60">{project.description}</p>
-        </div>
-        <span className="rounded-full border border-glass-border px-4 py-1.5 text-sm font-medium text-foreground/70">
-          {project.status.replace(/_/g, " ")}
-        </span>
+      <div>
+        <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-accent">Project</p>
+        <p className="max-w-2xl text-foreground/60">{project.description}</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">

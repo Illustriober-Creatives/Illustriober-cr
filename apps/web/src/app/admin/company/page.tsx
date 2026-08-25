@@ -95,11 +95,7 @@ export default function AdminCompanyPage() {
     <div className="flex flex-col gap-6 p-8">
       <PageHeader title="Company Profile" />
       <div>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Admin</p>
-        <h1 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">
-          Company Profile
-        </h1>
-        <p className="mt-2 max-w-2xl text-base leading-relaxed text-foreground/60">
+        <p className="max-w-2xl text-base leading-relaxed text-foreground/60">
           Studio settings — not client-facing yet.
         </p>
       </div>
