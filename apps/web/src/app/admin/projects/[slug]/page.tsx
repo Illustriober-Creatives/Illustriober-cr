@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, MessageSquare, Plus, Send } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Select } from "@/components/ui/Select";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 import {
   ticketPriorityBadgeClass,
   ticketStatusBadgeClass,
@@ -235,6 +236,16 @@ export default function AdminProjectDetailPage() {
 
   return (
     <div className="flex flex-col gap-8 p-8">
+      <PageHeader
+        title={project.name}
+        backHref="/admin/projects"
+        backLabel="Projects"
+        action={
+          <span className="rounded-full border border-glass-border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-foreground/70">
+            {project.status.replace(/_/g, " ")}
+          </span>
+        }
+      />
       <Link
         href="/admin/projects"
         className="inline-flex w-fit items-center gap-1.5 text-sm text-foreground/60 transition-colors hover:text-accent"

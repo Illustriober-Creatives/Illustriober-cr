@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { CreateProjectInput } from "@illustriober/shared";
 import { Select } from "@/components/ui/Select";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface Client {
   id: string;
@@ -88,6 +89,7 @@ export default function NewProjectPage() {
 
   return (
     <div className="mx-auto max-w-2xl p-8">
+      <PageHeader title="Initialize New Project" backHref="/admin/projects" backLabel="Back to Projects" />
       <h1 className="mb-8 text-3xl font-bold">Initialize New Project</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">

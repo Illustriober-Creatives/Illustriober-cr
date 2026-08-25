@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface Project {
   id: string;
@@ -43,6 +44,7 @@ export default function AdminProjectsPage() {
 
   return (
     <div className="p-8">
+      <PageHeader title="Projects" />
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Projects</h1>
         <Link
