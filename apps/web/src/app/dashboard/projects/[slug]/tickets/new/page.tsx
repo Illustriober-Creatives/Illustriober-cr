@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { RichTextEditor } from "@/components/RichTextEditor";
 import { Button } from "@/components/Button";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 type TicketType = "BUG" | "FEATURE" | "IDEA" | "QUESTION" | "SUPPORT";
 type TicketPriority = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -70,6 +71,7 @@ export default function NewTicketPage() {
 
   return (
     <div className="mx-auto max-w-2xl p-8">
+      <PageHeader title="Submit a ticket" backHref={`/dashboard/projects/${slug}`} backLabel="Back to project" />
       <Link
         href={`/dashboard/projects/${slug}`}
         className="mb-8 inline-flex items-center gap-1.5 text-sm text-foreground/50 hover:text-accent transition-colors"

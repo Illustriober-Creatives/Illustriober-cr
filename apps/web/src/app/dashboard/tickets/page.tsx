@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ticketStatusBadgeClass } from "@/lib/ticketBadgeStyles";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface Ticket {
   id: string;
@@ -49,6 +50,21 @@ export default function ClientTicketsPage() {
 
   return (
     <div className="flex flex-col gap-8 p-8">
+      <PageHeader
+        title="Your Support Tickets"
+        backHref="/dashboard"
+        backLabel="Back to Dashboard"
+        action={
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard/tickets/new")}
+            className="flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-xs font-semibold text-foreground transition-opacity hover:opacity-90"
+          >
+            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+            New Ticket
+          </button>
+        }
+      />
       <div className="flex items-center justify-between">
         <div>
           <Link

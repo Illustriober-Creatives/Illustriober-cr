@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { CreateTicketInput } from "@illustriober/shared";
 import { Select } from "@/components/ui/Select";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface Project {
   id: string;
@@ -80,6 +81,7 @@ export default function NewTicketPage() {
 
   return (
     <div className="mx-auto max-w-2xl p-8">
+      <PageHeader title="Submit Support Ticket" backHref="/dashboard/tickets" backLabel="Back to Tickets" />
       <Link href="/dashboard/tickets" className="group mb-2 flex w-fit items-center gap-1 text-xs font-medium text-foreground/50 transition-colors hover:text-accent">
         <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
         Back to Tickets

@@ -8,6 +8,7 @@ import { ArrowLeft, Briefcase, Clock, Info } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CommentThread } from "@/components/tickets/CommentThread";
 import { ticketPriorityBadgeClass, ticketStatusBadgeClass } from "@/lib/ticketBadgeStyles";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface Ticket {
   id: string;
@@ -71,6 +72,7 @@ export default function ClientTicketDetailPage() {
 
   return (
     <div className="flex flex-col gap-6 p-8">
+      <PageHeader title={ticket.title} backHref="/dashboard/tickets" backLabel="Back to Tickets" />
       <Link
         href="/dashboard/tickets"
         className="inline-flex w-fit items-center gap-1 text-xs font-medium text-foreground/50 transition-colors hover:text-accent"
