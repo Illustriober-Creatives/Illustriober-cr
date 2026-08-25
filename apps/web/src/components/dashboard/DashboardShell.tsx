@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import { Menu } from "lucide-react";
 import { DashboardSidebar, type DashboardNavItem } from "./DashboardSidebar";
 import { ProfileMenu } from "./ProfileMenu";
+import { PAGE_HEADER_SLOT_ID } from "./PageHeader";
 
 export type { DashboardNavItem };
 
@@ -41,16 +42,19 @@ export function DashboardShell({ navItems, eyebrow, profileHref, children }: Das
         onToggleCollapsed={toggleCollapsed}
       />
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-glass-border bg-surface px-6 py-4 md:px-8">
+        <header className="flex items-center gap-4 border-b border-glass-border bg-surface px-6 py-3 md:px-8">
           <button
             onClick={() => setMobileNavOpen(true)}
-            className="flex items-center justify-center rounded-full border border-glass-border p-2 text-foreground/70 transition-colors hover:bg-glass-bg hover:text-foreground md:hidden"
+            className="flex shrink-0 items-center justify-center rounded-full border border-glass-border p-2 text-foreground/70 transition-colors hover:bg-glass-bg hover:text-foreground md:hidden"
             type="button"
             aria-label="Open navigation menu"
           >
             <Menu className="h-4 w-4" aria-hidden="true" />
           </button>
-          <div className="ml-auto">
+          {/* Populated by each page's <PageHeader>, so navigation + the current
+              page name are always shown here instead of leaving this bar empty. */}
+          <div id={PAGE_HEADER_SLOT_ID} className="min-w-0 flex-1" />
+          <div className="shrink-0">
             <ProfileMenu profileHref={profileHref} />
           </div>
         </header>
