@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/Button";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 import { 
   User, 
   Briefcase, 
@@ -110,6 +111,18 @@ export default function EnquiryDetailPage() {
 
   return (
     <div className="p-8 max-w-6xl">
+      <PageHeader
+        title={`${enquiry.firstName} ${enquiry.lastName}`}
+        backHref="/admin/enquiries"
+        backLabel="Back to Enquiries"
+        action={
+          enquiry.status === "CONVERTED" ? (
+            <span className="rounded-full border border-green-500/20 bg-green-500/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-green-700">
+              Converted
+            </span>
+          ) : undefined
+        }
+      />
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="mb-2 flex items-center gap-2">

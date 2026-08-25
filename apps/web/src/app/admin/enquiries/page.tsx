@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 type EnquiryStatus = "NEW" | "REVIEWED" | "RESPONDED" | "CONVERTED" | "ARCHIVED";
 
@@ -77,6 +78,7 @@ export default function EnquiriesPage() {
 
   return (
     <div className="p-8">
+      <PageHeader title="Enquiries" />
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Enquiries</h1>
