@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
 type EnquiryStatus = "NEW" | "REVIEWED" | "RESPONDED" | "CONVERTED" | "ARCHIVED";
@@ -38,6 +39,7 @@ const ALL_STATUSES: EnquiryStatus[] = ["NEW", "REVIEWED", "RESPONDED", "CONVERTE
 
 export default function EnquiriesPage() {
   const { user } = useAuth();
+  const router = useRouter();
   const [enquiries, setEnquiries] = useState<EnquirySummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<EnquiryStatus | "">("");
@@ -110,7 +112,7 @@ export default function EnquiriesPage() {
               className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
                 status === s
                   ? "border-accent bg-accent/10 text-accent"
-                  : "border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300"
+                  : "border-glass-border text-foreground/50 hover:border-accent/30 hover:text-foreground"
               }`}
             >
               {STATUS_LABELS[s]}
@@ -142,10 +144,15 @@ export default function EnquiriesPage() {
               {enquiries.map((enq) => (
                 <tr
                   key={enq.id}
-                  className="border-b border-glass-border transition-colors hover:bg-glass-bg"
+                  onClick={() => router.push(`/admin/enquiries/${enq.id}`)}
+                  className="cursor-pointer border-b border-glass-border transition-colors hover:bg-glass-bg"
                 >
                   <td className="px-4 py-3">
-                    <Link href={`/admin/enquiries/${enq.id}`} className="font-medium text-foreground hover:text-accent transition-colors">
+                    <Link
+                      href={`/admin/enquiries/${enq.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="font-medium text-foreground hover:text-accent transition-colors"
+                    >
                       {enq.firstName} {enq.lastName}
                     </Link>
                     {enq.company && <p className="text-xs text-foreground/40">{enq.company}</p>}
