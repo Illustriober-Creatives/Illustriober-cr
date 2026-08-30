@@ -2,11 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## Project
 
 Illustriober Creatives Platform — A full-stack monorepo with a Next.js marketing website and client portal (Vercel) and an Express API (VPS). Built with TypeScript, Prisma, PostgreSQL, and npm workspaces.
 
-## Monorepo Structure
+## Architecture
+
+### Monorepo Structure
 
 ```
 apps/
@@ -15,62 +17,6 @@ apps/
 packages/
   shared/           # Shared Zod schemas (@illustriober/shared)
 ```
-
-## Common Commands
-
-**Development:**
-```bash
-npm install                   # Install all dependencies
-npm run dev                   # Start both web and api dev servers
-npm run dev --workspace apps/web     # Start only web
-npm run dev --workspace apps/api     # Start only api (tsx watch)
-```
-
-**Building:**
-```bash
-npm run build                 # Build all workspaces
-npm run build --workspace apps/web
-npm run build --workspace apps/api    # Compiles TypeScript to dist/
-npm run build --workspace @illustriober/shared   # Must build before api
-```
-
-**Testing (API workspace):**
-```bash
-npm run test --workspace apps/api           # Run all tests
-npx vitest run src/routes/auth.test.ts      # Run a single test file (from apps/api/)
-```
-
-Tests use vitest + supertest with prisma mocked via `vi.hoisted`. There are no frontend tests.
-
-**Linting:**
-```bash
-npm run lint                  # Lint all workspaces
-```
-
-**Database (API workspace):**
-```bash
-npm run prisma:generate --workspace apps/api
-npm run prisma:migrate:dev --workspace apps/api
-npm run prisma:migrate:deploy --workspace apps/api
-npm run prisma:migrate:status --workspace apps/api
-npm run prisma:db:push --workspace apps/api
-npm run prisma:validate --workspace apps/api
-```
-
-**Port management (common during dev):**
-```bash
-lsof -nP -iTCP:3000 -sTCP:LISTEN    # Check Next.js port
-lsof -nP -iTCP:4000 -sTCP:LISTEN    # Check API port
-kill -15 $(lsof -ti :3000)           # Kill port 3000
-```
-
-**Health checks:**
-```bash
-curl -i http://localhost:4000/health
-curl -I http://localhost:3000/
-```
-
-## Architecture
 
 ### Frontend (apps/web)
 
@@ -101,7 +47,7 @@ curl -I http://localhost:3000/
 - **Exports:** Zod schemas (enquirySchema, registerSchema, loginSchema) and types
 - **Build Required:** Must be built before API workspace (postinstall runs this automatically)
 
-## API Proxy Pattern
+### API Proxy Pattern
 
 Next.js rewrites all `/api/*` requests to the Express backend:
 
@@ -115,61 +61,7 @@ rewrites: [{ source: "/api/:path*", destination: "${apiProxyBase}/api/:path*" }]
 
 This allows the frontend to make same-origin requests and keeps CORS simple.
 
-## Authentication Flow
-
-**Token Strategy:**
-- Access token: 15 min expiry, returned by the API and stored client-side in `sessionStorage`
-- Refresh token: 30 days expiry, stored in an httpOnly cookie (`illustriober_refresh`) and tracked in DB for revocation
-- Tokens contain: `{ sub, role, email }`
-
-**Flow:**
-1. Frontend auth pages call `/api/auth/login` or `/api/auth/register`
-2. API returns an access token in JSON and sets the refresh session cookie
-3. `AuthContext` stores the access token in `sessionStorage` and uses it as a Bearer token for `/api/auth/me`
-4. On a `401`, the client deduplicates refresh attempts through `POST /api/auth/refresh`, stores the new access token, and retries the protected request
-5. `ProtectedRoute` handles client-side redirects for authenticated areas such as `/dashboard`
-6. API `authenticate` middleware verifies Bearer tokens and attaches `req.user`
-
-## Environment Variables
-
-**apps/api/.env (local development):**
-```
-NODE_ENV=development
-PORT=4000
-CORS_ORIGIN=http://localhost:3000
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/illustriober_local?schema=public
-DIRECT_DATABASE_URL=
-JWT_SECRET=...
-RESEND_API_KEY=...           # Optional (email)
-ENQUIRY_FROM_EMAIL="Illustriober <onboarding@resend.dev>"  # Optional
-ENQUIRY_ADMIN_EMAIL=you@yourdomain.com                     # Optional
-ALLOW_PUBLIC_REGISTRATION=true
-```
-
-**apps/api production env (VPS):**
-```
-NODE_ENV=production
-PORT=4000
-CORS_ORIGIN=https://illustriober.com,https://www.illustriober.com
-JWT_SECRET=...
-RESEND_API_KEY=...
-ALLOW_PUBLIC_REGISTRATION=true
-DIRECT_DATABASE_URL=postgresql://app_user:app_password@localhost:5432/illustrioberdb?schema=public
-```
-
-**apps/web/.env.local:**
-```
-NEXT_PUBLIC_API_URL=http://localhost:4000
-API_PROXY_URL=https://...    # Production API URL (no trailing slash)
-```
-
-**Database URL policy:**
-- Local development must use a local Postgres database, not the VPS production database.
-- On the VPS, `localhost` in the Postgres URL is correct when the API and Postgres run on the same machine.
-- The runtime Prisma client prefers `DIRECT_DATABASE_URL` when set; otherwise it falls back to `DATABASE_URL`.
-- Prisma CLI now follows the same rule through `apps/api/prisma.config.ts`.
-
-## Database Schema
+### Database Schema
 
 Managed by Prisma. See `apps/api/prisma/schema.prisma`. Key tables:
 - Users (clients, admins)
@@ -177,7 +69,7 @@ Managed by Prisma. See `apps/api/prisma/schema.prisma`. Key tables:
 - Enquiries (contact form submissions)
 - Projects, Tickets, Comments (in progress per phase specs)
 
-## Database Workflow
+### Database Workflow
 
 **Local development**
 1. Start a local Postgres instance.
@@ -222,7 +114,7 @@ Managed by Prisma. See `apps/api/prisma/schema.prisma`. Key tables:
 - Use `prisma db push` only for local bootstrap, disposable databases, or quick non-production resets.
 - Do not rely on `db push` as the main production change workflow.
 
-## API Endpoints
+### API Endpoints
 
 ```
 GET  /                     # API info + docs links
@@ -235,7 +127,7 @@ POST /api/auth/refresh
 GET  /api/auth/me          # Requires Bearer access token
 ```
 
-## Path Aliases
+### Path Aliases
 
 **Web (tsconfig.json):**
 - `@/*` → `./src/*`
@@ -244,21 +136,79 @@ GET  /api/auth/me          # Requires Bearer access token
 - `@/*` → `./src/*`
 - `@routes/*`, `@middleware/*`, `@lib/*`, `@controllers/*` → respective src dirs
 
-## Build Process
+### Build Process
 
 1. Root `postinstall` builds `@illustriober/shared`
 2. API depends on `@illustriober/shared` via `file:../../packages/shared`
 3. API build compiles TypeScript to `dist/` (CommonJS)
 4. Web build uses Next.js with output to `.next/`
 
-## Vercel Configuration
+### Vercel Configuration
 
 `vercel.json` sets framework to Next.js and output directory to `.next`. The API runs on a separate VPS, not Vercel.
+
+## Environment & Secrets
+
+### Environment Variables
+
+**apps/api/.env (local development):**
+```
+NODE_ENV=development
+PORT=4000
+CORS_ORIGIN=http://localhost:3000
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/illustriober_local?schema=public
+DIRECT_DATABASE_URL=
+JWT_SECRET=...
+RESEND_API_KEY=...           # Optional (email)
+ENQUIRY_FROM_EMAIL="Illustriober <onboarding@resend.dev>"  # Optional
+ENQUIRY_ADMIN_EMAIL=you@yourdomain.com                     # Optional
+ALLOW_PUBLIC_REGISTRATION=true
+```
+
+**apps/api production env (VPS):**
+```
+NODE_ENV=production
+PORT=4000
+CORS_ORIGIN=https://illustriober.com,https://www.illustriober.com
+JWT_SECRET=...
+RESEND_API_KEY=...
+ALLOW_PUBLIC_REGISTRATION=true
+DIRECT_DATABASE_URL=postgresql://app_user:app_password@localhost:5432/illustrioberdb?schema=public
+```
+
+**apps/web/.env.local:**
+```
+NEXT_PUBLIC_API_URL=http://localhost:4000
+API_PROXY_URL=https://...    # Production API URL (no trailing slash)
+```
+
+**Database URL policy:**
+- Local development must use a local Postgres database, not the VPS production database.
+- On the VPS, `localhost` in the Postgres URL is correct when the API and Postgres run on the same machine.
+- The runtime Prisma client prefers `DIRECT_DATABASE_URL` when set; otherwise it falls back to `DATABASE_URL`.
+- Prisma CLI now follows the same rule through `apps/api/prisma.config.ts`.
+
+## Read Before Touching This
+
+### Authentication Flow
+
+**Token Strategy:**
+- Access token: 15 min expiry, returned by the API and stored client-side in `sessionStorage`
+- Refresh token: 30 days expiry, stored in an httpOnly cookie (`illustriober_refresh`) and tracked in DB for revocation
+- Tokens contain: `{ sub, role, email }`
+
+**Flow:**
+1. Frontend auth pages call `/api/auth/login` or `/api/auth/register`
+2. API returns an access token in JSON and sets the refresh session cookie
+3. `AuthContext` stores the access token in `sessionStorage` and uses it as a Bearer token for `/api/auth/me`
+4. On a `401`, the client deduplicates refresh attempts through `POST /api/auth/refresh`, stores the new access token, and retries the protected request
+5. `ProtectedRoute` handles client-side redirects for authenticated areas such as `/dashboard`
+6. API `authenticate` middleware verifies Bearer tokens and attaches `req.user`
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **Illustriober-cr** (4512 symbols, 5397 relationships, 43 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **Illustriober-cr** (4585 symbols, 5526 relationships, 46 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -356,3 +306,7 @@ To check whether embeddings exist, inspect `.gitnexus/meta.json` — the `stats.
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
 
 <!-- gitnexus:end -->
+
+---
+
+See [STANDING-RULES.md](https://github.com/Itsriober/build-standards/blob/main/STANDING-RULES.md) for Git/GitHub conventions, the AI-attribution policy, and the default design-avoidance rules that apply here too.
