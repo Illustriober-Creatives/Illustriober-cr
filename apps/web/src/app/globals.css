@@ -11,6 +11,7 @@
   --foreground: #171717;
   --surface: #FFFDF8;
   --accent: #D96800;
+  --accent-ink: #A64A00;
   --accent-soft: rgba(249, 115, 22, 0.1);
   --accent-glow: rgba(249, 115, 22, 0.4);
   
@@ -51,6 +52,7 @@
   --foreground: #171717;
   --surface: #FFFDF8;
   --accent: #D96800;
+  --accent-ink: #A64A00;
   --accent-soft: rgba(217, 104, 0, 0.08);
   --accent-glow: rgba(217, 104, 0, 0.2);
   

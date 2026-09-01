@@ -13,7 +13,7 @@ export default function WorkPage() {
         <ScrollReveal blur y={22} scale={0.99}>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Concept studies</p>
           <div className="mt-5">
-            <h1 className="max-w-4xl font-display text-5xl leading-[0.9] tracking-[-0.05em] md:text-7xl">Ideas made <em className="font-normal text-[#F39314]">useful.</em></h1>
+            <h1 className="max-w-4xl font-display text-5xl leading-[0.9] tracking-[-0.05em] md:text-7xl">Ideas made <em className="font-normal text-[var(--accent-ink)]">useful.</em></h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-[#5F5A50]">Product directions that show how a clearer interface can make everyday work easier.</p>
           </div>
         </ScrollReveal>

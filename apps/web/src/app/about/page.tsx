@@ -23,7 +23,7 @@ export default function AboutPage() {
         <ScrollReveal blur scale={0.99} y={24}>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">About Illustriober</p>
           <div className="mt-5 grid items-start gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-            <h1 className="max-w-4xl font-display text-6xl leading-[0.87] tracking-[-0.055em] md:text-8xl">We make the complicated feel <em className="font-normal text-[#F39314]">clear.</em></h1>
+            <h1 className="max-w-4xl font-display text-6xl leading-[0.87] tracking-[-0.055em] md:text-8xl">We make the complicated feel <em className="font-normal text-[var(--accent-ink)]">clear.</em></h1>
             <p className="max-w-md text-lg leading-8 text-[#5F5A50] lg:pt-2">Illustriober is a small, practical studio for digital products that need to look considered and work hard.</p>
           </div>
         </ScrollReveal>
@@ -42,7 +42,7 @@ export default function AboutPage() {
       </section>
 
       <section className="mx-auto mt-16 max-w-7xl px-5 md:mt-24 md:px-8">
-        <div className="grid gap-5 md:grid-cols-3">{principles.map(([title, copy], index) => <ScrollReveal blur className="h-full" delay={index * 0.06} key={title} scale={0.982} y={24}><article className="h-full rounded-[1.5rem] border border-[#171717]/10 bg-[#FFFDF8] p-7 transition-[transform,border-color,box-shadow] duration-[750ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#F39314]/55 hover:shadow-[0_20px_55px_rgba(23,23,23,0.08)] motion-safe:hover:-translate-y-1 motion-reduce:transition-none md:p-8"><p className="text-xs font-bold text-[#F39314]">0{index + 1}</p><h2 className="mt-10 font-display text-3xl">{title}</h2><p className="mt-4 leading-7 text-[#5F5A50]">{copy}</p></article></ScrollReveal>)}</div>
+        <div className="grid gap-5 md:grid-cols-3">{principles.map(([title, copy], index) => <ScrollReveal blur className="h-full" delay={index * 0.06} key={title} scale={0.982} y={24}><article className="h-full rounded-[1.5rem] border border-[#171717]/10 bg-[#FFFDF8] p-7 transition-[transform,border-color,box-shadow] duration-[750ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#F39314]/55 hover:shadow-[0_20px_55px_rgba(23,23,23,0.08)] motion-safe:hover:-translate-y-1 motion-reduce:transition-none md:p-8"><p className="text-xs font-bold text-[var(--accent-ink)]">0{index + 1}</p><h2 className="mt-10 font-display text-3xl">{title}</h2><p className="mt-4 leading-7 text-[#5F5A50]">{copy}</p></article></ScrollReveal>)}</div>
       </section>
 
       <section className="mx-auto mt-16 max-w-7xl px-5 md:mt-24 md:px-8"><ScrollReveal blur scale={0.985} y={24}><div className="rounded-[2rem] bg-[#F39314] px-7 py-12 text-center transition-[transform,box-shadow] duration-[750ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-[0_24px_70px_rgba(243,147,20,0.22)] motion-reduce:transition-none md:px-12"><h2 className="font-display text-4xl leading-none md:text-6xl">Have something worth making?</h2><Link className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#171717] px-6 py-3.5 text-sm font-bold text-white transition-[transform,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#2A2824] motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none" href="/enquiry">Tell us about it <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link></div></ScrollReveal></section>

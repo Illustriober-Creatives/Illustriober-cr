@@ -22,7 +22,7 @@ export function Footer() {
           <Link className="hover:text-[#F7AD45]" href="/enquiry">Contact</Link>
         </div>
       </div>
-      <div className="mx-auto mt-12 max-w-7xl border-t border-white/10 pt-5 text-xs text-[#F4EFE5]/45">
+      <div className="mx-auto mt-12 max-w-7xl border-t border-white/10 pt-5 text-xs text-[#F4EFE5]/60">
         © {new Date().getFullYear()} Illustriober Creatives
       </div>
     </footer>
