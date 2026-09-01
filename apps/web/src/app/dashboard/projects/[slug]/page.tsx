@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { MessageSquare, Plus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Container } from "@/components/Container";
-import { SectionWrapper } from "@/components/SectionWrapper";
-import { Button } from "@/components/Button";
 import { MilestoneTracker } from "@/components/MilestoneTracker";
+import { PageHeader } from "@/components/dashboard/PageHeader";
+import {
+  ticketPriorityBadgeClass,
+  ticketStatusBadgeClass,
+  ticketTypeBadgeClass,
+} from "@/lib/ticketBadgeStyles";
 
 type TicketStatus = "OPEN" | "IN_REVIEW" | "IN_PROGRESS" | "RESOLVED" | "CLOSED" | "REJECTED";
 type TicketPriority = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -42,28 +46,20 @@ interface Project {
   milestones: Milestone[];
 }
 
-const STATUS_COLUMNS: { key: TicketStatus; label: string; color: string }[] = [
-  { key: "OPEN",        label: "Open",        color: "text-zinc-400" },
-  { key: "IN_REVIEW",   label: "In Review",   color: "text-blue-400" },
-  { key: "IN_PROGRESS", label: "In Progress", color: "text-orange-400" },
-  { key: "RESOLVED",    label: "Resolved",    color: "text-green-400" },
-  { key: "CLOSED",      label: "Closed",      color: "text-zinc-500" },
+interface ProjectUpdate {
+  id: string;
+  content: string;
+  createdAt: string;
+  sender: { firstName: string; lastName: string; role: string };
+}
+
+const STATUS_COLUMNS: { key: TicketStatus; label: string }[] = [
+  { key: "OPEN", label: "Open" },
+  { key: "IN_REVIEW", label: "In Review" },
+  { key: "IN_PROGRESS", label: "In Progress" },
+  { key: "RESOLVED", label: "Resolved" },
+  { key: "CLOSED", label: "Closed" },
 ];
-
-const PRIORITY_BADGE: Record<TicketPriority, string> = {
-  LOW:      "bg-zinc-800 text-zinc-400",
-  MEDIUM:   "bg-blue-500/10 text-blue-400",
-  HIGH:     "bg-orange-500/10 text-orange-400",
-  CRITICAL: "bg-red-500/10 text-red-400",
-};
-
-const TYPE_BADGE: Record<TicketType, string> = {
-  BUG:      "bg-red-500/10 text-red-400",
-  FEATURE:  "bg-purple-500/10 text-purple-400",
-  IDEA:     "bg-yellow-500/10 text-yellow-400",
-  QUESTION: "bg-sky-500/10 text-sky-400",
-  SUPPORT:  "bg-zinc-500/10 text-zinc-400",
-};
 
 export default function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -72,15 +68,19 @@ export default function ProjectDetailPage() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [ticketsError, setTicketsError] = useState(false);
+  const [updates, setUpdates] = useState<ProjectUpdate[]>([]);
+  const [updatesError, setUpdatesError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const [projRes, ticketRes] = await Promise.all([
+        const [projRes, ticketRes, updatesRes] = await Promise.all([
           fetchWithAuth(`/api/projects/${slug}`),
           fetchWithAuth(`/api/projects/${slug}/tickets`),
+          fetchWithAuth(`/api/projects/${slug}/updates`),
         ]);
 
         if (!projRes.ok) {
@@ -94,6 +94,15 @@ export default function ProjectDetailPage() {
         if (ticketRes.ok) {
           const ticketData = await ticketRes.json();
           setTickets(ticketData.tickets);
+        } else {
+          setTicketsError(true);
+        }
+
+        if (updatesRes.ok) {
+          const updatesData = await updatesRes.json();
+          setUpdates(updatesData.updates);
+        } else {
+          setUpdatesError(true);
         }
       } catch {
         setError("Failed to load project.");
@@ -106,7 +115,7 @@ export default function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center text-zinc-500">
+      <div className="flex min-h-[60vh] items-center justify-center text-foreground/50">
         Loading project...
       </div>
     );
@@ -115,10 +124,14 @@ export default function ProjectDetailPage() {
   if (error || !project) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-        <p className="text-zinc-400">{error ?? "Project not found."}</p>
-        <Button variant="secondary" onClick={() => router.push("/dashboard")}>
+        <p className="text-foreground/60">{error ?? "Project not found."}</p>
+        <button
+          type="button"
+          onClick={() => router.push("/dashboard")}
+          className="rounded-full border border-glass-border px-5 py-2 text-sm font-semibold text-foreground/70 transition-colors hover:bg-glass-bg hover:text-foreground"
+        >
           Back to dashboard
-        </Button>
+        </button>
       </div>
     );
   }
@@ -129,114 +142,138 @@ export default function ProjectDetailPage() {
   }));
 
   return (
-    <div className="w-full bg-background min-h-screen">
-      <SectionWrapper className="pt-40 pb-20 lg:pt-44 lg:pb-24">
-        <Container>
-          {/* Back link */}
-          <Link
-            href="/dashboard"
-            className="mb-8 inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
-          >
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-            Dashboard
-          </Link>
+    <div className="flex flex-col gap-8 p-8">
+      <PageHeader
+        title={project.name}
+        backHref="/dashboard"
+        backLabel="Dashboard"
+        action={
+          <span className="rounded-full border border-glass-border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-foreground/70">
+            {project.status.replace(/_/g, " ")}
+          </span>
+        }
+      />
+      <div>
+        <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-accent">Project</p>
+        <p className="max-w-2xl text-foreground/60">{project.description}</p>
+      </div>
 
-          {/* Project header */}
-          <div className="mb-10 flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p className="mb-1 text-sm uppercase tracking-[0.18em] text-orange-500">Project</p>
-              <h1 className="text-3xl font-bold text-white md:text-4xl">{project.name}</h1>
-              <p className="mt-2 max-w-2xl text-zinc-400">{project.description}</p>
-            </div>
-            <span className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm font-medium text-zinc-300">
-              {project.status}
-            </span>
-          </div>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="rounded-xl border border-glass-border bg-surface p-6 lg:col-span-1">
+          <h2 className="mb-5 text-base font-bold text-foreground">Milestones</h2>
+          <MilestoneTracker milestones={project.milestones} />
+        </div>
 
-          <div className="grid gap-8 lg:grid-cols-3">
-            {/* Milestone tracker */}
-            <div className="glass-card rounded-2xl border border-zinc-800/80 p-6 lg:col-span-1">
-              <h2 className="mb-5 text-base font-semibold text-white">Milestones</h2>
-              <MilestoneTracker milestones={project.milestones} />
-            </div>
-
-            {/* Ticket board */}
-            <div className="lg:col-span-2 space-y-5">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base font-semibold text-white">
-                  Tickets
-                  {tickets.length > 0 && (
-                    <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
-                      {tickets.length}
-                    </span>
-                  )}
-                </h2>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  className="rounded-xl text-xs"
-                  onClick={() => router.push(`/dashboard/projects/${slug}/tickets/new`)}
-                >
-                  + New Ticket
-                </Button>
-              </div>
-
-              {tickets.length === 0 ? (
-                <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-8 text-center">
-                  <p className="text-zinc-500">No tickets yet.</p>
-                  <p className="mt-1 text-sm text-zinc-600">
-                    Submit a bug, feature request, or question to get started.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {ticketsByStatus
-                    .filter((col) => col.tickets.length > 0)
-                    .map((col) => (
-                      <div key={col.key} className="rounded-xl border border-zinc-800/80 overflow-hidden">
-                        <div className="flex items-center gap-2 border-b border-zinc-800 bg-zinc-900/60 px-4 py-2.5">
-                          <span className={`text-xs font-semibold uppercase tracking-wider ${col.color}`}>
-                            {col.label}
-                          </span>
-                          <span className="rounded-full bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-500">
-                            {col.tickets.length}
-                          </span>
-                        </div>
-                        <div className="divide-y divide-zinc-800/60">
-                          {col.tickets.map((ticket) => (
-                            <div
-                              key={ticket.id}
-                              className="flex items-center justify-between gap-4 px-4 py-3 transition-colors hover:bg-zinc-900/40"
-                            >
-                              <div className="min-w-0">
-                                <p className="truncate text-sm font-medium text-zinc-200">
-                                  {ticket.title}
-                                </p>
-                                <p className="mt-0.5 text-xs text-zinc-600">
-                                  {ticket.submittedBy.firstName} · {new Date(ticket.createdAt).toLocaleDateString()}
-                                </p>
-                              </div>
-                              <div className="flex shrink-0 gap-1.5">
-                                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${TYPE_BADGE[ticket.type]}`}>
-                                  {ticket.type}
-                                </span>
-                                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${PRIORITY_BADGE[ticket.priority]}`}>
-                                  {ticket.priority}
-                                </span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                </div>
+        <div className="space-y-4 lg:col-span-2">
+          <div className="flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-base font-bold text-foreground">
+              Tickets
+              {tickets.length > 0 && (
+                <span className="rounded-full bg-glass-bg px-2 py-0.5 text-xs text-foreground/50">
+                  {tickets.length}
+                </span>
               )}
-            </div>
+            </h2>
+            <button
+              type="button"
+              onClick={() => router.push(`/dashboard/projects/${slug}/tickets/new`)}
+              className="flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-foreground transition-opacity hover:opacity-90"
+            >
+              <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+              New Ticket
+            </button>
           </div>
-        </Container>
-      </SectionWrapper>
+
+          {ticketsError ? (
+            <div className="rounded-xl border border-glass-border bg-surface p-8 text-center">
+              <p className="text-foreground/50">Couldn&apos;t load tickets. Refresh to try again.</p>
+            </div>
+          ) : tickets.length === 0 ? (
+            <div className="rounded-xl border border-glass-border bg-surface p-8 text-center">
+              <p className="text-foreground/50">No tickets yet.</p>
+              <p className="mt-1 text-sm text-foreground/40">
+                Submit a bug, feature request, or question to get started.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {ticketsByStatus
+                .filter((col) => col.tickets.length > 0)
+                .map((col) => (
+                  <div key={col.key} className="overflow-hidden rounded-xl border border-glass-border">
+                    <div className="flex items-center gap-2 border-b border-glass-border bg-glass-bg px-4 py-2.5">
+                      <span
+                        className={`rounded-full border px-2 py-0.5 text-xs font-semibold uppercase tracking-wider ${ticketStatusBadgeClass(col.key)}`}
+                      >
+                        {col.label}
+                      </span>
+                      <span className="rounded-full bg-glass-bg px-1.5 py-0.5 text-xs text-foreground/40">
+                        {col.tickets.length}
+                      </span>
+                    </div>
+                    <div className="divide-y divide-glass-border">
+                      {col.tickets.map((ticket) => (
+                        <Link
+                          key={ticket.id}
+                          href={`/dashboard/tickets/${ticket.id}`}
+                          className="flex items-center justify-between gap-4 px-4 py-3 transition-colors hover:bg-glass-bg"
+                        >
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-medium text-foreground">{ticket.title}</p>
+                            <p className="mt-0.5 text-xs text-foreground/40">
+                              {ticket.submittedBy.firstName} · {new Date(ticket.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="flex shrink-0 gap-1.5">
+                            <span
+                              className={`rounded-full px-2 py-0.5 text-xs font-medium ${ticketTypeBadgeClass(ticket.type)}`}
+                            >
+                              {ticket.type}
+                            </span>
+                            <span
+                              className={`rounded-full px-2 py-0.5 text-xs font-medium ${ticketPriorityBadgeClass(ticket.priority)}`}
+                            >
+                              {ticket.priority}
+                            </span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-glass-border bg-surface p-6">
+        <h2 className="mb-4 flex items-center gap-2 text-base font-bold text-foreground">
+          <MessageSquare className="h-4 w-4 text-accent" aria-hidden="true" />
+          Updates
+        </h2>
+        {updatesError ? (
+          <p className="text-sm text-foreground/50">Couldn&apos;t load updates. Refresh to try again.</p>
+        ) : updates.length === 0 ? (
+          <p className="text-sm text-foreground/50">
+            Updates from your project team will appear here as they happen.
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {updates.map((update) => (
+              <div key={update.id} className="border-l-2 border-accent/30 pl-4">
+                <p className="whitespace-pre-wrap text-sm text-foreground/80">{update.content}</p>
+                <p className="mt-1 text-xs text-foreground/40">
+                  {update.sender.firstName} {update.sender.lastName} ·{" "}
+                  {new Date(update.createdAt).toLocaleString(undefined, {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { CreateProjectInput } from "@illustriober/shared";
+import { Select } from "@/components/ui/Select";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 interface Client {
   id: string;
@@ -48,6 +50,10 @@ export default function NewProjectPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.clientId) {
+      setError("Select a client to assign this project to.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
 
@@ -83,9 +89,9 @@ export default function NewProjectPage() {
 
   return (
     <div className="mx-auto max-w-2xl p-8">
-      <h1 className="mb-8 text-3xl font-bold">Initialize New Project</h1>
+      <PageHeader title="Initialize New Project" backHref="/admin/projects" backLabel="Back to Projects" />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="mt-8 space-y-6">
         {error && (
           <div className="rounded-lg bg-red-500/10 p-4 text-sm text-red-500">
             {error}
@@ -117,19 +123,15 @@ export default function NewProjectPage() {
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Assign to Client</label>
-          <select
-            required
-            value={formData.clientId}
-            onChange={(e) => setFormData((prev) => ({ ...prev, clientId: e.target.value }))}
-            className="w-full rounded-lg border border-glass-border bg-glass-bg px-4 py-2 focus:border-accent focus:outline-none"
-          >
-            <option value="">Select a client...</option>
-            {clients.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.firstName} {c.lastName} ({c.email})
-              </option>
-            ))}
-          </select>
+          <Select
+            value={formData.clientId ?? ""}
+            onChange={(next) => setFormData((prev) => ({ ...prev, clientId: next }))}
+            aria-label="Assign to client"
+            placeholder="Select a client…"
+            fullWidth
+            className="py-2"
+            options={clients.map((c) => ({ value: c.id, label: `${c.firstName} ${c.lastName} (${c.email})` }))}
+          />
         </div>
 
         <div className="space-y-2">
@@ -147,7 +149,7 @@ export default function NewProjectPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-lg bg-accent py-3 font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="w-full rounded-lg bg-accent py-3 font-semibold text-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {submitting ? "Creating..." : "Create Project"}
         </button>

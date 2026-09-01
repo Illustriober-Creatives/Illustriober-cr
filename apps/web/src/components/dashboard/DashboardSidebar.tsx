@@ -1,0 +1,164 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ChevronsLeft, ChevronsRight, type LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
+
+export interface DashboardNavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+interface DashboardSidebarProps {
+  navItems: DashboardNavItem[];
+  eyebrow: string;
+  isOpen: boolean;
+  onClose: () => void;
+  collapsed: boolean;
+  onToggleCollapsed: () => void;
+}
+
+function isNavItemActive(pathname: string, href: string, allHrefs: string[]): boolean {
+  if (pathname === href) return true;
+  if (!pathname.startsWith(`${href}/`)) return false;
+  return !allHrefs.some(
+    (other) =>
+      other !== href &&
+      other.length > href.length &&
+      (pathname === other || pathname.startsWith(`${other}/`))
+  );
+}
+
+export function DashboardSidebar({
+  navItems,
+  eyebrow,
+  isOpen,
+  onClose,
+  collapsed,
+  onToggleCollapsed,
+}: DashboardSidebarProps) {
+  const pathname = usePathname();
+  const allHrefs = navItems.map((item) => item.href);
+  const shouldReduceMotion = useReducedMotion();
+  const labelTransition = { duration: shouldReduceMotion ? 0 : 0.16, ease: [0.22, 1, 0.36, 1] as const };
+
+  function Label({ children }: { children: ReactNode }) {
+    return (
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={labelTransition}
+        className="overflow-hidden whitespace-nowrap"
+      >
+        {children}
+      </motion.span>
+    );
+  }
+
+  function renderSidebarContent(onNavigate?: () => void, isCollapsed = false, showCollapseToggle = false) {
+    return (
+      <>
+        <Link
+          href="/"
+          className={`mb-8 flex items-center gap-2.5 px-2 ${isCollapsed ? "justify-center px-0" : ""}`}
+          onClick={onNavigate}
+        >
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent font-display text-lg font-bold text-foreground">
+            il
+          </span>
+          <AnimatePresence initial={false}>
+            {!isCollapsed && <Label key="wordmark">
+              <span className="text-sm font-bold tracking-tight text-foreground">Illustriober</span>
+            </Label>}
+          </AnimatePresence>
+        </Link>
+
+        <AnimatePresence initial={false}>
+          {!isCollapsed && (
+            <Label key="eyebrow">
+              <p className="mb-3 px-2 text-xs font-bold uppercase tracking-[0.18em] text-accent">{eyebrow}</p>
+            </Label>
+          )}
+        </AnimatePresence>
+
+        <nav className="flex flex-1 flex-col gap-1">
+          {navItems.map(({ href, label, icon: Icon }) => {
+            const active = isNavItemActive(pathname, href, allHrefs);
+            return (
+              <Link
+                key={href}
+                href={href}
+                onClick={onNavigate}
+                title={isCollapsed ? label : undefined}
+                aria-label={isCollapsed ? label : undefined}
+                className={`flex items-center gap-3 rounded-lg py-2.5 text-sm font-medium transition-colors ${
+                  isCollapsed ? "justify-center px-0" : "px-3"
+                } ${active ? "bg-accent/10 text-accent" : "text-foreground/60 hover:bg-glass-bg hover:text-foreground"}`}
+              >
+                <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <AnimatePresence initial={false}>{!isCollapsed && <Label key={href}>{label}</Label>}</AnimatePresence>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {showCollapseToggle && (
+          <button
+            type="button"
+            onClick={onToggleCollapsed}
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className={`mt-4 flex items-center gap-2 rounded-lg border-t border-glass-border pt-4 text-xs font-medium text-foreground/50 transition-colors hover:text-foreground ${
+              isCollapsed ? "justify-center" : "px-2"
+            }`}
+          >
+            {isCollapsed ? (
+              <ChevronsRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+            ) : (
+              <>
+                <ChevronsLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <AnimatePresence initial={false}>
+                  <Label key="collapse-label">Collapse</Label>
+                </AnimatePresence>
+              </>
+            )}
+          </button>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      {/* Desktop sidebar: static, visible at md: and up. Width animates on
+          collapse (framer-motion, same easing as the rest of the site) so the
+          flex-1 content column resizes with it smoothly — no scrollbars or
+          dead space, just less horizontal room. */}
+      <motion.aside
+        initial={false}
+        animate={{ width: collapsed ? 72 : 240, paddingLeft: collapsed ? 12 : 16, paddingRight: collapsed ? 12 : 16 }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
+        className="hidden shrink-0 flex-col overflow-hidden border-r border-glass-border bg-surface py-8 md:flex"
+      >
+        {renderSidebarContent(undefined, collapsed, true)}
+      </motion.aside>
+
+      {/* Mobile drawer: slide-in panel + backdrop, only relevant below md: */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={onClose}
+            aria-hidden="true"
+          />
+          <aside className="relative flex h-full w-60 flex-col border-r border-glass-border bg-surface px-4 py-8 shadow-xl">
+            {renderSidebarContent(onClose, false)}
+          </aside>
+        </div>
+      )}
+    </>
+  );
+}

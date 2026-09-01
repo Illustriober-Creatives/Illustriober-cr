@@ -5,6 +5,7 @@ import { signAccessToken } from "../lib/jwt";
 const prismaMock = vi.hoisted(() => ({
   project: { findMany: vi.fn(), findUnique: vi.fn() },
   ticket: { findMany: vi.fn() },
+  message: { findMany: vi.fn() },
   refreshToken: { updateMany: vi.fn(), create: vi.fn(), findUnique: vi.fn() },
 }));
 
@@ -112,6 +113,75 @@ describe("project routes — data isolation", () => {
         .set("Authorization", `Bearer ${clientToken()}`);
 
       expect(res.status).toBe(404);
+    });
+  });
+
+  describe("GET /api/projects/:slug/updates", () => {
+    const updateFixture = {
+      id: "msg_1",
+      content: "Kicked off the design phase.",
+      type: "TEXT",
+      projectId: "proj_1",
+      senderId: "admin_1",
+      receiverId: null,
+      readAt: null,
+      createdAt: new Date(),
+      sender: { firstName: "Ada", lastName: "Admin", role: "ADMIN" },
+    };
+
+    it("returns broadcast updates for the owning client", async () => {
+      prismaMock.project.findUnique.mockResolvedValue(projectFixture);
+      prismaMock.message.findMany.mockResolvedValue([updateFixture]);
+
+      const res = await request(app)
+        .get("/api/projects/my-project/updates")
+        .set("Authorization", `Bearer ${clientToken("client_1")}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.updates).toHaveLength(1);
+      expect(prismaMock.message.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { projectId: "proj_1", receiverId: null },
+          orderBy: { createdAt: "desc" },
+        })
+      );
+    });
+
+    it("blocks a different client from viewing another client's updates", async () => {
+      prismaMock.project.findUnique.mockResolvedValue(projectFixture);
+
+      const res = await request(app)
+        .get("/api/projects/my-project/updates")
+        .set("Authorization", `Bearer ${clientToken("client_other")}`);
+
+      expect(res.status).toBe(403);
+      expect(prismaMock.message.findMany).not.toHaveBeenCalled();
+    });
+
+    it("allows admin to view any project's updates", async () => {
+      prismaMock.project.findUnique.mockResolvedValue(projectFixture);
+      prismaMock.message.findMany.mockResolvedValue([]);
+
+      const res = await request(app)
+        .get("/api/projects/my-project/updates")
+        .set("Authorization", `Bearer ${adminToken()}`);
+
+      expect(res.status).toBe(200);
+    });
+
+    it("returns 404 for unknown project", async () => {
+      prismaMock.project.findUnique.mockResolvedValue(null);
+
+      const res = await request(app)
+        .get("/api/projects/does-not-exist/updates")
+        .set("Authorization", `Bearer ${clientToken()}`);
+
+      expect(res.status).toBe(404);
+    });
+
+    it("returns 401 for unauthenticated requests", async () => {
+      const res = await request(app).get("/api/projects/my-project/updates");
+      expect(res.status).toBe(401);
     });
   });
 });
