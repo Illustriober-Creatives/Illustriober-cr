@@ -15,6 +15,24 @@ import { REFRESH_COOKIE_NAME, readRequestCookie } from "../lib/cookies";
 
 const router = Router();
 
+// Keyed per-user (via Authorization header) so one user's requests can't
+// exhaust another's budget, and so it isn't just an IP-keyed limiter
+// behind a shared proxy.
+const profileUpdateRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 30,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const authorization = req.headers.authorization;
+    if (authorization) {
+      return createHash("sha256").update(authorization).digest("hex");
+    }
+    return ipKeyGenerator(req.ip ?? "unknown");
+  },
+  message: { success: false, error: "Too many profile update attempts. Please wait a moment." },
+});
+
 // Password-change is an authenticated password-verification oracle — rate
 // limit it the same way ticket comments are limited, keyed on the caller's
 // own Authorization header so one user's attempts can't exhaust another's
@@ -38,6 +56,7 @@ const passwordChangeRateLimit = rateLimit({
 // Update own firstName/lastName/phone
 router.patch(
   "/me",
+  profileUpdateRateLimit,
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     let body: z.infer<typeof updateProfileSchema>;
