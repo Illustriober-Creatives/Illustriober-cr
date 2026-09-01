@@ -97,19 +97,23 @@ export function HeroTypewriter({ phrases, variant = "home" }: HeroTypewriterProp
   return (
     <div className={`${styles.shell} ${variant === "services" ? styles.services : ""}`}>
       {variant === "services" ? (
-        <h1 className="font-display text-[clamp(2.975rem,calc(6vw-2px),6.075rem)] leading-[1.02] tracking-normal">
-          <span className="sr-only">Reliable software, shaped around your business.</span>
+        <h1
+          aria-label="Reliable software, shaped around your business."
+          className="font-display text-[clamp(2.975rem,calc(6vw-2px),6.075rem)] leading-[1.02] tracking-normal"
+        >
           <span className={styles.servicesLine} aria-hidden="true">
             <span className={styles.servicesOpening}>{rotatingWord} software, shaped</span>
             <span className={styles.servicesTail}>around your business.</span>
           </span>
         </h1>
       ) : (
-        <h1 className="max-w-4xl font-display text-5xl leading-[0.9] tracking-normal sm:text-6xl md:text-7xl lg:max-w-none lg:text-[clamp(4.75rem,calc(6vw-4px),6.5rem)] lg:leading-[0.84]">
-          <span className="sr-only">It all starts with useful software.</span>
+        <h1
+          aria-label="It all starts with useful software."
+          className="max-w-4xl font-display tracking-normal lg:max-w-none"
+        >
           <span className={styles.line} aria-hidden="true">
-            <span className={styles.firstLine}>It all starts</span>
-            <span className={styles.purposeLine}>
+            <span className={`${styles.firstLine} text-xl sm:text-2xl md:text-3xl`}>It all starts</span>
+            <span className={`${styles.purposeLine} text-5xl leading-[0.86] sm:text-6xl md:text-7xl lg:text-[clamp(5rem,calc(7vw-4px),7.5rem)]`}>
               with {rotatingWord}
             </span>
           </span>

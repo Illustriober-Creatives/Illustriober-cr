@@ -33,15 +33,19 @@
   display: none;
 }
 
-.firstLine,
-.purposeLine {
+.firstLine {
   display: block;
-  letter-spacing: 0;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: #5f5a50;
 }
 
 .purposeLine {
-  margin-top: 3px;
+  display: block;
+  margin-top: 0.04em;
   white-space: nowrap;
+  letter-spacing: 0;
 }
 
 .rotator {
@@ -50,7 +54,7 @@
   min-height: 1.08em;
   padding: 0 0.09em 0.12em 0;
   vertical-align: baseline;
-  color: #f39314;
+  color: var(--accent-ink);
   text-shadow: 0 0.1em 0.32em rgba(243, 147, 20, 0.12);
 }
 
@@ -154,12 +158,6 @@
     opacity: 0.3;
     pointer-events: auto;
     transform: none;
-  }
-}
-
-@media (max-width: 639px) {
-  .purposeLine {
-    font-size: 0.88em;
   }
 }
 
