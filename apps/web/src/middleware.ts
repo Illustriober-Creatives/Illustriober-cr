@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const PROTECTED = ["/dashboard", "/admin"];
+import { isAppRoute } from "@/lib/routes";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isProtected = PROTECTED.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`)
-  );
-
-  if (!isProtected) return NextResponse.next();
+  if (!isAppRoute(pathname)) return NextResponse.next();
 
   if (!request.cookies.get("illustriober_refresh")) {
     const loginUrl = new URL("/login", request.url);

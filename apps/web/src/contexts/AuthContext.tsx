@@ -44,6 +44,7 @@ export type AuthUser = {
   email: string;
   firstName: string;
   lastName: string;
+  phone: string | null;
   role: string;
 };
 
@@ -59,6 +60,7 @@ type AuthContextValue = {
   }) => Promise<void>;
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
+  updateUser: (patch: Partial<Pick<AuthUser, "firstName" | "lastName" | "phone">>) => void;
   fetchWithAuth: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 };
 
@@ -206,7 +208,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const res = await fetchWithAuth("/api/auth/me");
       if (!res.ok) {
-        clearSession();
+        // Only a genuine "this token is invalid" response should sign the
+        // user out. Any other failure (a transient 5xx, a rate limit) should
+        // leave the existing session alone rather than treating "the server
+        // had a bad moment" as "you are logged out."
+        if (res.status === 401) {
+          clearSession();
+        }
         return;
       }
 
@@ -261,6 +269,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [storeAuth]
   );
 
+  const updateUser = useCallback(
+    (patch: Partial<Pick<AuthUser, "firstName" | "lastName" | "phone">>) => {
+      setUser((current) => (current ? { ...current, ...patch } : current));
+    },
+    []
+  );
+
   const logout = useCallback(async () => {
     clearSession();
     try {
@@ -282,9 +297,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       logout,
       refreshSession,
+      updateUser,
       fetchWithAuth,
     }),
-    [user, loading, login, register, logout, refreshSession, fetchWithAuth]
+    [user, loading, login, register, logout, refreshSession, updateUser, fetchWithAuth]
   );
 
   return (

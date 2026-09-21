@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { createMetadata } from "@/lib/seo";
+import { DashboardLayoutClient } from "./DashboardLayoutClient";
 
 export const metadata = createMetadata({
   title: "Dashboard",
@@ -10,5 +10,5 @@ export const metadata = createMetadata({
 });
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  return <ProtectedRoute>{children}</ProtectedRoute>;
+  return <DashboardLayoutClient>{children}</DashboardLayoutClient>;
 }

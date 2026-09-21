@@ -2,7 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 type EnquiryStatus = "NEW" | "REVIEWED" | "RESPONDED" | "CONVERTED" | "ARCHIVED";
 
@@ -38,6 +41,7 @@ const ALL_STATUSES: EnquiryStatus[] = ["NEW", "REVIEWED", "RESPONDED", "CONVERTE
 
 export default function EnquiriesPage() {
   const { user } = useAuth();
+  const router = useRouter();
   const [enquiries, setEnquiries] = useState<EnquirySummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<EnquiryStatus | "">("");
@@ -75,12 +79,8 @@ export default function EnquiriesPage() {
 
   return (
     <div className="p-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Enquiries</h1>
-          <p className="mt-1 text-sm text-foreground/50">Manage inbound leads and convert them to clients.</p>
-        </div>
-      </div>
+      <PageHeader title="Enquiries" />
+      <p className="mb-8 max-w-2xl text-sm text-foreground/50">Manage inbound leads and convert them to clients.</p>
 
       {/* Filters */}
       <div className="mb-6 flex flex-wrap gap-3">
@@ -110,7 +110,7 @@ export default function EnquiriesPage() {
               className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
                 status === s
                   ? "border-accent bg-accent/10 text-accent"
-                  : "border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300"
+                  : "border-glass-border text-foreground/50 hover:border-accent/30 hover:text-foreground"
               }`}
             >
               {STATUS_LABELS[s]}
@@ -127,39 +127,59 @@ export default function EnquiriesPage() {
           No enquiries found.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-glass-border">
+        <div className="overflow-hidden rounded-2xl border border-glass-border bg-surface shadow-[0_1px_2px_rgba(23,23,23,0.04)]">
           <table className="w-full text-sm">
-            <thead className="border-b border-glass-border bg-surface">
+            <thead className="bg-background/60">
               <tr>
                 {["Name", "Email", "Project type", "Budget", "Status", "Date"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground/40">
+                  <th key={h} className="px-6 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-foreground/40">
                     {h}
                   </th>
                 ))}
+                <th className="w-10" aria-hidden="true" />
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-glass-border">
               {enquiries.map((enq) => (
                 <tr
                   key={enq.id}
-                  className="border-b border-glass-border transition-colors hover:bg-glass-bg"
+                  onClick={() => router.push(`/admin/enquiries/${enq.id}`)}
+                  className="group cursor-pointer transition-colors hover:bg-glass-bg"
                 >
-                  <td className="px-4 py-3">
-                    <Link href={`/admin/enquiries/${enq.id}`} className="font-medium text-foreground hover:text-accent transition-colors">
-                      {enq.firstName} {enq.lastName}
-                    </Link>
-                    {enq.company && <p className="text-xs text-foreground/40">{enq.company}</p>}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent/10 text-xs font-bold text-accent">
+                        {enq.firstName.charAt(0).toUpperCase()}
+                        {enq.lastName.charAt(0).toUpperCase()}
+                      </span>
+                      <div className="min-w-0">
+                        <Link
+                          href={`/admin/enquiries/${enq.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="font-semibold text-foreground transition-colors group-hover:text-accent"
+                        >
+                          {enq.firstName} {enq.lastName}
+                        </Link>
+                        {enq.company && <p className="truncate text-xs text-foreground/40">{enq.company}</p>}
+                      </div>
+                    </div>
                   </td>
-                  <td className="px-4 py-3 text-foreground/60">{enq.email}</td>
-                  <td className="px-4 py-3 text-foreground/60">{enq.projectType}</td>
-                  <td className="px-4 py-3 text-foreground/60">{enq.budgetRange ?? "—"}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-6 py-4 text-foreground/60">{enq.email}</td>
+                  <td className="px-6 py-4 text-foreground/60">{enq.projectType}</td>
+                  <td className="px-6 py-4 text-foreground/60">{enq.budgetRange ?? "—"}</td>
+                  <td className="px-6 py-4">
                     <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${STATUS_COLOURS[enq.status]}`}>
                       {STATUS_LABELS[enq.status]}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-foreground/40 tabular-nums text-xs">
+                  <td className="px-6 py-4 text-xs tabular-nums text-foreground/40">
                     {new Date(enq.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="pr-4">
+                    <ChevronRight
+                      className="h-4 w-4 text-foreground/20 transition-colors group-hover:text-accent"
+                      aria-hidden="true"
+                    />
                   </td>
                 </tr>
               ))}

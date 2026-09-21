@@ -1,14 +1,22 @@
 import { Router, Request, Response } from "express";
+import { rateLimit } from "express-rate-limit";
 import prisma from "../lib/prisma";
 import { asyncHandler } from "../middleware/errorHandler";
 import { authenticate } from "../middleware/authenticate";
 
 const router = Router();
+const projectsRateLimit = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 60,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
 
 // GET /api/projects
 // Returns projects scoped to the authenticated client
 router.get(
   "/",
+  projectsRateLimit,
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     const userId = req.user!.id;
@@ -29,6 +37,7 @@ router.get(
 // GET /api/projects/:slug
 router.get(
   "/:slug",
+  projectsRateLimit,
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     const userId = req.user!.id;
@@ -38,6 +47,7 @@ router.get(
     const project = await prisma.project.findUnique({
       where: { slug },
       include: {
+        client: { select: { firstName: true, lastName: true, email: true } },
         milestones: { orderBy: { order: "asc" } },
         tickets: { orderBy: { createdAt: "desc" }, take: 5 },
       }
@@ -51,6 +61,34 @@ router.get(
     }
 
     return res.json({ success: true, project });
+  })
+);
+
+// GET /api/projects/:slug/updates
+// Broadcast project updates (Messages with receiverId: null), newest first
+router.get(
+  "/:slug/updates",
+  projectsRateLimit,
+  authenticate,
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user!.id;
+    const role = req.user!.role;
+    const { slug } = req.params;
+
+    const project = await prisma.project.findUnique({ where: { slug } });
+    if (!project) return res.status(404).json({ success: false, error: "Project not found" });
+
+    if (role !== "ADMIN" && project.clientId !== userId) {
+      return res.status(403).json({ success: false, error: "Access denied" });
+    }
+
+    const updates = await prisma.message.findMany({
+      where: { projectId: project.id, receiverId: null },
+      include: { sender: { select: { firstName: true, lastName: true, role: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return res.json({ success: true, updates });
   })
 );
 

@@ -9,6 +9,8 @@ import type {
 } from "@illustriober/shared";
 import { AlertCircle, Loader2, RotateCw, Search } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { ticketStatusBadgeClass } from "@/lib/ticketBadgeStyles";
+import { Select } from "@/components/ui/Select";
 
 interface QueueTicket {
   id: string;
@@ -40,24 +42,13 @@ const STATUS_OPTIONS = ["OPEN", "IN_REVIEW", "IN_PROGRESS", "RESOLVED", "CLOSED"
 const PRIORITY_OPTIONS = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 const PAGE_SIZE = 20;
 
-function statusColor(status: string) {
-  switch (status) {
-    case "OPEN": return "bg-blue-500/10 text-blue-400 border-blue-500/20";
-    case "RESOLVED": return "bg-green-500/10 text-green-400 border-green-500/20";
-    case "CLOSED": return "bg-zinc-500/10 text-zinc-400 border-zinc-500/20";
-    case "IN_PROGRESS": return "bg-orange-500/10 text-orange-400 border-orange-500/20";
-    case "IN_REVIEW": return "bg-purple-500/10 text-purple-400 border-purple-500/20";
-    default: return "bg-zinc-500/10 text-zinc-400 border-zinc-500/20";
-  }
-}
-
 function priorityColor(priority: string) {
   switch (priority) {
-    case "CRITICAL": return "text-red-500";
-    case "HIGH": return "text-orange-500";
-    case "MEDIUM": return "text-yellow-500";
-    case "LOW": return "text-blue-500";
-    default: return "text-zinc-500";
+    case "CRITICAL": return "text-red-700";
+    case "HIGH": return "text-orange-700";
+    case "MEDIUM": return "text-yellow-700";
+    case "LOW": return "text-blue-700";
+    default: return "text-zinc-600";
   }
 }
 
@@ -167,32 +158,20 @@ export function TicketQueue({ ticketCreatedSeq, statusChangedSeq, commentSeq }: 
             className="w-full rounded-lg border border-glass-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none placeholder:text-foreground/35 focus:border-accent/60"
           />
         </div>
-        <select
+        <Select
           value={status}
-          onChange={(event) => setStatus(event.target.value)}
+          onChange={setStatus}
           aria-label="Filter by status"
-          className="rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-accent/60"
-        >
-          <option value="">All statuses</option>
-          {STATUS_OPTIONS.map((option) => (
-            <option key={option} value={option}>
-              {option.replace("_", " ")}
-            </option>
-          ))}
-        </select>
-        <select
+          placeholder="All statuses"
+          options={STATUS_OPTIONS.map((option) => ({ value: option, label: option.replace("_", " ") }))}
+        />
+        <Select
           value={priority}
-          onChange={(event) => setPriority(event.target.value)}
+          onChange={setPriority}
           aria-label="Filter by priority"
-          className="rounded-lg border border-glass-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-accent/60"
-        >
-          <option value="">All priorities</option>
-          {PRIORITY_OPTIONS.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+          placeholder="All priorities"
+          options={PRIORITY_OPTIONS.map((option) => ({ value: option, label: option }))}
+        />
       </div>
 
       {loading ? (
@@ -252,7 +231,7 @@ export function TicketQueue({ ticketCreatedSeq, statusChangedSeq, commentSeq }: 
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase ${statusColor(ticket.status)}`}
+                        className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase ${ticketStatusBadgeClass(ticket.status)}`}
                       >
                         {ticket.status}
                       </span>
@@ -282,7 +261,7 @@ export function TicketQueue({ ticketCreatedSeq, statusChangedSeq, commentSeq }: 
                   <span className="font-medium text-foreground">{ticket.title}</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-xs text-foreground/50">
-                  <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${statusColor(ticket.status)}`}>
+                  <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${ticketStatusBadgeClass(ticket.status)}`}>
                     {ticket.status}
                   </span>
                   <span className={`font-bold ${priorityColor(ticket.priority)}`}>{ticket.priority}</span>

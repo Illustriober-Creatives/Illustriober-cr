@@ -22,6 +22,7 @@ import adminRoutes from "./routes/admin";
 import projectRoutes from "./routes/projects";
 import ticketRoutes from "./routes/tickets";
 import projectTicketRoutes from "./routes/projectTickets";
+import userRoutes from "./routes/users";
 
 // Load environment variables
 dotenv.config();
@@ -69,7 +70,14 @@ app.use(express.urlencoded({ extended: true }));
 // ─────────────────────────────────────────
 
 // Authentication endpoints: login, signup, logout
-// 10 requests per 15 minutes per IP — covers brute-force on login/register/refresh
+// 10 requests per 15 minutes per IP — covers brute-force on login/register/refresh.
+// GET requests (currently just /me, a read-only "who am I" session check) are
+// exempt: they're not a credential-guessing surface, and every hard page load
+// across the app calls /me once via AuthContext's own session check. Under
+// this limiter that traffic could exhaust the same 10-request bucket used by
+// actual auth attempts, and AuthContext treats any non-OK /me response as an
+// invalid session — a 429 here reads as "not logged in" and force-logs the
+// user out.
 app.use(
   "/api/auth",
   rateLimit({
@@ -79,6 +87,7 @@ app.use(
     legacyHeaders: false,
     store: authRateLimitStore,
     keyGenerator: (req) => `${ipKeyGenerator(req.ip ?? "unknown")}:${req.path}`,
+    skip: (req) => req.method === "GET",
     message: { success: false, error: "Too many requests. Please try again later." },
   }),
   csrfProtection,
@@ -100,6 +109,9 @@ app.use("/api/projects", projectRoutes);
 // Ticket endpoints: bug reports, feature requests
 app.use("/api/tickets", ticketRoutes);
 app.use("/api/projects/:slug/tickets", projectTicketRoutes);
+
+// Self-service user endpoints: profile update, password change
+app.use("/api/users", userRoutes);
 
 // Root endpoint for quick API reachability checks
 app.get("/", (_req: Request, res: Response) => {

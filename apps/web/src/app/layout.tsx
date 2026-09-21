@@ -1,10 +1,7 @@
 import { Metadata } from "next";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { SiteChrome } from "@/components/SiteChrome";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { ScrollProgress } from "@/components/motion/ScrollProgress";
-import { SmoothScrollProvider } from "@/components/motion/SmoothScrollProvider";
 import {
   getDefaultKeywords,
   getOrganizationSchema,
@@ -69,12 +66,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <SmoothScrollProvider>
-              <ScrollProgress />
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </SmoothScrollProvider>
+            <SiteChrome>{children}</SiteChrome>
           </AuthProvider>
         </ThemeProvider>
         {/* SEO JSON-LD Schema */}
