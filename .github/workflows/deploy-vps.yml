@@ -1,28 +1,65 @@
 name: Deploy API to VPS
 
 on:
+  pull_request:
   push:
-    branches: [ "main" ]
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
-  deploy:
+  verify:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Generate Prisma client
+        run: npm run prisma:generate --workspace apps/api
+      - name: Build API
+        run: npm run build --workspace apps/api
+      - name: Test API
+        run: npm test --workspace apps/api -- --reporter=dot
+      - name: Check deployment script
+        run: bash -n .github/scripts/deploy-api.sh
 
-    - name: Deploy via SSH
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_SSH_KEY }}
-        script: |
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          cd /var/www/illustriober
-          git pull origin main
-          npm install
-          npm run build --workspace apps/api
-          pm2 restart illustriober-api
+  deploy:
+    if: github.event_name == 'push'
+    needs: verify
+    runs-on: ubuntu-latest
+    concurrency:
+      group: illustriober-api-vps
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure SSH
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p "$HOME/.ssh"
+          printf '%s\n' "$VPS_SSH_KEY" > "$HOME/.ssh/illustriober_deploy"
+          ssh-keyscan -t ed25519 "$VPS_HOST" > "$HOME/.ssh/known_hosts"
+          fingerprint=$(ssh-keygen -lf "$HOME/.ssh/known_hosts" | awk '{print $2}')
+          test "$fingerprint" = 'SHA256:bO5h1mVpcyepR3qvPOHDAoc4CXgcB2Qi4GUP/68pS84'
+      - name: Stage and deploy API
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+          ssh_options=(-i "$HOME/.ssh/illustriober_deploy" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes)
+          target="$VPS_USER@$VPS_HOST"
+          ssh "${ssh_options[@]}" "$target" "install -d -m 700 \"\$HOME/.illustriober-deploy/$GITHUB_SHA\""
+          rsync -azR --exclude=node_modules --exclude=dist --exclude=.env \
+            -e "ssh -i $HOME/.ssh/illustriober_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes" \
+            package.json package-lock.json apps/api packages/shared \
+            "$target:.illustriober-deploy/$GITHUB_SHA/"
+          ssh "${ssh_options[@]}" "$target" 'bash -s --' "$GITHUB_SHA" < .github/scripts/deploy-api.sh
