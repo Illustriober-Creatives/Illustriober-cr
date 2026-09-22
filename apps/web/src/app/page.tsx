@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { ProjectGallery } from "@/components/ProjectGallery";
 import { HomeHeroGlide } from "@/components/motion/HomeHeroGlide";
+import { HeroTypewriter } from "@/components/motion/HeroTypewriter";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { createMetadata } from "@/lib/seo";
 
@@ -14,15 +15,17 @@ const services = [
   { title: "Mobile apps", copy: "Mobile products for the people who need your service on the move, with a clear path from first release to ongoing improvement." },
 ];
 
+const heroPurposePhrases = ["a website.", "custom software.", "a mobile app."];
+
 export default function Home() {
   return (
     <div className="overflow-hidden bg-[#F4EFE5] text-[#171717]">
       <HomeHeroGlide
         copy={
           <>
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Illustriober Creatives</p>
-            <h1 className="max-w-5xl font-display text-[clamp(3.5rem,6.5vw,7.5rem)] leading-[0.88] tracking-[-0.055em]">We build <span className="text-[#1F4D3D]">websites, software and mobile apps.</span></h1>
-            <p className="mt-8 max-w-2xl text-lg leading-8 text-[#5F5A50] md:text-xl">Built for performance, scalability and security. Tell us what your business needs to do. We will help define, build and launch the right solution.</p>
+            <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Websites · Custom software · Mobile apps</p>
+            <HeroTypewriter phrases={heroPurposePhrases} />
+            <p className="mt-8 max-w-2xl text-lg leading-8 text-[#5F5A50] md:text-xl">We build websites, custom software and mobile apps with performance, scalability and security built in. Tell us what your business needs to do.</p>
             <div className="mt-10 flex flex-wrap items-center gap-6">
               <Link className="inline-flex min-h-14 items-center gap-2 rounded-full bg-[#171717] px-7 text-base font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5" href="/enquiry">Discuss your project <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
               <a className="inline-flex min-h-14 items-center gap-2 text-base font-bold underline decoration-[#F39314] decoration-2 underline-offset-4" href="#services">See what we build <ArrowDown className="h-4 w-4" aria-hidden="true" /></a>
