@@ -1,15 +1,29 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { use, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 
 const fieldClass = "mt-2 w-full rounded-xl border border-[#171717]/15 bg-[#FFFDF8] px-4 py-3 text-[#171717] outline-none transition focus:border-[#1F4D3D] focus:ring-2 focus:ring-[#1F4D3D]/15 disabled:cursor-not-allowed disabled:opacity-60";
 
-export default function EnquiryPage() {
+const projectTypes = [
+  { value: "web", label: "A website" },
+  { value: "software", label: "Custom software for my business" },
+  { value: "mobile", label: "A mobile app" },
+  { value: "ai", label: "AI automation" },
+  { value: "design", label: "Brand or interface design" },
+  { value: "consulting", label: "Advice on a product idea" },
+  { value: "other", label: "Something else" },
+];
+
+type EnquiryPageProps = { searchParams: Promise<{ service?: string | string[] }> };
+
+export default function EnquiryPage({ searchParams }: EnquiryPageProps) {
   const router = useRouter();
-  const [formData, setFormData] = useState({ name: "", email: "", company: "", projectType: "", budget: "", timeline: "", description: "" });
+  const { service } = use(searchParams);
+  const preselectedType = projectTypes.find((type) => type.value === service)?.value ?? "";
+  const [formData, setFormData] = useState({ name: "", email: "", company: "", projectType: preselectedType, budget: "", timeline: "", description: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,7 +56,7 @@ export default function EnquiryPage() {
           <form className="mt-7 space-y-4" onSubmit={handleSubmit}>
             <div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-bold">Name *<input className={fieldClass} disabled={loading} name="name" onChange={handleChange} required value={formData.name} /></label><label className="text-sm font-bold">Email *<input className={fieldClass} disabled={loading} name="email" onChange={handleChange} required type="email" value={formData.email} /></label></div>
             <div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-bold">Company <input className={fieldClass} disabled={loading} name="company" onChange={handleChange} value={formData.company} /></label><label className="text-sm font-bold">When do you want to begin?<select className={fieldClass} disabled={loading} name="timeline" onChange={handleChange} value={formData.timeline}><option value="">Choose one</option><option value="asap">As soon as possible</option><option value="1-month">Within a month</option><option value="2-3-months">In 2–3 months</option><option value="flexible">Flexible</option></select></label></div>
-            <div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-bold">What do you need? *<select className={fieldClass} disabled={loading} name="projectType" onChange={handleChange} required value={formData.projectType}><option value="">Choose one</option><option value="web">Website or web product</option><option value="mobile">Mobile product</option><option value="design">Brand or interface design</option><option value="consulting">Product direction</option><option value="other">Something else</option></select></label><label className="text-sm font-bold">Budget range<select className={fieldClass} disabled={loading} name="budget" onChange={handleChange} value={formData.budget}><option value="">Choose one</option><option value="under-10k">Under $10k</option><option value="10-50k">$10k–$50k</option><option value="50-100k">$50k–$100k</option><option value="100k-plus">$100k+</option></select></label></div>
+            <div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-bold">What do you need? *<select className={fieldClass} disabled={loading} name="projectType" onChange={handleChange} required value={formData.projectType}><option value="">Choose one</option>{projectTypes.map((type) => <option key={type.value} value={type.value}>{type.label}</option>)}</select></label><label className="text-sm font-bold">Budget range<select className={fieldClass} disabled={loading} name="budget" onChange={handleChange} value={formData.budget}><option value="">Choose one</option><option value="under-10k">Under $10k</option><option value="10-50k">$10k–$50k</option><option value="50-100k">$50k–$100k</option><option value="100k-plus">$100k+</option></select></label></div>
             <label className="block text-sm font-bold">A little about the project *<textarea className={`${fieldClass} min-h-24 resize-y`} disabled={loading} name="description" onChange={handleChange} placeholder="The problem, the audience, and anything we should know." required value={formData.description} /></label>
             <button className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#171717] px-6 py-4 text-sm font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60" disabled={loading} type="submit">{loading ? "Sending…" : "Send enquiry"}<ArrowUpRight className="h-4 w-4" aria-hidden="true" /></button>
           </form>

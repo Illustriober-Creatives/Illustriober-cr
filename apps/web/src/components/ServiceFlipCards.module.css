@@ -1,0 +1,101 @@
+.card {
+  perspective: 1600px;
+  min-height: 29rem;
+}
+
+@media (min-width: 768px) {
+  .card {
+    min-height: 27rem;
+  }
+}
+
+.inner {
+  position: relative;
+  height: 100%;
+  min-height: inherit;
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.75rem;
+  padding: 1.75rem;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.back {
+  transform: rotateY(180deg);
+  pointer-events: none;
+}
+
+/* Flip on hover for mouse users, on tap (data-flipped) for touch users, and on keyboard focus. */
+@media (hover: hover) {
+  .card:hover .inner {
+    transform: rotateY(180deg);
+  }
+
+  .card:hover .back {
+    pointer-events: auto;
+  }
+
+  .card:hover .front {
+    pointer-events: none;
+  }
+}
+
+.card[data-flipped="true"] .inner,
+.card:focus-within .inner {
+  transform: rotateY(180deg);
+}
+
+.card[data-flipped="true"] .back,
+.card:focus-within .back {
+  pointer-events: auto;
+}
+
+.card[data-flipped="true"] .front,
+.card:focus-within .front {
+  pointer-events: none;
+}
+
+.webFront {
+  background: linear-gradient(145deg, #f7ad45 0%, #f39314 55%, #d96800 100%);
+  color: #171717;
+}
+
+.webBack {
+  background: linear-gradient(160deg, #7a3600 0%, #a64a00 100%);
+  color: #fffdf8;
+}
+
+.softwareFront {
+  background: linear-gradient(145deg, #2f6b55 0%, #1f4d3d 60%, #143328 100%);
+  color: #f4efe5;
+}
+
+.softwareBack {
+  background: linear-gradient(160deg, #0f2a20 0%, #1f4d3d 100%);
+  color: #fffdf8;
+}
+
+.mobileFront {
+  background: linear-gradient(145deg, #3a3a3a 0%, #171717 55%, #1f4d3d 100%);
+  color: #f4efe5;
+}
+
+.mobileBack {
+  background: linear-gradient(160deg, #0b0b0b 0%, #262626 100%);
+  color: #fffdf8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inner {
+    transition: none;
+  }
+}
