@@ -2,18 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { ProjectGallery } from "@/components/ProjectGallery";
+import { ServiceFlipCards } from "@/components/ServiceFlipCards";
 import { HomeHeroGlide } from "@/components/motion/HomeHeroGlide";
 import { HeroTypewriter } from "@/components/motion/HeroTypewriter";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({ path: "/" });
-
-const services = [
-  { title: "Websites and web apps", copy: "Business websites, customer portals and web apps that load quickly, work across devices and make the next step obvious." },
-  { title: "Custom software", copy: "Dashboards, internal systems and platforms built around the way your team actually works. Start with what matters now and leave room to grow." },
-  { title: "Mobile apps", copy: "Mobile products for the people who need your service on the move, with a clear path from first release to ongoing improvement." },
-];
 
 const heroPurposePhrases = ["a website.", "custom software.", "a mobile app."];
 
@@ -38,23 +33,16 @@ export default function Home() {
       />
 
       <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28" id="services">
-        <ScrollReveal className="grid gap-6 border-b border-[#171717]/20 pb-10 lg:grid-cols-[0.55fr_1fr]">
+        <ScrollReveal className="grid gap-6 lg:grid-cols-[0.55fr_1fr]">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">What we build</p>
           <div>
-            <h2 className="max-w-3xl font-display text-5xl leading-[0.98] tracking-[-0.045em] md:text-6xl">Choose the product you need.</h2>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[#5F5A50]">We can build something new or improve a product you already use.</p>
+            <h2 className="max-w-3xl font-display text-5xl leading-[0.98] tracking-[-0.045em] md:text-6xl">What can we build for you?</h2>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-[#5F5A50]">Pick one. Tap or point at a card to see what it includes, then send us a request.</p>
           </div>
         </ScrollReveal>
-        <div>
-          {services.map((service, index) => (
-            <ScrollReveal blur delay={index * 0.05} key={service.title} y={18}>
-              <article className="grid gap-4 border-b border-[#171717]/20 py-8 md:grid-cols-[0.55fr_1fr] md:items-start md:gap-10 md:py-10">
-                <h3 className="font-display text-3xl leading-none md:text-4xl">{service.title}</h3>
-                <p className="max-w-2xl text-base leading-7 text-[#5F5A50] md:text-lg">{service.copy}</p>
-              </article>
-            </ScrollReveal>
-          ))}
-        </div>
+        <ScrollReveal className="mt-10" y={18}>
+          <ServiceFlipCards />
+        </ScrollReveal>
         <Link className="mt-8 inline-flex items-center gap-2 text-sm font-bold underline decoration-[#F39314] decoration-2 underline-offset-4" href="/services">Explore all services, including AI automation <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
       </section>
 
