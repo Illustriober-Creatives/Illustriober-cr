@@ -13,12 +13,12 @@ const coreServices = [
   {
     title: "Websites and web apps",
     summary: "Give people a fast, clear way to find you, use your service or get work done online.",
-    detail: "We build business websites, customer portals, dashboards and browser based products. That includes the interface people see and the systems that make it work.",
+    detail: "We build business websites, customer portals, dashboards and browser-based products. That includes the interface people see and the systems that make it work.",
   },
   {
     title: "Custom software",
     summary: "Replace scattered spreadsheets and awkward tools with software that fits your work.",
-    detail: "We build internal platforms, operational systems, SaaS products and integrations. We can start with a focused first release, then add capability as the need becomes clear.",
+    detail: "We build internal platforms, operational systems, SaaS products and integrations. We can start with a focused first release, then add more as the need becomes clear.",
   },
   {
     title: "Mobile apps",
@@ -36,7 +36,7 @@ export default function ServicesPage() {
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Services</p>
             <h1 className="mt-5 max-w-5xl font-display text-6xl leading-[0.9] tracking-[-0.055em] md:text-8xl">Websites, software and mobile apps.</h1>
             <div className="mt-8 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
-              <p className="max-w-3xl text-lg leading-8 text-[#5F5A50]">We design, build and improve digital products for businesses. Performance, scalability and security guide the work from the first decision to launch.</p>
+              <p className="max-w-3xl text-lg leading-8 text-[#5F5A50]">We design, build and improve digital products for businesses. We plan for performance, scalability and security before we build.</p>
               <Link className="inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#171717] px-6 text-sm font-bold text-white transition-transform hover:-translate-y-0.5" href="/enquiry">Discuss your project <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
             </div>
           </section>
@@ -68,9 +68,9 @@ export default function ServicesPage() {
             <h2 className="mt-4 font-display text-4xl leading-none md:text-5xl">Need help with one part?</h2>
           </ScrollReveal>
           <div className="divide-y divide-[#171717]/20 border-t border-[#171717]/20">
-            <div className="py-7"><h3 className="font-display text-2xl">AI automation</h3><p className="mt-3 max-w-2xl leading-7 text-[#5F5A50]">Automate repeatable work, add useful assistants or connect AI to existing workflows. We define where human review is needed before putting it into use.</p></div>
-            <div className="py-7"><h3 className="font-display text-2xl">Integrations and existing systems</h3><p className="mt-3 max-w-2xl leading-7 text-[#5F5A50]">Connect your tools, improve a slow or difficult workflow, or strengthen the frontend, backend and data behind a live product.</p></div>
-            <div className="py-7"><h3 className="font-display text-2xl">Product design</h3><p className="mt-3 max-w-2xl leading-7 text-[#5F5A50]">Clarify the users, map the important journeys and design an interface that helps people complete the task they came for.</p></div>
+            <div className="py-7"><h3 className="font-display text-2xl">AI automation</h3><p className="mt-3 max-w-2xl leading-7 text-[#5F5A50]">Automate repeatable work, add assistants or connect AI to existing workflows. We define where human review is needed before putting it into use.</p></div>
+            <div className="py-7"><h3 className="font-display text-2xl">Integrations and existing systems</h3><p className="mt-3 max-w-2xl leading-7 text-[#5F5A50]">Connect your tools, fix a slow or difficult workflow, or improve the frontend, backend and data behind a live product.</p></div>
+            <div className="py-7"><h3 className="font-display text-2xl">Product design</h3><p className="mt-3 max-w-2xl leading-7 text-[#5F5A50]">Work out who your users are, map what they need to do and design an interface that helps them do it.</p></div>
           </div>
         </section>
       </div>
@@ -92,7 +92,7 @@ export default function ServicesPage() {
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">How a project works</p>
           <div>
             <h2 className="font-display text-4xl leading-none md:text-5xl">Start with the scope you need.</h2>
-            <p className="mt-6 max-w-3xl text-base leading-7 text-[#5F5A50]">We discuss the problem, agree on a first release and make the work reviewable as we build. Whether it is a new product or an improvement to an existing one, you have a clear view of progress and cost before the next stage.</p>
+            <p className="mt-6 max-w-3xl text-base leading-7 text-[#5F5A50]">We discuss the problem, agree on a first release and build in pieces you can review. Whether it is a new product or an improvement to an existing one, you have a clear view of progress and cost before the next stage.</p>
             <Link className="mt-7 inline-flex items-center gap-2 text-sm font-bold underline decoration-[#F39314] decoration-2 underline-offset-4" href="/tech-stack">See the tools we work with <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
           </div>
         </section>
