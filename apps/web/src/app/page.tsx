@@ -52,7 +52,7 @@ export default function Home() {
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F7AD45]">How we build</p>
             <div>
               <h2 className="max-w-4xl font-display text-5xl leading-[0.98] tracking-[-0.045em] md:text-6xl">Useful on day one. Dependable after launch.</h2>
-              <p className="mt-7 max-w-3xl text-base leading-7 text-[#F4EFE5]/80 md:text-lg">A good product should feel simple to the person using it and manageable to the team behind it. We design for both.</p>
+              <p className="mt-7 max-w-3xl text-base leading-7 text-[#F4EFE5]/80 md:text-lg">We design products to feel simple to the person using them and manageable for the team behind them.</p>
             </div>
           </ScrollReveal>
           <div className="mt-12 grid gap-8 border-t border-[#F4EFE5]/25 pt-8 md:grid-cols-3">
@@ -73,11 +73,10 @@ export default function Home() {
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Working together</p>
           <div>
             <h2 className="font-display text-4xl leading-none md:text-5xl">You stay part of the process.</h2>
-            <p className="mt-5 max-w-3xl text-base leading-7 text-[#5F5A50]">We start by understanding the job your product needs to do, agree on a useful first release, and build in pieces you can review.</p>
             <ol className="mt-8 grid gap-5 border-t border-[#171717]/20 pt-6 sm:grid-cols-3">
               <li><span className="text-xs font-bold text-[#1F4D3D]">01 / Understand</span><p className="mt-2 text-sm leading-6 text-[#5F5A50]">Show us the problem, the people involved, and what success would look like.</p></li>
-              <li><span className="text-xs font-bold text-[#1F4D3D]">02 / Shape</span><p className="mt-2 text-sm leading-6 text-[#5F5A50]">We agree on scope, priorities, and the first version before development begins.</p></li>
-              <li><span className="text-xs font-bold text-[#1F4D3D]">03 / Build</span><p className="mt-2 text-sm leading-6 text-[#5F5A50]">You review progress as we build, test, and prepare to launch.</p></li>
+              <li><span className="text-xs font-bold text-[#1F4D3D]">02 / Shape</span><p className="mt-2 text-sm leading-6 text-[#5F5A50]">We agree on the scope and a useful first release before development begins.</p></li>
+              <li><span className="text-xs font-bold text-[#1F4D3D]">03 / Build</span><p className="mt-2 text-sm leading-6 text-[#5F5A50]">We build and test in pieces you can review before launch.</p></li>
             </ol>
           </div>
         </ScrollReveal>

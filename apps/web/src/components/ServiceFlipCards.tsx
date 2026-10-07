@@ -5,7 +5,7 @@ const services = [
   {
     number: "01",
     title: "Websites",
-    description: "Help customers understand what you do, trust your business, and take the next step.",
+    description: "Help customers understand what you do and trust you enough to take the next step.",
     examples: "Business sites · Online shops · Booking pages",
     enquiryType: "web",
   },
@@ -19,7 +19,7 @@ const services = [
   {
     number: "03",
     title: "Mobile apps",
-    description: "Give people a useful way to book, order, or stay connected from their phones.",
+    description: "Let people book, order, or stay connected from their phones.",
     examples: "Customer apps · Membership apps · Field tools",
     enquiryType: "mobile",
   },
