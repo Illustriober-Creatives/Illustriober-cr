@@ -4,13 +4,10 @@ import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { ProjectGallery } from "@/components/ProjectGallery";
 import { ServiceFlipCards } from "@/components/ServiceFlipCards";
 import { HomeHeroGlide } from "@/components/motion/HomeHeroGlide";
-import { HeroTypewriter } from "@/components/motion/HeroTypewriter";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({ path: "/" });
-
-const heroPurposePhrases = ["a website."];
 
 export default function Home() {
   return (
@@ -18,8 +15,9 @@ export default function Home() {
       <HomeHeroGlide
         copy={
           <>
-            <HeroTypewriter phrases={heroPurposePhrases} />
-            <p className="mt-9 max-w-2xl text-base leading-7 text-[#5F5A50] md:text-lg lg:text-xl lg:leading-8">Illustriober helps growing teams turn messy operations and promising ideas into clear, dependable digital products.</p>
+            <p className="mb-6 text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Design and development for growing businesses</p>
+            <h1 className="max-w-4xl text-balance font-display text-[clamp(3.5rem,6.5vw,6.5rem)] leading-[0.98] tracking-[-0.045em]">Make your business easier to run and easier to choose.</h1>
+            <p className="mt-8 max-w-2xl text-lg leading-8 text-[#5F5A50]">We design and build websites, apps, and custom software that help your customers take action and your team get work done.</p>
             <div className="mt-10 flex flex-wrap items-center gap-6">
               <Link className="inline-flex min-h-14 items-center gap-2 rounded-full bg-[#171717] px-7 text-base font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5" href="/enquiry">Start a project <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
               <a className="inline-flex min-h-14 items-center gap-2 text-base font-bold underline decoration-[#F39314] decoration-2 underline-offset-4" href="#work">See the work <ArrowDown className="h-4 w-4" aria-hidden="true" /></a>
@@ -27,7 +25,10 @@ export default function Home() {
           </>
         }
         media={
-            <Image alt="Concept interfaces for web and mobile products" className="aspect-[4/3] rounded-[1.25rem] object-cover" height={1152} priority sizes="(max-width: 1023px) calc(100vw - 2.5rem), 38rem" src="/projects/concept-project-gallery.png" width={1536} />
+            <figure>
+              <Image alt="Concept interfaces showing examples of web and mobile products" className="aspect-[4/3] rounded-[1.25rem] object-cover" height={1152} priority sizes="(max-width: 1023px) calc(100vw - 2.5rem), 38rem" src="/projects/concept-project-gallery.png" width={1536} />
+              <figcaption className="px-1 pt-3 text-xs font-medium text-[#5F5A50]">A look at our product concepts</figcaption>
+            </figure>
         }
       />
 
@@ -35,8 +36,8 @@ export default function Home() {
         <ScrollReveal className="grid gap-6 lg:grid-cols-[0.55fr_1fr]">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">What we build</p>
           <div>
-            <h2 className="max-w-3xl font-display text-5xl leading-[0.98] tracking-[-0.045em] md:text-6xl">What can we build for you?</h2>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-[#5F5A50]">Pick one. Tap or point at a card to see what it includes, then send us a request.</p>
+            <h2 className="max-w-3xl font-display text-5xl leading-[0.98] tracking-[-0.045em] md:text-6xl">Start with the problem you want to solve.</h2>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-[#5F5A50]">You do not need a technical brief. Tell us where customers get stuck or where your team loses time, and we can work out the right fit together.</p>
           </div>
         </ScrollReveal>
         <ScrollReveal className="mt-10" y={18}>
@@ -50,14 +51,14 @@ export default function Home() {
           <ScrollReveal className="grid gap-8 lg:grid-cols-[0.55fr_1fr]">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F7AD45]">How we build</p>
             <div>
-              <h2 className="max-w-4xl font-display text-5xl leading-[0.98] tracking-[-0.045em] md:text-6xl">Fast to use. Ready to grow. Built with security in mind.</h2>
-              <p className="mt-7 max-w-3xl text-base leading-7 text-[#F4EFE5]/80 md:text-lg">We consider load speed, the growth of your users and data, and the protection of accounts from the start. Those choices shape the design, architecture and testing of every build.</p>
+              <h2 className="max-w-4xl font-display text-5xl leading-[0.98] tracking-[-0.045em] md:text-6xl">Useful on day one. Dependable after launch.</h2>
+              <p className="mt-7 max-w-3xl text-base leading-7 text-[#F4EFE5]/80 md:text-lg">A good product should feel simple to the person using it and manageable to the team behind it. We design for both.</p>
             </div>
           </ScrollReveal>
           <div className="mt-12 grid gap-8 border-t border-[#F4EFE5]/25 pt-8 md:grid-cols-3">
-            <p className="text-sm leading-6"><strong className="mb-2 block text-lg text-white">Performance</strong>Pages and workflows should respond quickly on the devices people actually use.</p>
-            <p className="text-sm leading-6"><strong className="mb-2 block text-lg text-white">Scalability</strong>We plan for new features, growing data and more users without making routine changes painful.</p>
-            <p className="text-sm leading-6"><strong className="mb-2 block text-lg text-white">Security</strong>Access, data handling and release checks are part of the build, not a final add-on.</p>
+            <p className="text-sm leading-6"><strong className="mb-2 block text-lg text-white">Clear to use</strong>People should know what to do next, on a phone or a computer.</p>
+            <p className="text-sm leading-6"><strong className="mb-2 block text-lg text-white">Ready to change</strong>Your product should be practical to update as your business grows.</p>
+            <p className="text-sm leading-6"><strong className="mb-2 block text-lg text-white">Built with care</strong>Speed, access, data handling, and testing are part of the work from the start.</p>
           </div>
         </div>
       </section>
@@ -71,8 +72,13 @@ export default function Home() {
         <ScrollReveal className="grid gap-7 border-t border-[#171717]/20 pt-10 lg:grid-cols-[0.55fr_1fr]">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Working together</p>
           <div>
-            <h2 className="font-display text-4xl leading-none md:text-5xl">A clear scope before we write code.</h2>
-            <p className="mt-5 max-w-3xl text-base leading-7 text-[#5F5A50]">We agree on the first release, build in pieces you can review, and test before launch. You see what is being built, what it costs and what comes next.</p>
+            <h2 className="font-display text-4xl leading-none md:text-5xl">You stay part of the process.</h2>
+            <p className="mt-5 max-w-3xl text-base leading-7 text-[#5F5A50]">We start by understanding the job your product needs to do, agree on a useful first release, and build in pieces you can review.</p>
+            <ol className="mt-8 grid gap-5 border-t border-[#171717]/20 pt-6 sm:grid-cols-3">
+              <li><span className="text-xs font-bold text-[#1F4D3D]">01 / Understand</span><p className="mt-2 text-sm leading-6 text-[#5F5A50]">Show us the problem, the people involved, and what success would look like.</p></li>
+              <li><span className="text-xs font-bold text-[#1F4D3D]">02 / Shape</span><p className="mt-2 text-sm leading-6 text-[#5F5A50]">We agree on scope, priorities, and the first version before development begins.</p></li>
+              <li><span className="text-xs font-bold text-[#1F4D3D]">03 / Build</span><p className="mt-2 text-sm leading-6 text-[#5F5A50]">You review progress as we build, test, and prepare to launch.</p></li>
+            </ol>
           </div>
         </ScrollReveal>
       </section>
