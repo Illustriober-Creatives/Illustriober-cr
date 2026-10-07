@@ -10,7 +10,7 @@ import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({ path: "/" });
 
-const heroPurposePhrases = ["a website.", "custom software.", "a mobile app."];
+const heroPurposePhrases = ["a website."];
 
 export default function Home() {
   return (
@@ -18,12 +18,11 @@ export default function Home() {
       <HomeHeroGlide
         copy={
           <>
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">Websites · Custom software · Mobile apps</p>
             <HeroTypewriter phrases={heroPurposePhrases} />
-            <p className="mt-8 max-w-2xl text-lg leading-8 text-[#5F5A50] md:text-xl">We build websites, custom software and mobile apps with performance, scalability and security built in. Tell us what your business needs to do.</p>
+            <p className="mt-9 max-w-2xl text-base leading-7 text-[#5F5A50] md:text-lg lg:text-xl lg:leading-8">Illustriober helps growing teams turn messy operations and promising ideas into clear, dependable digital products.</p>
             <div className="mt-10 flex flex-wrap items-center gap-6">
-              <Link className="inline-flex min-h-14 items-center gap-2 rounded-full bg-[#171717] px-7 text-base font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5" href="/enquiry">Discuss your project <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
-              <a className="inline-flex min-h-14 items-center gap-2 text-base font-bold underline decoration-[#F39314] decoration-2 underline-offset-4" href="#services">See what we build <ArrowDown className="h-4 w-4" aria-hidden="true" /></a>
+              <Link className="inline-flex min-h-14 items-center gap-2 rounded-full bg-[#171717] px-7 text-base font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5" href="/enquiry">Start a project <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
+              <a className="inline-flex min-h-14 items-center gap-2 text-base font-bold underline decoration-[#F39314] decoration-2 underline-offset-4" href="#work">See the work <ArrowDown className="h-4 w-4" aria-hidden="true" /></a>
             </div>
           </>
         }
