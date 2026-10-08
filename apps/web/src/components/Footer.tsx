@@ -11,8 +11,8 @@ export function Footer() {
             </span>
             <p className="font-display text-2xl">Illustriober Creatives</p>
           </div>
-          <p className="mt-5 whitespace-nowrap text-sm leading-6 text-[#F4EFE5]/65">
-            Digital products built with care in Nairobi.
+          <p className="mt-5 text-sm leading-6 text-[#F4EFE5]/65">
+            Websites, custom software and mobile apps. Built in Nairobi.
           </p>
         </div>
         <div className="flex flex-wrap gap-x-7 gap-y-3 text-sm font-semibold text-[#F4EFE5]/75">

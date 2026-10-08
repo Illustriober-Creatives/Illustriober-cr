@@ -55,11 +55,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         </div>
 
         <div className="mt-16 border-y border-[#171717]/15 py-14 text-center md:mt-24 md:py-20">
-          <p className="mx-auto max-w-lg text-sm leading-6 text-[#5F5A50]">A live client URL can be added here when this project is replaced in the admin area.</p>
           {project.liveUrl ? (
-            <a className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#171717] px-6 py-3.5 text-sm font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5" href={project.liveUrl} rel="noreferrer" target="_blank">Open site <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></a>
+            <a className="inline-flex items-center gap-2 rounded-full bg-[#171717] px-6 py-3.5 text-sm font-bold text-[#F4EFE5] transition-transform hover:-translate-y-0.5" href={project.liveUrl} rel="noreferrer" target="_blank">Open site <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></a>
           ) : (
-            <span aria-disabled="true" className="mt-6 inline-flex cursor-not-allowed items-center gap-2 rounded-full bg-[#171717]/35 px-6 py-3.5 text-sm font-bold text-[#F4EFE5]">Open site <span className="text-white/65">· link pending</span></span>
+            <span aria-disabled="true" className="inline-flex cursor-not-allowed items-center gap-2 rounded-full bg-[#171717]/35 px-6 py-3.5 text-sm font-bold text-[#F4EFE5]">Open site <span className="text-white/65">· link pending</span></span>
           )}
         </div>
       </section>

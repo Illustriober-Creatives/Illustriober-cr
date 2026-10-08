@@ -6,9 +6,9 @@ export const siteConfig = {
   url: "https://illustriober.com",
   locale: "en_US",
   twitterHandle: "@illustriober",
-  defaultTitle: "Illustriober Creatives | Full-Stack Web & Mobile Development Studio",
+  defaultTitle: "Illustriober Creatives | Websites, Software & Mobile Apps",
   defaultDescription:
-    "Premium creative studio specializing in full-stack web development, mobile apps, UI/UX design, and cloud deployment. We build remarkable digital experiences.",
+    "We build websites, custom software and mobile apps for businesses, with performance, scalability and security in mind.",
   defaultKeywords: [
     "web development agency",
     "mobile app development",

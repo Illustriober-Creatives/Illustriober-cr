@@ -5,11 +5,11 @@ import { useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import styles from "./HeroTypewriter.module.css";
 
-const HOLD_DURATION_MS = 5_000;
+const HOLD_DURATION_MS = 2_800;
 const BETWEEN_PHRASES_MS = 320;
 const TYPE_RHYTHM_MS = [82, 58, 104, 70, 92] as const;
 const DELETE_RHYTHM_MS = [38, 30, 46] as const;
-const FALLBACK_PHRASES = ["useful software."] as const;
+const FALLBACK_PHRASES = ["a website."] as const;
 const SERVICES_FALLBACK_PHRASES = ["Reliable"] as const;
 
 type TypewriterPhase = "typing" | "holding" | "deleting" | "between";
@@ -44,15 +44,16 @@ export function HeroTypewriter({ phrases, variant = "home" }: HeroTypewriterProp
     [safePhrases],
   );
   const [phraseIndex, setPhraseIndex] = useState(0);
-  const [characterCount, setCharacterCount] = useState(0);
-  const [phase, setPhase] = useState<TypewriterPhase>("typing");
+  const [characterCount, setCharacterCount] = useState(variant === "home" ? safePhrases[0].length : 0);
+  const [phase, setPhase] = useState<TypewriterPhase>(variant === "home" ? "holding" : "typing");
   const [isPaused, setIsPaused] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+  const isStatic = variant === "home" && safePhrases.length === 1;
   const currentPhrase = safePhrases[phraseIndex % safePhrases.length];
   const displayedPhrase = currentPhrase.slice(0, characterCount);
 
   useEffect(() => {
-    if (isPaused || shouldReduceMotion) return;
+    if (isStatic || isPaused || shouldReduceMotion) return;
 
     let delay = 0;
     let advance: () => void;
@@ -80,7 +81,7 @@ export function HeroTypewriter({ phrases, variant = "home" }: HeroTypewriterProp
 
     const timeout = window.setTimeout(advance, delay);
     return () => window.clearTimeout(timeout);
-  }, [characterCount, currentPhrase, isPaused, phase, safePhrases.length, shouldReduceMotion]);
+  }, [characterCount, currentPhrase, isPaused, isStatic, phase, safePhrases.length, shouldReduceMotion]);
 
   const controlLabel = isPaused ? "Resume animated headline" : "Pause animated headline";
   const rotatingWord = (
@@ -108,7 +109,7 @@ export function HeroTypewriter({ phrases, variant = "home" }: HeroTypewriterProp
         </h1>
       ) : (
         <h1
-          aria-label="It all starts with useful software."
+          aria-label={`It all starts with ${safePhrases[0]}`}
           className="max-w-4xl font-display tracking-normal lg:max-w-none"
         >
           <span className={styles.line} aria-hidden="true">
@@ -119,17 +120,16 @@ export function HeroTypewriter({ phrases, variant = "home" }: HeroTypewriterProp
           </span>
         </h1>
       )}
-      <button
+      {!isStatic && <button
         aria-label={controlLabel}
         aria-pressed={isPaused}
         className={styles.motionControl}
-        onFocus={() => setIsPaused(true)}
         onClick={() => setIsPaused((paused) => !paused)}
         title={controlLabel}
         type="button"
       >
         {isPaused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
-      </button>
+      </button>}
     </div>
   );
 }
