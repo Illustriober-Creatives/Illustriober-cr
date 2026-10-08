@@ -11,14 +11,14 @@ import { createMetadata } from "@/lib/seo";
 export const metadata = createMetadata({
   title: "Tech Stack",
   description:
-    "The modern technologies and tools we use to build exceptional digital products.",
+    "The technologies and tools we use to build websites, software and mobile apps.",
   path: "/tech-stack",
 });
 
 const categories = [
   {
     name: "Frontend",
-    description: "Client-side technologies for high-performance, expressive interfaces.",
+    description: "What we use to build fast interfaces in the browser.",
     technologies: [
       { name: "React", proficiency: "Expert" },
       { name: "Next.js", proficiency: "Expert" },
@@ -29,7 +29,7 @@ const categories = [
   },
   {
     name: "Backend",
-    description: "Service architecture for reliability, security, and velocity.",
+    description: "What runs on the server: APIs and the logic behind them.",
     technologies: [
       { name: "Node.js", proficiency: "Expert" },
       { name: "Express", proficiency: "Expert" },
@@ -40,7 +40,7 @@ const categories = [
   },
   {
     name: "Data",
-    description: "Data systems optimized for consistency and scale.",
+    description: "Where your data is stored and how we query it.",
     technologies: [
       { name: "PostgreSQL", proficiency: "Expert" },
       { name: "MongoDB", proficiency: "Advanced" },
@@ -51,7 +51,7 @@ const categories = [
   },
   {
     name: "Mobile",
-    description: "Cross-platform delivery tuned for performance and maintainability.",
+    description: "Tools for building iOS and Android apps.",
     technologies: [
       { name: "React Native", proficiency: "Advanced" },
       { name: "Swift", proficiency: "Advanced" },
@@ -61,7 +61,7 @@ const categories = [
   },
   {
     name: "Cloud & DevOps",
-    description: "Automation and infrastructure for confident deployment at scale.",
+    description: "Hosting, and the automation that tests and deploys each release.",
     technologies: [
       { name: "Vercel", proficiency: "Expert" },
       { name: "AWS", proficiency: "Advanced" },
@@ -72,7 +72,7 @@ const categories = [
   },
   {
     name: "Design Ops",
-    description: "Collaborative tooling that keeps product design systems coherent.",
+    description: "Tools for designing interfaces and keeping components consistent.",
     technologies: [
       { name: "Figma", proficiency: "Expert" },
       { name: "Adobe XD", proficiency: "Advanced" },
@@ -101,15 +101,15 @@ export default function TechStackPage() {
         <Container className="relative z-10">
           <div className="mx-auto max-w-4xl text-center">
             <p className="inline-block rounded-full border border-accent/25 bg-accent-soft px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-accent">
-              Tech Capability
+              Tech stack
             </p>
             <h1 className="mt-8 text-5xl md:text-6xl lg:text-7xl font-display font-medium leading-[0.95] tracking-tight text-foreground">
-              Engineered with
-              <span className="block italic text-accent">Proven Tools</span>
+              The tools
+              <span className="block italic text-accent">we build with</span>
             </h1>
             <p className="mt-7 text-lg md:text-xl leading-relaxed text-foreground/65 max-w-3xl mx-auto">
-              We choose technologies for durability and delivery speed, then
-              align the stack to your business stage and constraints.
+              We pick tools that are stable and quick to build with, then fit
+              the stack to your budget and the stage your business is at.
             </p>
           </div>
         </Container>
@@ -119,8 +119,8 @@ export default function TechStackPage() {
         <Container>
           <SectionHeader
             subtitle="Stack Map"
-            title="Technology Domains"
-            description="Each domain combines production readiness with maintainable long-term architecture."
+            title="Technology domains"
+            description="The tools we use in each area, and how well we know them."
           />
 
           <div className="space-y-10">
@@ -178,8 +178,8 @@ export default function TechStackPage() {
         <Container>
           <SectionHeader
             subtitle="Selection Criteria"
-            title="Why These Technologies"
-            description="Every tool is selected against business-critical constraints, not trend cycles."
+            title="Why these technologies"
+            description="We choose each tool for what the business needs from it."
           />
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -187,32 +187,32 @@ export default function TechStackPage() {
               {
                 label: "Performance",
                 detail:
-                  "Prioritized for latency, throughput, and user-perceived speed under production load.",
+                  "Fast for the people using the product, including under real traffic.",
               },
               {
                 label: "Security",
                 detail:
-                  "Chosen for mature security posture, patch cadence, and ecosystem stability.",
+                  "A good security record and regular patches.",
               },
               {
                 label: "Scalability",
                 detail:
-                  "Designed to evolve from launch-stage usage to enterprise-level adoption.",
+                  "Works for a small launch and keeps working as usage grows.",
               },
               {
                 label: "Community",
                 detail:
-                  "Strong ecosystems ensure maintainability, documentation quality, and hiring viability.",
+                  "Well documented, widely used and easy to hire for.",
               },
               {
                 label: "Developer Velocity",
                 detail:
-                  "Tooling accelerates delivery while preserving quality gates and test confidence.",
+                  "Lets us ship quickly without skipping tests or checks.",
               },
               {
                 label: "Context Fit",
                 detail:
-                  "Stack decisions are tailored to your constraints, budget, and product trajectory.",
+                  "We adjust the stack to your budget, your constraints and your plans for the product.",
               },
             ].map((item, index) => (
               <article
@@ -238,22 +238,22 @@ export default function TechStackPage() {
         <Container>
           <SectionHeader
             subtitle="Delivery Workflow"
-            title="Operational Quality Standards"
-            description="Engineering workflow practices that protect reliability and release confidence."
+            title="How we keep quality up"
+            description="The checks we run so releases stay reliable."
           />
 
           <div className="grid md:grid-cols-2 gap-8">
             <article className="glass-card rounded-2xl border-glass-border p-8">
               <h3 className="text-2xl font-display font-medium text-foreground mb-6">
-                CI/CD Discipline
+                CI/CD
               </h3>
               <ul className="space-y-3">
                 {[
                   "Automated tests on every commit",
-                  "Type and lint quality gates",
-                  "Release pipeline controls and rollback safety",
-                  "Environment-aware deployment automation",
-                  "Runtime monitoring and actionable alerts",
+                  "Type and lint checks",
+                  "Controlled releases with rollback",
+                  "Automated deployment for each environment",
+                  "Monitoring and alerts in production",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <span className="text-accent font-semibold mt-0.5">✓</span>
@@ -265,15 +265,15 @@ export default function TechStackPage() {
 
             <article className="glass-card rounded-2xl border-glass-border p-8">
               <h3 className="text-2xl font-display font-medium text-foreground mb-6">
-                Product Quality
+                Product quality
               </h3>
               <ul className="space-y-3">
                 {[
-                  "Unit and integration testing coverage",
+                  "Unit and integration tests",
                   "Performance profiling and budgets",
-                  "Security checks in delivery flow",
-                  "Accessibility-first verification",
-                  "Manual QA for edge-case confidence",
+                  "Security checks during delivery",
+                  "Accessibility checks",
+                  "Manual QA for edge cases",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <span className="text-accent font-semibold mt-0.5">✓</span>

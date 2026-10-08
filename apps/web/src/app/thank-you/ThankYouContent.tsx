@@ -54,11 +54,11 @@ export function ThankYouContent() {
 
             {/* Main Message */}
             <h1 className="text-5xl md:text-6xl font-display font-semibold leading-tight tracking-tight mb-6 text-foreground">
-              Thank You!
+              Thank you
             </h1>
 
             <p className="text-xl text-foreground/70 mb-4">
-              We&apos;ve received your inquiry and appreciate you getting in touch.
+              We&apos;ve received your enquiry. Thanks for getting in touch.
             </p>
 
             {/* Email Confirmation */}
@@ -74,7 +74,7 @@ export function ThankYouContent() {
             {/* What Happens Next */}
             <div className="space-y-6 mb-12">
               <h2 className="text-2xl font-display font-semibold text-foreground mb-8">
-                What Happens Next
+                What happens next
               </h2>
 
               <div className="space-y-4">
@@ -85,7 +85,7 @@ export function ThankYouContent() {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Review</h3>
                     <p className="text-foreground/60">
-                      Our team will review your project details and requirements.
+                      We&apos;ll read through your project details.
                     </p>
                   </div>
                 </div>
@@ -97,7 +97,7 @@ export function ThankYouContent() {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Follow Up</h3>
                     <p className="text-foreground/60">
-                      We typically respond to all inquiries within 24 hours during business days.
+                      We usually reply within 24 hours on business days.
                     </p>
                   </div>
                 </div>
@@ -109,7 +109,7 @@ export function ThankYouContent() {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Discussion</h3>
                     <p className="text-foreground/60">
-                      Let&apos;s talk about your vision, timeline, and budget.
+                      We&apos;ll talk through what you want to build, your timeline and your budget.
                     </p>
                   </div>
                 </div>
@@ -125,7 +125,7 @@ export function ThankYouContent() {
                   className="rounded-lg"
                 >
                   <Home className="w-5 h-5" />
-                  Back to Home
+                  Back to home
                 </Button>
               </Link>
               <Button
@@ -135,7 +135,7 @@ export function ThankYouContent() {
                 className="rounded-lg"
               >
                 <MessageSquare className="w-5 h-5" />
-                Send us an Email
+                Send us an email
               </Button>
             </div>
 

@@ -42,7 +42,7 @@ export default function AboutPage() {
       <section className="mx-auto mt-16 max-w-7xl px-5 md:mt-24 md:px-8">
         <ScrollReveal className="grid gap-8 border-b border-[#171717]/20 pb-8 lg:grid-cols-[0.55fr_1fr]">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">What matters in the build</p>
-          <h2 className="font-display text-4xl leading-none md:text-5xl">Performance, scalability and security are design decisions.</h2>
+          <h2 className="font-display text-4xl leading-none md:text-5xl">We plan for performance, scalability and security at the design stage.</h2>
         </ScrollReveal>
         <div className="divide-y divide-[#171717]/20">
           <div className="grid gap-3 py-7 md:grid-cols-[0.55fr_1fr] md:gap-10"><h3 className="font-display text-2xl">Performance</h3><p className="max-w-2xl leading-7 text-[#5F5A50]">We pay attention to loading, navigation and the speed of everyday tasks, especially on the devices your customers use.</p></div>
