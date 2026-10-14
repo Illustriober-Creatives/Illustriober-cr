@@ -48,7 +48,7 @@ export default function EnquiryPage({ searchParams }: EnquiryPageProps) {
   };
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-[#F4EFE5] px-4 pb-10 pt-28 text-[#171717] sm:px-6 md:px-8 md:pb-12 md:pt-32">
+    <div className="flex min-h-dvh items-center justify-center bg-[#F4EFE5] px-4 pb-10 pt-10 text-[#171717] sm:px-6 md:px-8 md:pb-12 md:pt-14">
       <section className="mx-auto w-full max-w-4xl"><div className="grid w-full overflow-hidden rounded-[2rem] border border-[#171717]/10 bg-[#FFFDF8] lg:grid-cols-[0.78fr_1.22fr]">
         <aside className="relative min-h-[220px] min-w-0 overflow-hidden bg-[#1F4D3D] p-6 text-[#F4EFE5] sm:p-7 lg:min-h-full lg:p-8"><Image alt="Product workspace concept" className="object-cover opacity-35" fill sizes="(max-width: 1024px) 100vw, 40vw" src="/projects/concept-portal-dashboard.png" /><div className="relative flex h-full flex-col justify-between"><p className="max-w-sm font-display text-4xl leading-none">Good work starts with a clear conversation.</p><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f7ad45]">Prefer email?</p><a className="mt-2 inline-block text-lg font-bold hover:underline" href="mailto:hello@illustriober.com">hello@illustriober.com</a></div></div></aside>
         <div className="min-w-0 p-6 sm:p-7 lg:p-8"><h1 className="font-display text-4xl leading-none">Project enquiry</h1><p className="mt-3 text-sm leading-6 text-[#5F5A50]">Tell us what you&apos;re trying to make. A few practical details are enough to begin.</p>
@@ -62,6 +62,6 @@ export default function EnquiryPage({ searchParams }: EnquiryPageProps) {
           </form>
         </div>
       </div></section>
-    </main>
+    </div>
   );
 }

@@ -93,15 +93,8 @@ h1, h2, h3, h4, .font-display {
   transition: color var(--transition-base);
 }
 
-/* Enable smooth theme transitions for all elements */
-* {
-  transition-property: background-color, border-color, color, box-shadow;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: var(--transition-fast);
-}
-
 :focus-visible {
-  outline: 3px solid #1F4D3D;
+  outline: 2px solid #F39314;
   outline-offset: 3px;
 }
 

@@ -56,14 +56,14 @@ const focusedWork = [
 
 export default function ServicesPage() {
   return (
-    <main className="min-h-screen bg-[#F4EFE5] pb-20 pt-36 text-[#171717] md:pt-40">
+    <div className="min-h-screen bg-[#F4EFE5] pb-20 pt-10 text-[#171717] md:pt-14">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <ScrollReveal blur scale={0.99} y={24}>
           <section className="border-b border-[#171717]/15 pb-16">
             <span className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-[#1F4D3D]">
               Services
             </span>
-            <h1 className="mt-5 max-w-5xl font-display text-6xl leading-[0.9] tracking-[-0.055em] text-[#171717] md:text-8xl">
+            <h1 className="mt-5 max-w-5xl text-balance font-display text-6xl leading-[0.9] tracking-[-0.055em] text-[#171717] md:text-8xl">
               Websites, software and mobile apps.
             </h1>
             <div className="mt-8 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
@@ -246,6 +246,6 @@ export default function ServicesPage() {
           </ScrollReveal>
         </section>
       </div>
-    </main>
+    </div>
   );
 }

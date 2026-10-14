@@ -91,11 +91,16 @@ export function ServiceFlipCards() {
     };
     if (activeModal) {
       window.addEventListener("keydown", handleKeyDown);
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = "hidden";
+      if (scrollBarWidth > 0) {
+        document.body.style.paddingRight = `${scrollBarWidth}px`;
+      }
     }
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "unset";
+      document.body.style.paddingRight = "";
     };
   }, [activeModal]);
 
