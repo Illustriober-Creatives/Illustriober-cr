@@ -54,14 +54,14 @@ The product is a Next.js web app in `apps/web`, with a separate API workspace. T
 ## Preferred implementation instructions for future agents
 
 1. Inspect the existing page, related components, and repository instructions before editing.
-2. Use GitNexus impact analysis before changing a function, component, class, or shared symbol. Report the blast radius and warn if risk is HIGH or CRITICAL.
+2. Before changing a function, component, class, or shared symbol, search for everything that uses it. Report what else is affected and warn if the change is risky.
 3. Reuse existing components, tokens, assets, and patterns before introducing new dependencies or parallel systems.
 4. Make the smallest focused change that solves the visual or product problem. Do not rewrite unrelated pages.
 5. Design mobile-first and verify at a narrow mobile width, a tablet width, and a wide desktop width.
 6. Preserve user-owned work in the working tree. Never reset, discard, or overwrite unrelated edits.
 7. Keep accessibility in the implementation: semantic headings, useful image alt text, keyboard-visible focus, touch-sized controls, and reduced-motion handling.
 8. Run the relevant tests and the web build/typecheck after implementation.
-9. Run GitNexus change detection before committing and review the affected symbols and flows.
+9. Review the staged diff before committing and confirm it touches only the intended files and flows.
 10. Inspect the final diff and status, then commit only intended files with a conventional commit message. Push only when explicitly requested.
 
 ## Expected output from an agent
