@@ -7,19 +7,23 @@ if [[ ! "$release_id" =~ ^[0-9a-f]{40}$ ]]; then
   exit 1
 fi
 
-live=/var/www/illustriober
+live=/opt/illustriober/app
+# Server-only secrets file, loaded by systemd. Never transfer it to GitHub.
+envfile=/etc/illustriober/api.env
 release="$HOME/.illustriober-deploy/$release_id"
 backup="$HOME/.illustriober-backup"
 
 test -f "$release/apps/api/package.json"
 test -f "$release/apps/api/prisma/schema.prisma"
-test -f "$live/apps/api/.env"
+test -r "$envfile"
 curl -fsS --max-time 5 http://127.0.0.1:4000/health | grep -q '"status":"ok"'
 
-# The service reads this existing server-only file. Never transfer it to GitHub.
-ln -sfn "$live/apps/api/.env" "$release/apps/api/.env"
 cd "$release"
-npm ci --no-audit --no-fund
+# Install only the API and shared workspaces, and skip install scripts: the API has no
+# native addons, and root tooling packages cannot build on this server. Shared and
+# Prisma are built explicitly below.
+npm ci --workspace=apps/api --workspace=packages/shared --ignore-scripts --no-audit --no-fund
+npm run build --workspace @illustriober/shared
 npm run prisma:generate --workspace apps/api
 npm run build --workspace apps/api
 
@@ -29,7 +33,7 @@ rsync -a --delete "$live/" "$backup/files/"
 sudo -n -u postgres /usr/bin/pg_dump -Fc illustrioberdb > "$backup/illustrioberdb.dump"
 
 # Apply additive migrations while the old API is still serving requests.
-npm run prisma:migrate:deploy --workspace apps/api
+( set -a; . "$envfile"; set +a; npm run prisma:migrate:deploy --workspace apps/api )
 
 deployment_ok=1
 rsync -a --delete --exclude=.env "$release/apps/api/" "$live/apps/api/" || deployment_ok=0

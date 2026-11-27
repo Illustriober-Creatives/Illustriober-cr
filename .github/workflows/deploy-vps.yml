@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
           cache: npm
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
@@ -41,14 +41,16 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST_FINGERPRINT: ${{ vars.VPS_HOST_FINGERPRINT }}
         run: |
           set -euo pipefail
+          test -n "$VPS_HOST_FINGERPRINT" || { echo 'VPS_HOST_FINGERPRINT variable is not set' >&2; exit 1; }
           umask 077
           mkdir -p "$HOME/.ssh"
           printf '%s\n' "$VPS_SSH_KEY" > "$HOME/.ssh/illustriober_deploy"
           ssh-keyscan -t ed25519 "$VPS_HOST" > "$HOME/.ssh/known_hosts"
           fingerprint=$(ssh-keygen -lf "$HOME/.ssh/known_hosts" | awk '{print $2}')
-          test "$fingerprint" = 'SHA256:bO5h1mVpcyepR3qvPOHDAoc4CXgcB2Qi4GUP/68pS84'
+          test "$fingerprint" = "$VPS_HOST_FINGERPRINT"
       - name: Stage and deploy API
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
