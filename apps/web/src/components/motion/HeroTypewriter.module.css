@@ -35,17 +35,21 @@
 
 .firstLine {
   display: block;
-  font-style: italic;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  color: #5f5a50;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  color: #171717;
 }
 
 .purposeLine {
   display: block;
-  margin-top: 0.04em;
+  margin-top: 0.08em;
   white-space: nowrap;
   letter-spacing: 0;
+}
+
+.shell:not(.services) .rotator {
+  color: #1f4d3d;
+  text-shadow: none;
 }
 
 .rotator {
